@@ -4,6 +4,9 @@ const app = express();
 app.set('view engine', 'ejs');
 app.set('views', `${process.cwd()}/wws-client/public`);
 
+//serve statics
+app.use(express.static(`${process.cwd()}/wws-client/public/statics`));
+
 //import routers
 import { authRouter, homeRouter } from './router';
 
