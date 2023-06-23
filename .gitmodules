@@ -1,0 +1,3 @@
+[submodule "wws-client"]
+	path = wws-client
+	url = https://github.com/seungho-hub/wws-client.git
