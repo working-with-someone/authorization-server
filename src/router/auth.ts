@@ -1,9 +1,16 @@
 import { Router } from 'express';
-import { renderSignin, renderSignup } from '../controller/auth/';
+import {
+  renderSignin,
+  renderSignup,
+  redirectToAuth,
+  codeCallback,
+} from '../controller/auth/';
 
 const authRouter = Router();
 
-authRouter.use('/signin', renderSignin);
-authRouter.use('/signup', renderSignup);
+authRouter.get('/signin', renderSignin);
+authRouter.get('/signup', renderSignup);
+authRouter.get('/:provider', redirectToAuth);
+authRouter.get('/:provider/callback/code', codeCallback);
 
 export default authRouter;
