@@ -1,4 +1,6 @@
 import express from 'express';
+import errorHandler from './middleware/errorHandler';
+
 const app = express();
 
 app.set('view engine', 'ejs');
@@ -13,5 +15,7 @@ import { authRouter, homeRouter } from './router';
 //use router
 app.use('/auth', authRouter);
 app.use('/', homeRouter);
+
+app.use(errorHandler);
 
 export default app;
