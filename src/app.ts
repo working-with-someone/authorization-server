@@ -14,7 +14,7 @@ import { authRouter, homeRouter } from './router';
 
 //use router
 app.use('/auth', authRouter);
-app.use('/', homeRouter);
+app.get('/', homeRouter);
 
 app.use(errorHandler);
 
