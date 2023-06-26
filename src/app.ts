@@ -1,5 +1,6 @@
 import express from 'express';
 import errorHandler from './middleware/errorHandler';
+import HttpStatusCode from 'http-status-codes';
 
 const app = express();
 
@@ -19,7 +20,7 @@ app.get('/', homeRouter);
 
 //response 404 for any request to unknown endpoint
 app.use('*', (req, res, next) => {
-  next(new wwsError(404, 'Can not found page'));
+  next(new wwsError(HttpStatusCode.NOT_FOUND, 'Can not found page'));
 });
 
 //error handler
