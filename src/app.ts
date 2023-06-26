@@ -16,6 +16,7 @@ import { authRouter, homeRouter } from './router';
 app.use('/auth', authRouter);
 app.get('/', homeRouter);
 
+//error handler
 app.use(errorHandler);
 
 export default app;
