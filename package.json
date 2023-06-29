@@ -5,7 +5,8 @@
   "license": "MIT",
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon src/server.ts",
-    "build" : "tsc"
+    "build" : "tsc",
+    "init" : "sequelize db:create"
   },
   "devDependencies": {
     "@types/dotenv": "^8.2.0",
