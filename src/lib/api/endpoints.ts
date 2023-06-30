@@ -1,12 +1,11 @@
-import { generateURL } from './url';
-import axios, { AxiosRequestConfig } from 'axios';
+import { generateURL } from '../url';
 
 interface generator {
   authURL: () => string;
   accessTokenURL: (code: string) => string;
 }
 
-const oauthEndpointGenerator: Record<string, generator> = {
+const apiEndpointGenerator: Record<string, generator> = {
   github: {
     authURL: () =>
       generateURL('https://github.com/login/oauth/authorize', {
@@ -61,42 +60,4 @@ const oauthEndpointGenerator: Record<string, generator> = {
   },
 };
 
-interface OAuth {
-  authURL: string;
-  getAccessToken(code: string): Promise<any>;
-}
-
-const OAuthFactory = (provider: string): OAuth => {
-  const p = provider;
-
-  return {
-    authURL: oauthEndpointGenerator[p].authURL(),
-    getAccessToken: async (code: string) => {
-      const endpoint = oauthEndpointGenerator[p].accessTokenURL(code);
-      const reqConfig: AxiosRequestConfig = {
-        url: endpoint,
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-        },
-      };
-
-      const response = await axios(reqConfig);
-
-      const accessToken = response.data.access_token;
-      return accessToken;
-    },
-  };
-};
-
-type OAuths = {
-  [key in string]: OAuth;
-};
-
-const OAuths: OAuths = {
-  github: OAuthFactory('github'),
-  google: OAuthFactory('google'),
-  kakao: OAuthFactory('kakao'),
-};
-
-export default OAuths;
+export default apiEndpointGenerator;

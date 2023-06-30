@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import OAuth from '../../lib/oauth';
+import OAuth from '../../lib/api/oauth';
 import { wwsError } from '../../utils/wwsError';
 import HttpStatusCode from 'http-status-codes';
 
