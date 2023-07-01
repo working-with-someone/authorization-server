@@ -13,7 +13,7 @@ abstract class ApiInterface {
 
   //methods
   abstract accessTokenURL(code: string): string;
-  private abstract getAccessToken(code: string): Promise<string>;
+  abstract getAccessToken(code: string): Promise<string>;
   abstract getUserProfile(accessToken: string): Promise<string>;
 
   constructor(apiInfo: ApiInfo) {
