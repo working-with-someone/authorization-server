@@ -1,5 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
-import OAuth from '../../lib/api/oauth';
+
+import OAuth from '../../lib/api';
+
 import { wwsError } from '../../utils/wwsError';
 import HttpStatusCode from 'http-status-codes';
 
@@ -14,7 +16,7 @@ export const redirectToAuth = (
   next: NextFunction
 ) => {
   try {
-    return res.redirect(OAuth[req.params.provider].authURL);
+    return res.redirect(OAuth[req.params.provider].authCodeURL);
   } catch (err) {
     next(
       new wwsError(
@@ -37,7 +39,8 @@ export const codeCallback = async (
     );
 
     return res.send(accessToken);
-  } catch (err) {
+  } catch (err: any) {
+    console.log(err.response);
     next(
       new wwsError(
         HttpStatusCode.INTERNAL_SERVER_ERROR,
