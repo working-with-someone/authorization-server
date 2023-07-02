@@ -21,7 +21,8 @@ export const redirectToAuth = (
     next(
       new wwsError(
         HttpStatusCode.INTERNAL_SERVER_ERROR,
-        'Problems moving to the consent screen'
+        'Problems moving to the consent screen',
+        err
       )
     );
   }
@@ -43,7 +44,8 @@ export const codeCallback = async (
     next(
       new wwsError(
         HttpStatusCode.INTERNAL_SERVER_ERROR,
-        'Problems processing Oauth'
+        'Problems processing Oauth',
+        err
       )
     );
   }
