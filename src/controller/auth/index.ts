@@ -39,8 +39,7 @@ export const codeCallback = async (
     );
 
     return res.send(accessToken);
-  } catch (err: any) {
-    console.log(err.response);
+  } catch (err) {
     next(
       new wwsError(
         HttpStatusCode.INTERNAL_SERVER_ERROR,
