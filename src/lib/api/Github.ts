@@ -24,7 +24,7 @@ class GithubInterface extends ApiInterface {
   }
 
   get authCodeURL() {
-    return generateURL(`${this.authBaseUrl}`, {
+    return generateURL(`${this.authBaseUrl}/authorize`, {
       client_id: this.clientId,
       response_type: 'code',
       redirect_uri: this.redirectUrl,
@@ -33,7 +33,7 @@ class GithubInterface extends ApiInterface {
   }
 
   accessTokenURL(code: string) {
-    return generateURL('https://github.com/login/oauth/access_token', {
+    return generateURL(`${this.authBaseUrl}/access_token`, {
       client_id: this.clientId,
       client_secret: this.clientSecret,
       code,
@@ -53,7 +53,6 @@ class GithubInterface extends ApiInterface {
     };
 
     const response = await axios(reqConfig);
-
     const accessToken = response.data.access_token;
 
     return accessToken;
