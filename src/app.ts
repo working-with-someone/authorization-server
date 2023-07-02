@@ -1,6 +1,7 @@
 import express from 'express';
 import errorHandler from './middleware/errorHandler';
 import NotFound from './middleware/notFound';
+import RequestLogger from './middleware/requestLogger';
 
 const app = express();
 
@@ -10,6 +11,7 @@ app.set('views', `${process.cwd()}/wws-client/public`);
 //serve statics
 app.use(express.static(`${process.cwd()}/wws-client/public/statics`));
 
+app.use(RequestLogger);
 //import routers
 import { authRouter, homeRouter } from './router';
 

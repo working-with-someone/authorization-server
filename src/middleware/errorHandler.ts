@@ -1,5 +1,6 @@
 import { wwsError } from '../utils/wwsError';
 import { Request, Response, NextFunction } from 'express';
+import { sysErrorLogger } from '../logger/winston';
 
 const errorHandler = (
   err: wwsError,
@@ -8,6 +9,8 @@ const errorHandler = (
   next: NextFunction
 ) => {
   if (err) {
+    sysErrorLogger.log('error', err.originError);
+
     return res.render('error/error', { err });
   }
 };
