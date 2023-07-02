@@ -1,6 +1,6 @@
 import express from 'express';
 import errorHandler from './middleware/errorHandler';
-import HttpStatusCode from 'http-status-codes';
+import NotFound from './middleware/notFound';
 
 const app = express();
 
@@ -12,16 +12,13 @@ app.use(express.static(`${process.cwd()}/wws-client/public/statics`));
 
 //import routers
 import { authRouter, homeRouter } from './router';
-import { wwsError } from './utils/wwsError';
 
 //use router
 app.use('/auth', authRouter);
 app.get('/', homeRouter);
 
 //response 404 for any request to unknown endpoint
-app.use('*', (req, res, next) => {
-  next(new wwsError(HttpStatusCode.NOT_FOUND, 'Can not found page'));
-});
+app.use('*', NotFound);
 
 //error handler
 app.use(errorHandler);
