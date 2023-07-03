@@ -9,7 +9,9 @@ const errorHandler = (
   next: NextFunction
 ) => {
   if (err) {
-    sysErrorLogger.error(err.originError);
+    const originError = err.originError;
+
+    sysErrorLogger.error(originError.message, { stack: originError.stack });
 
     return res.render('error/error', { err });
   }
