@@ -8,13 +8,12 @@ const errorHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  if (err) {
+  if (err.originError) {
     const originError = err.originError;
 
     sysErrorLogger.error(originError.message, { stack: originError.stack });
-
-    return res.render('error/error', { err });
   }
+  return res.render('error/error', { err });
 };
 
 export default errorHandler;
