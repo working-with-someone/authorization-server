@@ -2,11 +2,13 @@ import express from 'express';
 import errorHandler from './middleware/errorHandler';
 import NotFound from './middleware/notFound';
 import RequestLogger from './middleware/requestLogger';
+import favicon from 'serve-favicon';
 
 const app = express();
 
 app.set('view engine', 'ejs');
 app.set('views', `${process.cwd()}/wws-client/public`);
+app.use(favicon(`${process.cwd()}/wws-client/public/favicon.ico`));
 
 //serve statics
 app.use(express.static(`${process.cwd()}/wws-client/public/statics`));
