@@ -7,7 +7,7 @@ compile ts to js
 
 ## install dependencies
 
-    yarn run install
+    yarn install
     
 ## initialization
 create database
