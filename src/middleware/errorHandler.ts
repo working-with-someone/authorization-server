@@ -9,7 +9,7 @@ const errorHandler = (
   next: NextFunction
 ) => {
   if (err) {
-    sysErrorLogger.log('error', err.originError);
+    sysErrorLogger.error(err.originError);
 
     return res.render('error/error', { err });
   }
