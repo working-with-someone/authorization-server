@@ -1,5 +1,5 @@
 import { generateURL } from '../url';
-import ApiInterface, { ApiInfo } from './apiInterface';
+import ApiInterface, { ApiInfo, UserProfile } from './apiInterface';
 import axios, { AxiosRequestConfig } from 'axios';
 
 interface kakaoAPIInfo extends ApiInfo {
@@ -60,7 +60,27 @@ class KakaoInterface extends ApiInterface {
   }
 
   async getUserProfile(accessToken: string) {
-    return 'ss';
+    const endpoint = generateURL(`${this.apiBaseUrl}/v2/user/me`);
+
+    const reqConfig: AxiosRequestConfig = {
+      url: endpoint,
+      method: 'GET',
+      headers: {
+        Authorization: 'Bearer ' + accessToken,
+      },
+    };
+
+    const response = await axios(reqConfig);
+
+    const data = response.data;
+
+    const profile: UserProfile = {
+      id: data.id,
+      username: data.properties.nickname,
+      pfp: data.properties.profile_image,
+    };
+
+    return profile;
   }
 }
 

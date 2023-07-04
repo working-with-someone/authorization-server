@@ -1,5 +1,5 @@
 import { generateURL } from '../url';
-import ApiInterface, { ApiInfo } from './apiInterface';
+import ApiInterface, { ApiInfo, UserProfile } from './apiInterface';
 import axios, { AxiosRequestConfig } from 'axios';
 
 interface githubAPIInfo extends ApiInfo {
@@ -59,7 +59,27 @@ class GithubInterface extends ApiInterface {
   }
 
   async getUserProfile(accessToken: string) {
-    return 'ss';
+    const endpoint = generateURL(`${this.apiBaseUrl}/user`);
+
+    const reqConfig: AxiosRequestConfig = {
+      url: endpoint,
+      method: 'GET',
+      headers: {
+        Authorization: 'Bearer ' + accessToken,
+      },
+    };
+
+    const response = await axios(reqConfig);
+
+    const data = response.data;
+
+    const profile: UserProfile = {
+      id: data.id,
+      username: data.name,
+      pfp: data.avatar_url,
+    };
+
+    return profile;
   }
 }
 

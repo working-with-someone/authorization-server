@@ -1,5 +1,5 @@
 import { generateURL } from '../url';
-import ApiInterface, { ApiInfo } from './apiInterface';
+import ApiInterface, { ApiInfo, UserProfile } from './apiInterface';
 import axios, { AxiosRequestConfig } from 'axios';
 
 interface googleAPIInfo extends ApiInfo {
@@ -64,7 +64,31 @@ class GoogleInterface extends ApiInterface {
   }
 
   async getUserProfile(accessToken: string) {
-    return 'ss';
+    const endpoint = generateURL(`https://people.googleapis.com/v1/people/me`, {
+      personFields: 'photos,names',
+    });
+
+    const reqConfig: AxiosRequestConfig = {
+      url: endpoint,
+      method: 'GET',
+      headers: {
+        Authorization: 'Bearer ' + accessToken,
+      },
+    };
+
+    const response = await axios(reqConfig);
+
+    const data = response.data;
+
+    const resourceName = data.resourceName as string;
+
+    const profile: UserProfile = {
+      id: resourceName.split('/')[1],
+      username: data.names[0].displayName,
+      pfp: data.photos[0].url,
+    };
+
+    return profile;
   }
 }
 
