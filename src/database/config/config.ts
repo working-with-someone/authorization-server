@@ -1,5 +1,6 @@
 import { Options } from 'sequelize';
 import 'dotenv/config';
+import { databaseLogger } from '../../logger/winston';
 
 interface Configs {
   [key: string]: Options;
@@ -12,6 +13,7 @@ const configs: Configs = {
     database: process.env.DATABASE_NAME,
     host: process.env.DATABASE_HOST,
     dialect: 'mysql',
+    logging: (msg) => databaseLogger.info(msg),
   },
   test: {
     username: process.env.DATABASE_USER,
@@ -19,6 +21,7 @@ const configs: Configs = {
     database: process.env.DATABASE_NAME,
     host: process.env.DATABASE_HOST,
     dialect: 'mysql',
+    logging: (msg) => databaseLogger.info(msg),
   },
   production: {
     username: process.env.DATABASE_USER,
@@ -26,6 +29,7 @@ const configs: Configs = {
     database: process.env.DATABASE_NAME,
     host: process.env.DATABASE_HOST,
     dialect: 'mysql',
+    logging: (msg) => databaseLogger.info(msg),
   },
 };
 

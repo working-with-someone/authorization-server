@@ -40,4 +40,21 @@ const sysErrorLoggerConfig: LoggerOptions = {
   ],
 };
 
-export { webServerLoggerConfig, sysErrorLoggerConfig };
+const databaseLoggerConfig: LoggerOptions = {
+  defaultMeta: { timestamp: true },
+  format: winston.format.combine(
+    httpFormat,
+    winston.format.metadata({ fillExcept: ['timestamp', 'level', 'message'] }),
+    winston.format.printf(({ timestamp, level, message }) => {
+      return `${timestamp} ${level.toUpperCase()} ${message}`;
+    })
+  ),
+  transports: [
+    new winston.transports.Console(),
+    new winston.transports.File({
+      filename: path.join(process.cwd(), 'log/database.log'),
+    }),
+  ],
+};
+
+export { webServerLoggerConfig, sysErrorLoggerConfig, databaseLoggerConfig };
