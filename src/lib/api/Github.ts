@@ -32,7 +32,7 @@ class GithubInterface extends ApiInterface {
     });
   }
 
-  accessTokenURL(code: string) {
+  tokenURL(code: string) {
     return generateURL(`${this.authBaseUrl}/access_token`, {
       client_id: this.clientId,
       client_secret: this.clientSecret,
@@ -41,8 +41,8 @@ class GithubInterface extends ApiInterface {
     });
   }
 
-  async getAccessToken(code: string) {
-    const endpoint = this.accessTokenURL(code);
+  async getTokens(code: string) {
+    const endpoint = this.tokenURL(code);
 
     const reqConfig: AxiosRequestConfig = {
       url: endpoint,
@@ -53,9 +53,13 @@ class GithubInterface extends ApiInterface {
     };
 
     const response = await axios(reqConfig);
-    const accessToken = response.data.access_token;
 
-    return accessToken;
+    const { access_token, refresh_token, expires_in } = response.data;
+    return {
+      access_token,
+      refresh_token,
+      expires_in,
+    };
   }
 
   async getUserProfile(accessToken: string) {

@@ -4,6 +4,7 @@ import OAuth from '../../lib/api';
 
 import { wwsError } from '../../utils/wwsError';
 import HttpStatusCode from 'http-status-codes';
+import { User, Oauth, Local } from '../../database/models/User';
 
 export const renderSignin = (req: Request, res: Response) =>
   res.render('auth/signin');
@@ -34,12 +35,15 @@ export const codeCallback = async (
   next: NextFunction
 ) => {
   try {
-    const authCode = req.query.code as string;
-    const accessToken = await OAuth[req.params.provider].getAccessToken(
-      authCode
-    );
+    const apiInterface = await OAuth[req.params.provider];
 
-    return res.send(accessToken);
+    const authCode = req.query.code as string;
+    const { access_token, refresh_token, expires_in } =
+      await apiInterface.getTokens(authCode);
+
+    const profile = await apiInterface.getUserProfile(access_token);
+
+    return res.send(profile);
   } catch (err) {
     next(
       new wwsError(

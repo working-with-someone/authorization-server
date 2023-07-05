@@ -9,6 +9,12 @@ export interface UserProfile {
   pfp: string;
 }
 
+export interface Tokens {
+  access_token: string;
+  refresh_token: string;
+  expires_in: number;
+}
+
 abstract class ApiInterface {
   //properties
   clientId: string;
@@ -18,9 +24,9 @@ abstract class ApiInterface {
   abstract authCodeURL: string;
 
   //methods
-  abstract accessTokenURL(code: string): string;
-  abstract getAccessToken(code: string): Promise<string>;
-  abstract getUserProfile(accessToken: string): Promise<UserProfile> | any;
+  abstract tokenURL(code: string): string;
+  abstract getTokens(code: string): Promise<Tokens>;
+  abstract getUserProfile(accessToken: string): Promise<UserProfile>;
 
   constructor(apiInfo: ApiInfo) {
     this.clientId = apiInfo.clientId;

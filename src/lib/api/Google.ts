@@ -31,12 +31,15 @@ class GoogleInterface extends ApiInterface {
       client_id: this.clientId,
       response_type: 'code',
       redirect_uri: this.redirectUrl,
+      //whethe access token request return refresh token.
+      //if 'online', access token request will only return access_token
+      access_type: 'offline',
       scope: 'https://www.googleapis.com/auth/userinfo.profile',
       state: this.state,
     });
   }
 
-  accessTokenURL(code: string) {
+  tokenURL(code: string) {
     return generateURL(this.accessTokenBaseUrl, {
       client_id: this.clientId,
       client_secret: this.clientSecret,
@@ -46,8 +49,8 @@ class GoogleInterface extends ApiInterface {
     });
   }
 
-  async getAccessToken(code: string) {
-    const endpoint = this.accessTokenURL(code);
+  async getTokens(code: string) {
+    const endpoint = this.tokenURL(code);
 
     const reqConfig: AxiosRequestConfig = {
       url: endpoint,
@@ -58,9 +61,15 @@ class GoogleInterface extends ApiInterface {
     };
 
     const response = await axios(reqConfig);
-    const accessToken = response.data.access_token;
 
-    return accessToken;
+    const { access_token, refresh_token, expires_in } = response.data;
+
+    console.log(access_token, refresh_token, expires_in);
+    return {
+      access_token,
+      refresh_token,
+      expires_in,
+    };
   }
 
   async getUserProfile(accessToken: string) {
