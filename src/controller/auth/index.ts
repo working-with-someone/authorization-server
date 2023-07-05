@@ -5,6 +5,8 @@ import OAuth from '../../lib/api';
 import { wwsError } from '../../utils/wwsError';
 import HttpStatusCode from 'http-status-codes';
 import { User, Oauth, Local } from '../../database/models/User';
+import sequelize from '../../database';
+import { Tokens } from '../../lib/api/apiInterface';
 
 export const renderSignin = (req: Request, res: Response) =>
   res.render('auth/signin');
@@ -34,17 +36,43 @@ export const codeCallback = async (
   res: Response,
   next: NextFunction
 ) => {
+  const transaction = await sequelize.transaction();
   try {
     const apiInterface = await OAuth[req.params.provider];
 
     const authCode = req.query.code as string;
-    const { access_token, refresh_token, expires_in } =
-      await apiInterface.getTokens(authCode);
+    const tokens: Tokens = await apiInterface.getTokens(authCode);
 
-    const profile = await apiInterface.getUserProfile(access_token);
+    const profile = await apiInterface.getUserProfile(tokens.accessToken);
 
-    return res.send(profile);
+    let oauth = await Oauth.findOne({ where: { id: profile.id } });
+
+    if (!oauth) {
+      const user = await User.create(
+        {
+          username: profile.username,
+          pfp: profile.pfp,
+        },
+        { transaction }
+      );
+
+      oauth = await user.createOauth(
+        {
+          provider: req.params.provider,
+          id: profile.id,
+          ...tokens,
+        },
+        { transaction }
+      );
+    }
+
+    await transaction.commit();
+
+    const user = await User.findOne({ where: { id: oauth.userId } });
+
+    return res.send(user);
   } catch (err) {
+    await transaction.rollback();
     next(
       new wwsError(
         HttpStatusCode.INTERNAL_SERVER_ERROR,
