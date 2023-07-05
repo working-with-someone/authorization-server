@@ -64,7 +64,6 @@ class GoogleInterface extends ApiInterface {
 
     const { access_token, refresh_token, expires_in } = response.data;
 
-    console.log(access_token, refresh_token, expires_in);
     return {
       access_token,
       refresh_token,
