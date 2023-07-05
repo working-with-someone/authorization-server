@@ -1,5 +1,5 @@
 import { generateURL } from '../url';
-import ApiInterface, { ApiInfo, UserProfile } from './apiInterface';
+import ApiInterface, { ApiInfo, UserProfile, Tokens } from './apiInterface';
 import axios, { AxiosRequestConfig } from 'axios';
 
 interface kakaoAPIInfo extends ApiInfo {
@@ -55,12 +55,13 @@ class KakaoInterface extends ApiInterface {
 
     const response = await axios(reqConfig);
 
-    const { access_token, refresh_token, expires_in } = response.data;
-    return {
-      access_token,
-      refresh_token,
-      expires_in,
+    const tokens: Tokens = {
+      accessToken: response.data.access_token,
+      refreshToken: response.data.refresh_token,
+      expiresIn: response.data.expires_in,
     };
+
+    return tokens;
   }
 
   async getUserProfile(accessToken: string) {

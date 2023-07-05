@@ -10,9 +10,9 @@ export interface UserProfile {
 }
 
 export interface Tokens {
-  access_token: string;
-  refresh_token: string;
-  expires_in: number;
+  accessToken: string;
+  refreshToken: string;
+  expiresIn: number;
 }
 
 abstract class ApiInterface {

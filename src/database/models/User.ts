@@ -31,7 +31,7 @@ User.init(
 );
 
 class Oauth extends Model {
-  declare user_id: ForeignKey<User['id']>;
+  declare userId: ForeignKey<User['id']>;
   declare id: string;
   declare provider: string;
   declare accessToken: string;
@@ -55,7 +55,7 @@ Oauth.init(
 );
 
 class Local extends Model {
-  declare user_id: ForeignKey<User['id']>;
+  declare userId: ForeignKey<User['id']>;
   declare encryptedPassword: string;
   declare email: string;
   declare email_verified: boolean;
