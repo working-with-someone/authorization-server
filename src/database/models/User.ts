@@ -73,10 +73,24 @@ Local.init(
   }
 );
 
-User.hasOne(Oauth);
-User.hasOne(Local);
+User.hasOne(Oauth, {
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE',
+});
 
-Oauth.belongsTo(User);
-Local.belongsTo(User);
+User.hasOne(Local, {
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE',
+});
+
+Oauth.belongsTo(User, {
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE',
+});
+
+Local.belongsTo(User, {
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE',
+});
 
 export { User, Oauth, Local };
