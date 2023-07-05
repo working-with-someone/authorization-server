@@ -16,6 +16,7 @@
   },
   "rules": {
     // 여기에 추가적인 규칙을 정의할 수 있습니다.
+    "no-console" : "error"
   },
   "ignorePatterns" : [
   ]
