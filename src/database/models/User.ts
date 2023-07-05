@@ -1,6 +1,7 @@
 import {
   DataTypes,
   HasOneGetAssociationMixin,
+  HasOneCreateAssociationMixin,
   ForeignKey,
   Model,
   CreationOptional,
@@ -16,7 +17,9 @@ class User extends Model {
   declare updatedAt: CreationOptional<Date>;
 
   declare getOauth: HasOneGetAssociationMixin<Oauth>;
+  declare createOauth: HasOneCreateAssociationMixin<Oauth>;
   declare getLocal: HasOneGetAssociationMixin<Local>;
+  declare createLocal: HasOneCreateAssociationMixin<Local>;
 }
 
 User.init(
