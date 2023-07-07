@@ -7,11 +7,11 @@ import favicon from 'serve-favicon';
 const app = express();
 
 app.set('view engine', 'ejs');
-app.set('views', `${process.cwd()}/wws-client/public`);
-app.use(favicon(`${process.cwd()}/wws-client/public/favicon.ico`));
+app.set('views', `${process.cwd()}/views`);
+app.use(favicon(`${process.cwd()}/favicon.ico`));
 
 //serve statics
-app.use(express.static(`${process.cwd()}/wws-client/public/statics`));
+app.use(express.static(`${process.cwd()}/public`));
 
 app.use(RequestLogger);
 //import routers

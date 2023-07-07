@@ -9,9 +9,9 @@ import sequelize from '../../database';
 import { Tokens } from '../../lib/api/apiInterface';
 
 export const renderSignin = (req: Request, res: Response) =>
-  res.render('auth/signin');
+  res.render('signin');
 export const renderSignup = (req: Request, res: Response) =>
-  res.render('auth/signup');
+  res.render('signup');
 
 export const redirectToAuth = (
   req: Request,
