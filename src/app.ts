@@ -15,11 +15,10 @@ app.use(express.static(`${process.cwd()}/public`));
 
 app.use(RequestLogger);
 //import routers
-import { authRouter, homeRouter } from './router';
+import { authRouter } from './router';
 
 //use router
 app.use('/auth', authRouter);
-app.get('/', homeRouter);
 
 //response 404 for any request to unknown endpoint
 app.use('*', NotFound);
