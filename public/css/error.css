@@ -1,0 +1,25 @@
+section.error{
+    position: fixed;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width : 30em;
+    height : auto;
+
+    display : flex;
+    flex-direction: row;
+    gap : 2em;
+}
+
+.left h1{
+    font-size : 3em;
+    margin : 0;
+}
+
+.left h3{
+    color : var(--sig);
+}
+
+.right img{
+    width : 10em;
+}

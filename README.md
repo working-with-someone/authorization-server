@@ -1,23 +1,21 @@
 # Working With Someone
 
+## install dependencies
+
+    yarn install
+
 ## build
 compile ts to js
 
     yarn run build
-
-## install dependencies
-
-    yarn install
     
 ## initialization
 create database
 
     yarn run init
 
-
 ## run
 run application
-
 
     //dvelopment 
     yarn run dev
