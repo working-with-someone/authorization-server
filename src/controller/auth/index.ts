@@ -7,6 +7,7 @@ import HttpStatusCode from 'http-status-codes';
 import { User, Oauth, Local } from '../../database/models/User';
 import sequelize from '../../database';
 import { Tokens } from '../../lib/api/apiInterface';
+import jwt from 'jsonwebtoken';
 
 export const renderSignin = (req: Request, res: Response) =>
   res.render('signin');
@@ -66,11 +67,20 @@ export const codeCallback = async (
       );
     }
 
+    const user = (await User.findOne({ where: { id: oauth.userId } })) as User;
+
+    const userToken = jwt.sign(
+      user.toJSON(),
+      process.env.TOKEN_USER_SECRET as string,
+      {
+        algorithm: 'HS512',
+      }
+    );
+
+    res.cookie('user', userToken);
+
     await transaction.commit();
-
-    const user = await User.findOne({ where: { id: oauth.userId } });
-
-    return res.send(user);
+    return res.redirect('/');
   } catch (err) {
     await transaction.rollback();
     next(
