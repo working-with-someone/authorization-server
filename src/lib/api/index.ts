@@ -27,8 +27,8 @@ const Google = new GoogleInterface({
 });
 
 const Kakao = new KakaoInterface({
-  clientId: process.env.kakao_CLIENT_ID as string,
-  clientSecret: process.env.kakao_CLIENT_SECRET as string,
+  clientId: process.env.KAKAO_CLIENT_ID as string,
+  clientSecret: process.env.KAKAO_CLIENT_SECRET as string,
   apiBaseUrl: 'https://kapi.kakao.com',
   authBaseUrl: 'https://kauth.kakao.com/oauth',
   redirectUrl: `${process.env.SERVER_URL}/auth/kakao/callback/code`,

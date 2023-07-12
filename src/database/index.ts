@@ -1,22 +1,26 @@
-import { Sequelize } from 'sequelize';
-import fs from 'fs';
-import sequelizeConfig from './config/config';
-import path from 'path';
-
-const sequelize = new Sequelize(
-  sequelizeConfig[process.env.NODE_ENV as string]
-);
-
-const files: string[] = fs.readdirSync(path.join(__dirname, 'models'));
-
-const modelFiles = files.filter(
-  (file) => file.indexOf('.') !== 0 && file.indexOf('.test.js') === -1
-);
-
-//for pass sequelize instance before call sequelize.sync at server.ts
-//if remove this, models would be loaded lazily
-modelFiles.forEach((file) => {
-  import(path.join(__dirname, 'models', file));
+import { PrismaClient } from '@prisma/client';
+import { databaseLogger } from '../logger/winston';
+const prisma = new PrismaClient({
+  log: [
+    {
+      emit: 'event',
+      level: 'query',
+    },
+    {
+      emit: 'stdout',
+      level: 'error',
+    },
+    {
+      emit: 'stdout',
+      level: 'warn',
+    },
+  ],
 });
 
-export default sequelize;
+prisma.$on('query', (e) => {
+  const message = `${e.query} / ${e.params} / ${e.duration}`;
+
+  databaseLogger.log('info', message);
+});
+
+export default prisma;

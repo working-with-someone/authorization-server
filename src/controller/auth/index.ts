@@ -4,9 +4,9 @@ import OAuth from '../../lib/api';
 
 import { wwsError } from '../../utils/wwsError';
 import HttpStatusCode from 'http-status-codes';
-import { User, Oauth, Local } from '../../database/models/User';
-import sequelize from '../../database';
 import { Tokens } from '../../lib/api/apiInterface';
+import jwt from 'jsonwebtoken';
+import prisma from '../../database';
 
 export const renderSignin = (req: Request, res: Response) =>
   res.render('signin');
@@ -36,7 +36,6 @@ export const codeCallback = async (
   res: Response,
   next: NextFunction
 ) => {
-  const transaction = await sequelize.transaction();
   try {
     const apiInterface = await OAuth[req.params.provider];
 
@@ -45,34 +44,43 @@ export const codeCallback = async (
 
     const profile = await apiInterface.getUserProfile(tokens.accessToken);
 
-    let oauth = await Oauth.findOne({ where: { id: profile.id } });
+    let user = await prisma.user.findFirst({
+      where: {
+        oauth: {
+          id: profile.id.toString(),
+        },
+      },
+    });
 
-    if (!oauth) {
-      const user = await User.create(
-        {
+    if (!user) {
+      user = await prisma.user.create({
+        data: {
           username: profile.username,
           pfp: profile.pfp,
+          oauth: {
+            create: {
+              provider: req.params.provider,
+              id: profile.id.toString(),
+              access_token: tokens.accessToken,
+              refresh_token: tokens.refreshToken,
+            },
+          },
         },
-        { transaction }
-      );
-
-      oauth = await user.createOauth(
-        {
-          provider: req.params.provider,
-          id: profile.id,
-          ...tokens,
-        },
-        { transaction }
-      );
+      });
     }
 
-    await transaction.commit();
+    const userToken = jwt.sign(
+      profile,
+      process.env.TOKEN_USER_SECRET as string,
+      {
+        algorithm: 'HS512',
+      }
+    );
 
-    const user = await User.findOne({ where: { id: oauth.userId } });
+    res.cookie('user', userToken);
 
-    return res.send(user);
+    return res.send(profile);
   } catch (err) {
-    await transaction.rollback();
     next(
       new wwsError(
         HttpStatusCode.INTERNAL_SERVER_ERROR,
