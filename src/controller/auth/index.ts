@@ -6,6 +6,7 @@ import { wwsError } from '../../utils/wwsError';
 import HttpStatusCode from 'http-status-codes';
 import { Tokens } from '../../lib/api/apiInterface';
 import jwt from 'jsonwebtoken';
+import prisma from '../../database';
 
 export const renderSignin = (req: Request, res: Response) =>
   res.render('signin');
@@ -43,15 +44,42 @@ export const codeCallback = async (
 
     const profile = await apiInterface.getUserProfile(tokens.accessToken);
 
-    // const userToken = jwt.sign(
-    //   profile,
-    //   process.env.TOKEN_USER_SECRET as string,
-    //   {
-    //     algorithm: 'HS512',
-    //   }
-    // );
+    let user = await prisma.user.findFirst({
+      where: {
+        oauth: {
+          is: {
+            id: profile.id,
+          },
+        },
+      },
+    });
 
-    // res.cookie('user', userToken);
+    if (!user) {
+      user = await prisma.user.create({
+        data: {
+          username: profile.username,
+          pfp: profile.pfp,
+          oauth: {
+            create: {
+              provider: req.params.provider,
+              id: profile.id,
+              access_token: tokens.accessToken,
+              refresh_token: tokens.refreshToken,
+            },
+          },
+        },
+      });
+    }
+
+    const userToken = jwt.sign(
+      profile,
+      process.env.TOKEN_USER_SECRET as string,
+      {
+        algorithm: 'HS512',
+      }
+    );
+
+    res.cookie('user', userToken);
 
     return res.send(profile);
   } catch (err) {
