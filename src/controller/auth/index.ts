@@ -47,9 +47,7 @@ export const codeCallback = async (
     let user = await prisma.user.findFirst({
       where: {
         oauth: {
-          is: {
-            id: profile.id,
-          },
+          id: profile.id.toString(),
         },
       },
     });
@@ -62,7 +60,7 @@ export const codeCallback = async (
           oauth: {
             create: {
               provider: req.params.provider,
-              id: profile.id,
+              id: profile.id.toString(),
               access_token: tokens.accessToken,
               refresh_token: tokens.refreshToken,
             },
