@@ -4,8 +4,6 @@ import OAuth from '../../lib/api';
 
 import { wwsError } from '../../utils/wwsError';
 import HttpStatusCode from 'http-status-codes';
-import { User, Oauth, Local } from '../../database/models/User';
-import sequelize from '../../database';
 import { Tokens } from '../../lib/api/apiInterface';
 import jwt from 'jsonwebtoken';
 
@@ -37,7 +35,6 @@ export const codeCallback = async (
   res: Response,
   next: NextFunction
 ) => {
-  const transaction = await sequelize.transaction();
   try {
     const apiInterface = await OAuth[req.params.provider];
 
@@ -46,43 +43,18 @@ export const codeCallback = async (
 
     const profile = await apiInterface.getUserProfile(tokens.accessToken);
 
-    let oauth = await Oauth.findOne({ where: { id: profile.id } });
+    // const userToken = jwt.sign(
+    //   profile,
+    //   process.env.TOKEN_USER_SECRET as string,
+    //   {
+    //     algorithm: 'HS512',
+    //   }
+    // );
 
-    if (!oauth) {
-      const user = await User.create(
-        {
-          username: profile.username,
-          pfp: profile.pfp,
-        },
-        { transaction }
-      );
+    // res.cookie('user', userToken);
 
-      oauth = await user.createOauth(
-        {
-          provider: req.params.provider,
-          id: profile.id,
-          ...tokens,
-        },
-        { transaction }
-      );
-    }
-
-    const user = (await User.findOne({ where: { id: oauth.userId } })) as User;
-
-    const userToken = jwt.sign(
-      user.toJSON(),
-      process.env.TOKEN_USER_SECRET as string,
-      {
-        algorithm: 'HS512',
-      }
-    );
-
-    res.cookie('user', userToken);
-
-    await transaction.commit();
-    return res.redirect('/');
+    return res.send(profile);
   } catch (err) {
-    await transaction.rollback();
     next(
       new wwsError(
         HttpStatusCode.INTERNAL_SERVER_ERROR,
