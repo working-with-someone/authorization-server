@@ -4,13 +4,13 @@
 
     yarn install
 
-## build
-compile ts to js
+## initialization
 
-    yarn run build
-    
+    //generate prisma client
+    yarn init
+
+
 ## run
-run application
 
     //dvelopment 
     yarn run dev
@@ -20,3 +20,8 @@ run application
 
     //production
     yarn run start
+
+## build
+compile ts to js
+
+    yarn run build
