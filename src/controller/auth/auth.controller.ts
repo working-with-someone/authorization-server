@@ -73,3 +73,8 @@ export const codeCallback = asyncCatch(async (req: Request, res: Response) => {
 
   return res.send(profile);
 });
+
+export const signout = asyncCatch(async (req: Request, res: Response) => {
+  res.clearCookie('user');
+  return res.redirect('/auth/signin');
+});
