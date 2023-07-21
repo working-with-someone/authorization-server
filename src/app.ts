@@ -3,9 +3,11 @@ import errorHandler from './middleware/errorHandler';
 import NotFound from './middleware/notFound';
 import RequestLogger from './middleware/requestLogger';
 import favicon from 'serve-favicon';
+import helmet from 'helmet';
 
 const app = express();
 
+app.use(helmet({}));
 app.set('view engine', 'ejs');
 app.set('views', `${process.cwd()}/views`);
 app.use(favicon(`${process.cwd()}/favicon.ico`));
