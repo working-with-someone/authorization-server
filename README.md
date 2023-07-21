@@ -1,4 +1,4 @@
-# Working With Someone
+# Authorization server for WWS
 
 ## install dependencies
 
