@@ -4,6 +4,7 @@ import NotFound from './middleware/notFound';
 import RequestLogger from './middleware/requestLogger';
 import favicon from 'serve-favicon';
 import helmet from 'helmet';
+import cookieParser from 'cookie-parser';
 
 const app = express();
 
@@ -11,6 +12,7 @@ app.use(helmet({}));
 app.set('view engine', 'ejs');
 app.set('views', `${process.cwd()}/views`);
 app.use(favicon(`${process.cwd()}/favicon.ico`));
+app.use(cookieParser());
 
 //serve statics
 app.use(express.static(`${process.cwd()}/public`));
