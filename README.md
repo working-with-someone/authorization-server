@@ -1,4 +1,4 @@
-# Authorization server for WWS
+# seungho-hub's Authorization server
 
 ## install dependencies
 
