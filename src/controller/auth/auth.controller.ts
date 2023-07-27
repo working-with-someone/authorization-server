@@ -8,9 +8,15 @@ import { Tokens } from '../../lib/api/apiInterface';
 import jwt from 'jsonwebtoken';
 import prisma from '../../database';
 import asyncCatch from '../../utils/asyncCatch';
+import { isValidURL } from '../../lib/url';
 
-export const renderSignin = (req: Request, res: Response) =>
-  res.render('signin');
+export const renderSignin = (req: Request, res: Response) => {
+  const redirectURL = req.query.redirect_uri;
+
+  res.cookie('redirect_uri', redirectURL);
+
+  return res.render('signin');
+};
 export const renderSignup = (req: Request, res: Response) =>
   res.render('signup');
 
@@ -69,9 +75,19 @@ export const codeCallback = asyncCatch(async (req: Request, res: Response) => {
     algorithm: 'HS512',
   });
 
-  res.cookie('user', userToken);
+  if (
+    isValidURL(req.cookies.redirect_uri, ['http', 'https', 'wwsp', 'wwsp-dev'])
+  ) {
+    const redirectURL = new URL(req.cookies.redirect_uri);
 
-  return res.send(profile);
+    res.clearCookie('redirect_uri');
+
+    redirectURL.searchParams.append('jwt', userToken);
+
+    return res.redirect(redirectURL.toString());
+  } else {
+    return res.redirect('/');
+  }
 });
 
 export const signout = asyncCatch(async (req: Request, res: Response) => {

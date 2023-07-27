@@ -12,4 +12,18 @@ function generateURL(url: string, params?: params): string {
     .join('&')}`;
 }
 
-export { generateURL };
+function isValidURL(url: string, protocols: string[]): boolean {
+  try {
+    const s = new URL(url);
+
+    return protocols
+      ? s.protocol
+        ? protocols.map((x) => `${x.toLowerCase()}:`).includes(s.protocol)
+        : false
+      : true;
+  } catch (e) {
+    return false;
+  }
+}
+
+export { generateURL, isValidURL };
