@@ -7,7 +7,7 @@
 ## initialization
 
     //generate prisma client
-    yarn init
+    yarn run init
 
 
 ## run
