@@ -18,8 +18,9 @@ app.use(cookieParser());
 app.use(express.static(`${process.cwd()}/public`));
 
 app.use(RequestLogger);
+
 //import routers
-import { authRouter } from './router';
+import { authRouter } from './routes';
 
 //use router
 app.use('/auth', authRouter);
