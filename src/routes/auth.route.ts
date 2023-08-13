@@ -4,7 +4,7 @@ import {
   renderSignup,
   redirectToAuth,
   codeCallback,
-} from '../controller/auth/auth.controller';
+} from '../controller/auth.controller';
 
 const authRouter = Router();
 

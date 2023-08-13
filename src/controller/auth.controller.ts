@@ -1,14 +1,14 @@
 import { NextFunction, Request, Response } from 'express';
 
-import OAuth from '../../lib/api';
+import OAuth from '../lib/api';
 
-import { wwsError } from '../../utils/wwsError';
+import { wwsError } from '../utils/wwsError';
 import HttpStatusCode from 'http-status-codes';
-import { Tokens } from '../../lib/api/apiInterface';
+import { Tokens } from '../lib/api/apiInterface';
 import jwt from 'jsonwebtoken';
-import prisma from '../../database';
-import asyncCatch from '../../utils/asyncCatch';
-import { isValidURL } from '../../lib/url';
+import prisma from '../database';
+import asyncCatch from '../utils/asyncCatch';
+import { isValidURL } from '../lib/url';
 
 export const renderSignin = (req: Request, res: Response) => {
   const redirectURL = req.query.redirect_uri;
