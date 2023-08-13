@@ -1,4 +1,4 @@
-# Authorization server for WWS
+# seungho-hub's Authorization server
 
 ## install dependencies
 
@@ -7,7 +7,7 @@
 ## initialization
 
     //generate prisma client
-    yarn init
+    yarn run init
 
 
 ## run
