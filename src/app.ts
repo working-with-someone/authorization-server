@@ -14,6 +14,9 @@ app.set('views', `${process.cwd()}/views`);
 app.use(favicon(`${process.cwd()}/favicon.ico`));
 app.use(cookieParser());
 
+//urlencoded body parser
+app.use(express.urlencoded({ extended: true }));
+
 //serve statics
 app.use(express.static(`${process.cwd()}/public`));
 
