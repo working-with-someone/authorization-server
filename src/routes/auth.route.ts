@@ -6,11 +6,11 @@ import {
   codeCallback,
 } from '../controller/auth.controller';
 
-const authRouter = Router();
+const router = Router();
 
-authRouter.get('/signin', renderSignin);
-authRouter.get('/signup', renderSignup);
-authRouter.get('/:provider', redirectToAuth);
-authRouter.get('/:provider/callback/code', codeCallback);
+router.get('/signin', renderSignin);
+router.get('/signup', renderSignup);
+router.get('/:provider', redirectToAuth);
+router.get('/:provider/callback/code', codeCallback);
 
-export default authRouter;
+export default router;
