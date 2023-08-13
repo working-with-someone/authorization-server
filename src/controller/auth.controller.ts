@@ -20,6 +20,10 @@ export const renderSignin = (req: Request, res: Response) => {
 export const renderSignup = (req: Request, res: Response) =>
   res.render('signup');
 
+export const signup = (req: Request, res: Response) => {
+  return res.send('good!');
+};
+
 export const redirectToAuth = (
   req: Request,
   res: Response,
