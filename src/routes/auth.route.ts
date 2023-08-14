@@ -20,6 +20,10 @@ router.get(
   validate(oauthValidation.oauthRequestValidation),
   redirectToAuth
 );
-router.get('/:provider/callback/code', codeCallback);
+router.get(
+  '/:provider/callback/code',
+  validate(oauthValidation.authorizationCodeCallbackValidations),
+  codeCallback
+);
 
 export default router;

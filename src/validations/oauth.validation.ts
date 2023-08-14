@@ -11,6 +11,19 @@ const oauthRequestValidation: Record<string, any> = {
   }),
 };
 
+const authorizationCodeCallbackValidations: Record<string, any> = {
+  params: joi.object().keys({
+    ...providerValidation,
+  }),
+  query: joi
+    .object()
+    .keys({
+      code: joi.string().required(),
+    })
+    .unknown(),
+};
+
 export default {
   oauthRequestValidation,
+  authorizationCodeCallbackValidations,
 };
