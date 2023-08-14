@@ -7,7 +7,7 @@ import {
   codeCallback,
 } from '../controller/auth.controller';
 
-import { userValidation } from '../validations';
+import { oauthValidation, userValidation } from '../validations';
 import validate from '../middleware/validate';
 
 const router = Router();
@@ -15,7 +15,11 @@ const router = Router();
 router.get('/signin', renderSignin);
 router.get('/signup', renderSignup);
 router.post('/signup', validate(userValidation.createUser), signup);
-router.get('/:provider', redirectToAuth);
+router.get(
+  '/:provider',
+  validate(oauthValidation.oauthRequestValidation),
+  redirectToAuth
+);
 router.get('/:provider/callback/code', codeCallback);
 
 export default router;
