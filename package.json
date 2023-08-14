@@ -12,6 +12,7 @@
     "@types/cookie-parser": "^1.4.3",
     "@types/dotenv": "^8.2.0",
     "@types/express": "^4.17.17",
+    "@types/joi": "^17.2.3",
     "@types/jsonwebtoken": "^9.0.2",
     "@types/serve-favicon": "^2.5.4",
     "@typescript-eslint/eslint-plugin": "^5.60.0",
