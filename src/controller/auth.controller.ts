@@ -6,7 +6,7 @@ import { wwsError } from '../utils/wwsError';
 import HttpStatusCode from 'http-status-codes';
 import { Tokens } from '../lib/api/apiInterface';
 import jwt from 'jsonwebtoken';
-import prisma from '../database';
+import prismaClient from '../database';
 import asyncCatch from '../utils/asyncCatch';
 import { isValidURL } from '../lib/url';
 
@@ -50,7 +50,7 @@ export const codeCallback = asyncCatch(async (req: Request, res: Response) => {
 
   const profile = await apiInterface.getUserProfile(tokens.accessToken);
 
-  let user = await prisma.user.findFirst({
+  let user = await prismaClient.user.findFirst({
     where: {
       oauth: {
         id: profile.id.toString(),
@@ -59,7 +59,7 @@ export const codeCallback = asyncCatch(async (req: Request, res: Response) => {
   });
 
   if (!user) {
-    user = await prisma.user.create({
+    user = await prismaClient.user.create({
       data: {
         username: profile.username,
         pfp: profile.pfp,
