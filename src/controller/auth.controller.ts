@@ -43,13 +43,19 @@ export const redirectToAuth = (
 };
 
 export const codeCallback = asyncCatch(async (req: Request, res: Response) => {
+  //get api interface
   const apiInterface = await OAuth[req.params.provider];
 
+  //get authorization code from query parameters
   const authCode = req.query.code as string;
+
+  //get access token from provider with authorization code
   const tokens: Tokens = await apiInterface.getTokens(authCode);
 
+  //get profile from provider with acess token
   const profile = await apiInterface.getUserProfile(tokens.accessToken);
 
+  //find oauth user with id of oauth profile
   let user = await prismaClient.user.findFirst({
     where: {
       oauth: {
@@ -58,6 +64,7 @@ export const codeCallback = asyncCatch(async (req: Request, res: Response) => {
     },
   });
 
+  //if oauth user does not exist, create oauth user
   if (!user) {
     user = await prismaClient.user.create({
       data: {
@@ -75,6 +82,7 @@ export const codeCallback = asyncCatch(async (req: Request, res: Response) => {
     });
   }
 
+  //generate JWT with user profile
   const userToken = jwt.sign(profile, process.env.TOKEN_USER_SECRET as string, {
     algorithm: 'HS512',
   });
