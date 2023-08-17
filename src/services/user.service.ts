@@ -22,16 +22,42 @@ interface OauthUserCreateInput extends UserCreateInput {
   refreshToken: string;
 }
 
+const publicUserSelect: Prisma.UserSelect = {
+  username: true,
+  pfp: true,
+};
+
+const publicLocalUserSelect: Prisma.UserSelect = {
+  ...publicUserSelect,
+  local: {
+    select: {
+      encrypted_password: true,
+      email: true,
+    },
+  },
+};
+
+const publicOauthUserSelect: Prisma.UserSelect = {
+  ...publicUserSelect,
+  oauth: {
+    select: {
+      provider: true,
+      id: true,
+    },
+  },
+};
+
 export const createLocalUser = async (data: LocalUserCreateInput) => {
-  const userAlreadyExist = await getUser({
+  let user = await getUser({
     where: {
       local: {
         email: data.email,
       },
     },
+    select: publicLocalUserSelect,
   });
 
-  if (userAlreadyExist) {
+  if (user) {
     throw new wwsError(
       HttpStatusCode.CONFLICT,
       'account already registered with email'
@@ -42,7 +68,7 @@ export const createLocalUser = async (data: LocalUserCreateInput) => {
 
   const encrypted_password = await bcrypt.hash(data.password, salt);
 
-  const user = await prismaClient.user.create({
+  await prismaClient.user.create({
     data: {
       username: data.username,
       pfp: '',
@@ -54,6 +80,16 @@ export const createLocalUser = async (data: LocalUserCreateInput) => {
         },
       },
     },
+    select: publicLocalUserSelect,
+  });
+
+  user = await getUser({
+    where: {
+      local: {
+        email: data.email,
+      },
+    },
+    select: publicLocalUserSelect,
   });
 
   return user;
@@ -66,10 +102,11 @@ export const createOrGetOauthUser = async (data: OauthUserCreateInput) => {
         id: data.id,
       },
     },
+    select: publicOauthUserSelect,
   });
 
   if (!user) {
-    user = await prismaClient.user.create({
+    await prismaClient.user.create({
       data: {
         username: data.username,
         pfp: data.pfp,
@@ -82,6 +119,15 @@ export const createOrGetOauthUser = async (data: OauthUserCreateInput) => {
           },
         },
       },
+    });
+
+    user = await getUser({
+      where: {
+        oauth: {
+          id: data.id,
+        },
+      },
+      select: publicOauthUserSelect,
     });
   }
 
@@ -97,9 +143,7 @@ export const deleteUser = async (data: Prisma.UserSelect) => {
 };
 
 export const getUser = async (data: Prisma.UserFindFirstArgs) => {
-  const user = await prismaClient.user.findFirst({
-    where: data.where,
-  });
+  const user = await prismaClient.user.findFirst(data);
 
   return user;
 };
