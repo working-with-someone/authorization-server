@@ -3,9 +3,9 @@ import { Request, Response } from 'express';
 import OAuth from '../lib/api';
 import { Tokens } from '../lib/api/apiInterface';
 import jwt from 'jsonwebtoken';
-import prismaClient from '../database';
 import asyncCatch from '../utils/asyncCatch';
 import { isValidURL } from '../lib/url';
+import { userSerivce } from '../services';
 
 export const renderSignin = asyncCatch((req: Request, res: Response) => {
   const redirectURL = req.query.redirect_uri;
@@ -19,8 +19,16 @@ export const renderSignup = asyncCatch((req: Request, res: Response) => {
   return res.render('signup');
 });
 
-export const signup = asyncCatch((req: Request, res: Response) => {
-  return res.send('good!');
+export const signup = asyncCatch(async (req: Request, res: Response) => {
+  const { username, password, email } = req.body;
+
+  const user = await userSerivce.createLocalUser({
+    username,
+    email,
+    password,
+  });
+
+  return res.send(user);
 });
 
 export const redirectToAuth = asyncCatch((req: Request, res: Response) => {
@@ -40,32 +48,15 @@ export const codeCallback = asyncCatch(async (req: Request, res: Response) => {
   //get profile from provider with acess token
   const profile = await apiInterface.getUserProfile(tokens.accessToken);
 
-  //find oauth user with id of oauth profile
-  let user = await prismaClient.user.findFirst({
-    where: {
-      oauth: {
-        id: profile.id.toString(),
-      },
-    },
-  });
+  const user = await userSerivce.createOrGetOauthUser({
+    username: profile.username,
+    pfp: profile.pfp,
 
-  //if oauth user does not exist, create oauth user
-  if (!user) {
-    user = await prismaClient.user.create({
-      data: {
-        username: profile.username,
-        pfp: profile.pfp,
-        oauth: {
-          create: {
-            provider: req.params.provider,
-            id: profile.id.toString(),
-            access_token: tokens.accessToken,
-            refresh_token: tokens.refreshToken,
-          },
-        },
-      },
-    });
-  }
+    provider: req.params.provider,
+    id: profile.id,
+    accessToken: tokens.accessToken,
+    refreshToken: tokens.refreshToken,
+  });
 
   //generate JWT with user profile
   const userToken = jwt.sign(profile, process.env.TOKEN_USER_SECRET as string, {
