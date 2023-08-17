@@ -1,46 +1,31 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 
 import OAuth from '../lib/api';
-
-import { wwsError } from '../utils/wwsError';
-import HttpStatusCode from 'http-status-codes';
 import { Tokens } from '../lib/api/apiInterface';
 import jwt from 'jsonwebtoken';
 import prismaClient from '../database';
 import asyncCatch from '../utils/asyncCatch';
 import { isValidURL } from '../lib/url';
 
-export const renderSignin = (req: Request, res: Response) => {
+export const renderSignin = asyncCatch((req: Request, res: Response) => {
   const redirectURL = req.query.redirect_uri;
 
   res.cookie('redirect_uri', redirectURL);
 
   return res.render('signin');
-};
-export const renderSignup = (req: Request, res: Response) =>
-  res.render('signup');
+});
 
-export const signup = (req: Request, res: Response) => {
+export const renderSignup = asyncCatch((req: Request, res: Response) => {
+  return res.render('signup');
+});
+
+export const signup = asyncCatch((req: Request, res: Response) => {
   return res.send('good!');
-};
+});
 
-export const redirectToAuth = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    return res.redirect(OAuth[req.params.provider].authCodeURL);
-  } catch (err) {
-    next(
-      new wwsError(
-        HttpStatusCode.INTERNAL_SERVER_ERROR,
-        'Problems moving to the consent screen',
-        err
-      )
-    );
-  }
-};
+export const redirectToAuth = asyncCatch((req: Request, res: Response) => {
+  return res.redirect(OAuth[req.params.provider].authCodeURL);
+});
 
 export const codeCallback = asyncCatch(async (req: Request, res: Response) => {
   //get api interface
