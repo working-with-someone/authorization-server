@@ -24,8 +24,10 @@ interface OauthUserCreateInput extends UserCreateInput {
 
 export const createLocalUser = async (data: LocalUserCreateInput) => {
   const userAlreadyExist = await getUser({
-    local: {
-      email: data.email,
+    where: {
+      local: {
+        email: data.email,
+      },
     },
   });
 
@@ -59,8 +61,10 @@ export const createLocalUser = async (data: LocalUserCreateInput) => {
 
 export const createOrGetOauthUser = async (data: OauthUserCreateInput) => {
   let user = await getUser({
-    oauth: {
-      id: data.id,
+    where: {
+      oauth: {
+        id: data.id,
+      },
     },
   });
 
@@ -92,9 +96,9 @@ export const deleteUser = async (data: Prisma.UserSelect) => {
   return;
 };
 
-export const getUser = async (data: Prisma.UserWhereInput) => {
+export const getUser = async (data: Prisma.UserFindFirstArgs) => {
   const user = await prismaClient.user.findFirst({
-    where: data,
+    where: data.where,
   });
 
   return user;
