@@ -6,11 +6,23 @@ import bcrypt from 'bcrypt';
 
 interface UserCreateInput {
   username: string;
+}
+
+interface LocalUserCreateInput extends UserCreateInput {
   email: string;
   password: string;
 }
 
-export const createUser = async (data: UserCreateInput) => {
+interface OauthUserCreateInput extends UserCreateInput {
+  pfp: string;
+
+  provider: string;
+  id: string;
+  accessToken: string;
+  refreshToken: string;
+}
+
+export const createLocalUser = async (data: LocalUserCreateInput) => {
   const userAlreadyExist = await getUser({
     local: {
       email: data.email,
@@ -41,6 +53,33 @@ export const createUser = async (data: UserCreateInput) => {
       },
     },
   });
+
+  return user;
+};
+
+export const createOrGetOauthUser = async (data: OauthUserCreateInput) => {
+  let user = await getUser({
+    oauth: {
+      id: data.id,
+    },
+  });
+
+  if (!user) {
+    user = await prismaClient.user.create({
+      data: {
+        username: data.username,
+        pfp: data.pfp,
+        oauth: {
+          create: {
+            provider: data.provider,
+            id: data.id,
+            access_token: data.accessToken,
+            refresh_token: data.refreshToken,
+          },
+        },
+      },
+    });
+  }
 
   return user;
 };
