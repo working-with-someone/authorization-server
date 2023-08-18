@@ -59,9 +59,13 @@ export const codeCallback = asyncCatch(async (req: Request, res: Response) => {
   });
 
   //generate JWT with user profile
-  const userToken = jwt.sign(profile, process.env.TOKEN_USER_SECRET as string, {
-    algorithm: 'HS512',
-  });
+  const userToken = jwt.sign(
+    user as object,
+    process.env.TOKEN_USER_SECRET as string,
+    {
+      algorithm: 'HS512',
+    }
+  );
 
   if (
     isValidURL(req.cookies.redirect_uri, ['http', 'https', 'wwsp', 'wwsp-dev'])
