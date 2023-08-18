@@ -37,7 +37,7 @@ export const redirectToAuth = asyncCatch((req: Request, res: Response) => {
 
 export const codeCallback = asyncCatch(async (req: Request, res: Response) => {
   //get api interface
-  const apiInterface = await OAuth[req.params.provider];
+  const apiInterface = OAuth[req.params.provider];
 
   //get authorization code from query parameters
   const authCode = req.query.code as string;
