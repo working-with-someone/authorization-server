@@ -80,7 +80,7 @@ class KakaoInterface extends ApiInterface {
     const data = response.data;
 
     const profile: UserProfile = {
-      id: data.id,
+      id: data.id.toString(),
       username: data.properties.nickname,
       pfp: data.properties.profile_image,
     };
