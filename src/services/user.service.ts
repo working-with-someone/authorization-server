@@ -48,22 +48,28 @@ const publicOauthUserSelect: Prisma.UserSelect = {
 };
 
 export const createLocalUser = async (data: LocalUserCreateInput) => {
-  let user = await getUser({
+  let user = await prismaClient.user.findFirst({
     where: {
       local: {
         email: data.email,
       },
     },
-    select: publicLocalUserSelect,
+    include: {
+      local: true,
+    },
   });
 
-  if (user) {
+  //user가 이미 존재하며 email verified된 상태라면
+  //409 Conflict와 함께 Conflict msg를 응답한다.
+  if (user?.local?.email_verified) {
     throw new wwsError(
       HttpStatusCode.CONFLICT,
       'account already registered with email'
     );
   }
 
+  //user가 존재하지 않거나 email verified되지 않은 상태라면
+  //정상적인 creation을 수행한다.
   const salt = await bcrypt.genSalt(10);
 
   const encrypted_password = await bcrypt.hash(data.password, salt);
@@ -84,7 +90,7 @@ export const createLocalUser = async (data: LocalUserCreateInput) => {
     select: publicLocalUserSelect,
   });
 
-  user = await getUser({
+  user = await prismaClient.user.findFirst({
     where: {
       local: {
         email: data.email,
@@ -97,7 +103,7 @@ export const createLocalUser = async (data: LocalUserCreateInput) => {
 };
 
 export const createOrGetOauthUser = async (data: OauthUserCreateInput) => {
-  let user = await getUser({
+  let user = await prismaClient.user.findFirst({
     where: {
       oauth: {
         id: data.id,
@@ -122,7 +128,7 @@ export const createOrGetOauthUser = async (data: OauthUserCreateInput) => {
       },
     });
 
-    user = await getUser({
+    user = await prismaClient.user.findFirst({
       where: {
         oauth: {
           id: data.id,
