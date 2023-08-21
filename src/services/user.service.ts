@@ -31,7 +31,6 @@ const publicLocalUserSelect: Prisma.UserSelect = {
   ...publicUserSelect,
   local: {
     select: {
-      encrypted_password: true,
       email: true,
     },
   },
