@@ -77,6 +77,7 @@ export const createLocalUser = async (data: LocalUserCreateInput) => {
           encrypted_password,
           email: data.email,
           email_verified: false,
+          verify_token: null,
         },
       },
     },

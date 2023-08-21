@@ -34,6 +34,7 @@ model Local{
   encrypted_password  String
   email               String
   email_verified      Boolean
+  verify_token        String?
   user_id             Int @unique
   user                User @relation(fields : [user_id], references:[id], onDelete: Cascade)
 }
