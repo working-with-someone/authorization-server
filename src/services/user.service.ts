@@ -4,6 +4,7 @@ import { wwsError } from '../utils/wwsError';
 import HttpStatusCode from 'http-status-codes';
 import bcrypt from 'bcrypt';
 import getRandomString from '../lib/rs';
+import mailer from '../utils/mailer';
 interface UserCreateInput {
   username: string;
 }
@@ -89,6 +90,11 @@ export const createLocalUser = async (data: LocalUserCreateInput) => {
       },
     },
     select: publicLocalUserSelect,
+  });
+
+  await mailer.sendVerificationMail({
+    verificationLink: `${process.env.SERVER_URL}/auth/signup/verify?token=${verify_token}`,
+    dst: data.email,
   });
 
   user = await prismaClient.user.findFirst({
