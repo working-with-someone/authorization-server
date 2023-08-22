@@ -3,7 +3,7 @@ import prismaClient from '../database';
 import { wwsError } from '../utils/wwsError';
 import HttpStatusCode from 'http-status-codes';
 import bcrypt from 'bcrypt';
-
+import getRandomString from '../lib/rs';
 interface UserCreateInput {
   username: string;
 }
@@ -73,6 +73,8 @@ export const createLocalUser = async (data: LocalUserCreateInput) => {
 
   const encrypted_password = await bcrypt.hash(data.password, salt);
 
+  const verify_token = await bcrypt.hash(getRandomString(10), salt);
+
   await prismaClient.user.create({
     data: {
       username: data.username,
@@ -82,7 +84,7 @@ export const createLocalUser = async (data: LocalUserCreateInput) => {
           encrypted_password,
           email: data.email,
           email_verified: false,
-          verify_token: null,
+          verify_token,
         },
       },
     },
