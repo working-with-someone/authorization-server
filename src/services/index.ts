@@ -1,3 +1,3 @@
-import * as userSerivce from './user.service';
+import * as userService from './user.service';
 
-export { userSerivce };
+export { userService };

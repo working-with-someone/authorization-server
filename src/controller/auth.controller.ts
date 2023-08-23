@@ -5,7 +5,7 @@ import { Tokens } from '../lib/api/apiInterface';
 import jwt from 'jsonwebtoken';
 import asyncCatch from '../utils/asyncCatch';
 import { isValidURL } from '../lib/url';
-import { userSerivce } from '../services';
+import { userService } from '../services';
 
 export const renderSignin = asyncCatch((req: Request, res: Response) => {
   const redirectURL = req.query.redirect_uri;
@@ -22,7 +22,7 @@ export const renderSignup = asyncCatch((req: Request, res: Response) => {
 export const signup = asyncCatch(async (req: Request, res: Response) => {
   const { username, password, email } = req.body;
 
-  const user = await userSerivce.createLocalUser({
+  const user = await userService.createLocalUser({
     username,
     email,
     password,
@@ -48,7 +48,7 @@ export const codeCallback = asyncCatch(async (req: Request, res: Response) => {
   //get profile from provider with acess token
   const profile = await apiInterface.getUserProfile(tokens.accessToken);
 
-  const user = await userSerivce.createOrGetOauthUser({
+  const user = await userService.createOrGetOauthUser({
     username: profile.username,
     pfp: profile.pfp,
 
