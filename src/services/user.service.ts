@@ -73,11 +73,18 @@ export const createLocalUser = async (data: LocalUserCreateInput) => {
     //이미 존재하는 user가 email verified 되지 않은 상태
     //해당 user를 제거하고 local user creation으로 넘어간다.
     else {
-      await prismaClient.user.delete({
+      const deletedUser = await prismaClient.user.delete({
         where: {
           id: registeredUser.id,
         },
       });
+
+      if (!deletedUser) {
+        throw new wwsError(
+          HttpStatusCode.INTERNAL_SERVER_ERROR,
+          HttpStatusCode.getStatusText(HttpStatusCode.INTERNAL_SERVER_ERROR)
+        );
+      }
     }
   }
 
