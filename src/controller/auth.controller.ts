@@ -31,6 +31,14 @@ export const signup = asyncCatch(async (req: Request, res: Response) => {
   return res.send(user);
 });
 
+export const verify = asyncCatch(async (req: Request, res: Response) => {
+  const { user_id, token } = req.query;
+
+  await userService.verifyUser(parseInt(user_id as string), token as string);
+
+  return res.send('done!');
+});
+
 export const redirectToAuth = asyncCatch((req: Request, res: Response) => {
   return res.redirect(OAuth[req.params.provider].authCodeURL);
 });

@@ -8,6 +8,14 @@ const createUser: Record<string, any> = {
   }),
 };
 
+const verifyUser: Record<string, any> = {
+  query: joi.object().keys({
+    user_id: joi.string().required(),
+    token: joi.string().required(),
+  }),
+};
+
 export default {
   createUser,
+  verifyUser,
 };

@@ -3,6 +3,7 @@ import {
   renderSignin,
   renderSignup,
   signup,
+  verify,
   redirectToAuth,
   codeCallback,
 } from '../controller/auth.controller';
@@ -20,6 +21,7 @@ router.get(
   validate(oauthValidation.oauthRequestValidation),
   redirectToAuth
 );
+router.get('/signup/verify', validate(userValidation.verifyUser), verify);
 router.get(
   '/:provider/callback/code',
   validate(oauthValidation.authorizationCodeCallbackValidations),

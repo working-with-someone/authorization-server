@@ -128,6 +128,24 @@ export const createLocalUser = async (data: LocalUserCreateInput) => {
   return user;
 };
 
+export const verifyUser = async (userId: number, token: string) => {
+  const updated = await prismaClient.local.update({
+    data: {
+      email_verified: true,
+    },
+    where: {
+      user_id: userId,
+    },
+  });
+
+  if (!updated) {
+    throw new wwsError(
+      HttpStatusCode.NOT_FOUND,
+      HttpStatusCode.getStatusText(HttpStatusCode.NOT_FOUND)
+    );
+  }
+};
+
 export const createOrGetOauthUser = async (data: OauthUserCreateInput) => {
   let user = await prismaClient.user.findFirst({
     where: {
