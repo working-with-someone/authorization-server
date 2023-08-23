@@ -24,6 +24,7 @@ interface OauthUserCreateInput extends UserCreateInput {
 }
 
 const publicUserSelect: Prisma.UserSelect = {
+  id: true,
   username: true,
   pfp: true,
 };
@@ -103,11 +104,6 @@ export const createLocalUser = async (data: LocalUserCreateInput) => {
     select: publicLocalUserSelect,
   });
 
-  await mailer.sendVerificationMail({
-    verificationLink: `${process.env.SERVER_URL}/auth/signup/verify?token=${verify_token}`,
-    dst: data.email,
-  });
-
   const user = await prismaClient.user.findFirst({
     where: {
       local: {
@@ -115,6 +111,11 @@ export const createLocalUser = async (data: LocalUserCreateInput) => {
       },
     },
     select: publicLocalUserSelect,
+  });
+
+  await mailer.sendVerificationMail({
+    verificationLink: `${process.env.SERVER_URL}/auth/signup/verify?user_id=${user?.id}&token=${verify_token}`,
+    dst: data.email,
   });
 
   return user;
