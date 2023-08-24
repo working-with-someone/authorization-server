@@ -124,13 +124,14 @@ export const createLocalUser = async (data: LocalUserCreateInput) => {
   return user;
 };
 
-export const verifyUser = async (userId: number, token: string) => {
+export const verifyUser = async (userId: number, verifyToken: string) => {
   const updated = await prismaClient.local.update({
     data: {
       email_verified: true,
     },
     where: {
       user_id: userId,
+      verify_token: verifyToken,
     },
   });
 
