@@ -25,13 +25,7 @@ export const renderSignup = asyncCatch((req: Request, res: Response) => {
 });
 
 export const signup = asyncCatch(async (req: Request, res: Response) => {
-  const { username, password, email } = req.body;
-
-  await userService.createLocalUser({
-    username,
-    email,
-    password,
-  });
+  await userService.createLocalUser(req.body);
 
   return res.render('signup-success');
 });

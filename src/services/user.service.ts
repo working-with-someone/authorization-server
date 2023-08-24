@@ -1,4 +1,3 @@
-import { Prisma } from '@prisma/client';
 import prismaClient from '../database';
 import { wwsError } from '../utils/wwsError';
 import HttpStatusCode from 'http-status-codes';
@@ -7,6 +6,7 @@ import getRandomString from '../lib/rs';
 import mailer from '../utils/mailer';
 import OAuths from '../lib/api';
 import { Tokens } from '../lib/api/apiInterface';
+import pick from '../utils/pick';
 
 interface LocalUserCreateInput {
   username: string;
@@ -24,31 +24,6 @@ interface UserSigninInput {
   password: string;
 }
 
-const publicUserSelect: Prisma.UserSelect = {
-  id: true,
-  username: true,
-  pfp: true,
-};
-
-const publicLocalUserSelect: Prisma.UserSelect = {
-  ...publicUserSelect,
-  local: {
-    select: {
-      email: true,
-    },
-  },
-};
-
-const publicOauthUserSelect: Prisma.UserSelect = {
-  ...publicUserSelect,
-  oauth: {
-    select: {
-      provider: true,
-      id: true,
-    },
-  },
-};
-
 export const createLocalUser = async (data: LocalUserCreateInput) => {
   const registeredUser = await prismaClient.user.findFirst({
     where: {
@@ -56,7 +31,6 @@ export const createLocalUser = async (data: LocalUserCreateInput) => {
         email: data.email,
       },
     },
-    //select only local
     include: {
       local: true,
     },
@@ -96,7 +70,7 @@ export const createLocalUser = async (data: LocalUserCreateInput) => {
 
   const verify_token = await bcrypt.hash(getRandomString(10), salt);
 
-  await prismaClient.user.create({
+  const createdUser = await prismaClient.user.create({
     data: {
       username: data.username,
       pfp: '',
@@ -109,28 +83,16 @@ export const createLocalUser = async (data: LocalUserCreateInput) => {
         },
       },
     },
-    select: publicLocalUserSelect,
-  });
-
-  const user = await prismaClient.user.findFirst({
-    where: {
-      local: {
-        email: data.email,
-      },
-    },
-    select: publicLocalUserSelect,
   });
 
   await mailer.sendVerificationMail({
-    verificationLink: `${process.env.SERVER_URL}/auth/signup/verify?user_id=${user?.id}&token=${verify_token}`,
+    verificationLink: `${process.env.SERVER_URL}/auth/signup/verify?user_id=${createdUser?.id}&token=${verify_token}`,
     dst: data.email,
   });
-
-  return user;
 };
 
 export const verifyUser = async (userId: number, verifyToken: string) => {
-  const updated = await prismaClient.local.update({
+  const updatedUser = await prismaClient.local.update({
     data: {
       email_verified: true,
     },
@@ -140,7 +102,7 @@ export const verifyUser = async (userId: number, verifyToken: string) => {
     },
   });
 
-  if (!updated) {
+  if (!updatedUser) {
     throw new wwsError(
       HttpStatusCode.NOT_FOUND,
       HttpStatusCode.getStatusText(HttpStatusCode.NOT_FOUND)
@@ -166,11 +128,13 @@ export const createOrGetOauthUser = async (data: OauthUserCreateInput) => {
         id: profile.id,
       },
     },
-    select: publicOauthUserSelect,
+    include: {
+      oauth: true,
+    },
   });
 
   if (!user) {
-    await prismaClient.user.create({
+    user = await prismaClient.user.create({
       data: {
         username: profile.username,
         pfp: profile.pfp,
@@ -183,40 +147,20 @@ export const createOrGetOauthUser = async (data: OauthUserCreateInput) => {
           },
         },
       },
-    });
-
-    user = await prismaClient.user.findFirst({
-      where: {
-        oauth: {
-          id: profile.id,
-        },
+      include: {
+        oauth: true,
       },
-      select: publicOauthUserSelect,
     });
   }
 
-  return user;
+  return hideOauthUserSensitiveInfo(user);
 };
 
-export const updateUser = async (data: Prisma.UserUpdateInput) => {
-  return;
-};
-
-export const deleteUser = async (data: Prisma.UserSelect) => {
-  return;
-};
-
-export const getUser = async (data: Prisma.UserFindFirstArgs) => {
-  const user = await prismaClient.user.findFirst(data);
-
-  return user;
-};
-
-export const signinUser = async (data: UserSigninInput) => {
+export const signinUser = async (body: UserSigninInput) => {
   const user = await prismaClient.user.findFirst({
     where: {
       local: {
-        email: data.email,
+        email: body.email,
         email_verified: true,
       },
     },
@@ -226,11 +170,25 @@ export const signinUser = async (data: UserSigninInput) => {
   });
 
   if (user?.local?.encrypted_password) {
-    if (await bcrypt.compare(data.password, user?.local?.encrypted_password)) {
-      return user;
+    if (await bcrypt.compare(body.password, user?.local?.encrypted_password)) {
+      return hideLocalUserSensitiveInfo(user);
     }
   }
 
   //if user does not exist or registered incorrectly respoonse with 400
   throw new wwsError(HttpStatusCode.BAD_REQUEST, 'account does not registered');
+};
+
+export const hideOauthUserSensitiveInfo = (user: Record<string, any>) => {
+  return {
+    ...pick(user, ['username', 'pfp', 'id']),
+    oauth: pick(user.oauth, ['id', 'provider']),
+  };
+};
+
+export const hideLocalUserSensitiveInfo = (user: Record<string, any>) => {
+  return {
+    ...pick(user, ['username', 'pfp', 'id']),
+    local: pick(user.local, ['email']),
+  };
 };
