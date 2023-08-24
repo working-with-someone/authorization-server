@@ -13,7 +13,7 @@ const signin: Record<string, any> = {
   body: joi.object().keys({
     //length validation은 필요없다.
     //등록되지 않은 user는 로그인에 실패한다.
-    username: joi.string().required(),
+    email: joi.string().required(),
     password: joi.string().required(),
   }),
 };
