@@ -1,76 +1,77 @@
-section.signin{
-        position: fixed;
-        top: 45%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width : 20em;
-        height : auto;
+section.signin {
+    position: fixed;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20em;
+    height: auto;
 
-        display : flex;
-        flex-direction : column;
-        align-items: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-section.signin>*{
-    width : 100%;
+section.signin>* {
+    width: 100%;
 }
 
-.logo{
-    display : flex;
+.logo {
+    display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom : 40px;
-}
-.logo img{
-    width : 4em;
+    margin-bottom: 40px;
 }
 
-#signin-form{
-    display : flex;
+.logo img {
+    width: 7em;
+}
+
+#signin-form {
+    display: flex;
     flex-direction: column;
-    gap : 1em;
+    gap: 1em;
     align-items: center;
-    margin-bottom : 6px;
+    margin-bottom: 6px;
 }
 
-#signin-form button{
+#signin-form button {
     background-color: #FFCA36;
-    color : #161728;
-    width : 100%;
+    color: #161728;
+    width: 100%;
 }
 
-#signin-form input{
-    width : 100%;
+#signin-form input {
+    width: 100%;
     background-color: var(--bg-input);
 }
 
-#signin-form input:focus{
-    outline : none;
+#signin-form input:focus {
+    outline: none;
 }
 
-#signin-form button{
-    margin-top : 10px;
+#signin-form button {
+    margin-top: 10px;
 }
 
-.signup-link{
-    display : flex;
+.signup-link {
+    display: flex;
     justify-content: end;
-    margin-bottom : 30px;
+    margin-bottom: 30px;
 }
 
-.signup-link a{
-    display : flex;
+.signup-link a {
+    display: flex;
     align-items: end;
-    color : var(--sig);
-    font-size : 6px;
-    font-weight :100;
+    color: var(--sig);
+    font-size: 6px;
+    font-weight: 100;
     font-family: sans-serif;
 }
 
 .horizon {
     display: flex;
     align-items: center;
-    color : var(--font-white);
+    color: var(--font-white);
 }
 
 .horizon hr {
@@ -80,43 +81,44 @@ section.signin>*{
     margin: 0 10px;
 }
 
-.signin-with-sns{
-    display : flex;
+.signin-with-sns {
+    display: flex;
     flex-direction: column;
-    margin-top : 20px;
-    gap : 1em;
+    margin-top: 20px;
+    gap: 1em;
 }
 
-.signin-with-sns a{
-    display : flex;
+.signin-with-sns a {
+    display: flex;
     align-items: center;
-    padding : 5px 2px;
+    padding: 5px 2px;
     border-radius: 10px;
 }
-.signin-with-sns a img{
-    width : 15px;
-    height : 15px;
-    margin : 0 40px 0 10px;
+
+.signin-with-sns a img {
+    width: 15px;
+    height: 15px;
+    margin: 0 40px 0 10px;
 }
 
-.signin-with-sns a.google{
+.signin-with-sns a.google {
     background-color: #ffffff;
 }
 
-.signin-with-sns a.google span{
-    color : var(--bg);
+.signin-with-sns a.google span {
+    color: var(--bg);
 }
 
-.signin-with-sns a.github{
-    color : var(--font-white);
-    background-color:#110D0E;
+.signin-with-sns a.github {
+    color: var(--font-white);
+    background-color: #110D0E;
 }
 
-.signin-with-sns a.kakao{
-    color : var(--bg);
-    background-color:#FDDC3F;
+.signin-with-sns a.kakao {
+    color: var(--bg);
+    background-color: #FDDC3F;
 }
 
-.signin-with-sns a.kakao span{
-    color : var(--bg);
+.signin-with-sns a.kakao span {
+    color: var(--bg);
 }
