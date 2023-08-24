@@ -79,7 +79,7 @@ class GithubInterface extends ApiInterface {
     const data = response.data;
 
     const profile: UserProfile = {
-      id: data.id,
+      id: data.id.toString(),
       username: data.name,
       pfp: data.avatar_url,
     };
