@@ -5,22 +5,18 @@ import HttpStatusCode from 'http-status-codes';
 import bcrypt from 'bcrypt';
 import getRandomString from '../lib/rs';
 import mailer from '../utils/mailer';
-interface UserCreateInput {
-  username: string;
-}
+import OAuths from '../lib/api';
+import { Tokens } from '../lib/api/apiInterface';
 
-interface LocalUserCreateInput extends UserCreateInput {
+interface LocalUserCreateInput {
+  username: string;
   email: string;
   password: string;
 }
 
-interface OauthUserCreateInput extends UserCreateInput {
-  pfp: string;
-
+interface OauthUserCreateInput {
   provider: string;
-  id: string;
-  accessToken: string;
-  refreshToken: string;
+  code: string;
 }
 
 const publicUserSelect: Prisma.UserSelect = {
@@ -147,10 +143,21 @@ export const verifyUser = async (userId: number, token: string) => {
 };
 
 export const createOrGetOauthUser = async (data: OauthUserCreateInput) => {
+  const { provider, code } = data;
+
+  //get api interface
+  const apiInterface = OAuths[provider];
+
+  //get access token from provider with authorization code
+  const tokens: Tokens = await apiInterface.getTokens(code);
+
+  //get profile from provider with acess token
+  const profile = await apiInterface.getUserProfile(tokens.accessToken);
+
   let user = await prismaClient.user.findFirst({
     where: {
       oauth: {
-        id: data.id,
+        id: profile.id,
       },
     },
     select: publicOauthUserSelect,
@@ -159,14 +166,14 @@ export const createOrGetOauthUser = async (data: OauthUserCreateInput) => {
   if (!user) {
     await prismaClient.user.create({
       data: {
-        username: data.username,
-        pfp: data.pfp,
+        username: profile.username,
+        pfp: profile.pfp,
         oauth: {
           create: {
             provider: data.provider,
-            id: data.id,
-            access_token: data.accessToken,
-            refresh_token: data.refreshToken,
+            id: profile.id,
+            access_token: tokens.accessToken,
+            refresh_token: tokens.refreshToken,
           },
         },
       },
@@ -175,7 +182,7 @@ export const createOrGetOauthUser = async (data: OauthUserCreateInput) => {
     user = await prismaClient.user.findFirst({
       where: {
         oauth: {
-          id: data.id,
+          id: profile.id,
         },
       },
       select: publicOauthUserSelect,

@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 
 import OAuth from '../lib/api';
-import { Tokens } from '../lib/api/apiInterface';
 import jwt from 'jsonwebtoken';
 import asyncCatch from '../utils/asyncCatch';
 import { isValidURL } from '../lib/url';
@@ -44,26 +43,9 @@ export const redirectToAuth = asyncCatch((req: Request, res: Response) => {
 });
 
 export const codeCallback = asyncCatch(async (req: Request, res: Response) => {
-  //get api interface
-  const apiInterface = OAuth[req.params.provider];
-
-  //get authorization code from query parameters
-  const authCode = req.query.code as string;
-
-  //get access token from provider with authorization code
-  const tokens: Tokens = await apiInterface.getTokens(authCode);
-
-  //get profile from provider with acess token
-  const profile = await apiInterface.getUserProfile(tokens.accessToken);
-
   const user = await userService.createOrGetOauthUser({
-    username: profile.username,
-    pfp: profile.pfp,
-
     provider: req.params.provider,
-    id: profile.id,
-    accessToken: tokens.accessToken,
-    refreshToken: tokens.refreshToken,
+    code: req.query.code as string,
   });
 
   //generate JWT with user profile
