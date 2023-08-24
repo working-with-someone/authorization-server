@@ -22,13 +22,13 @@ export const renderSignup = asyncCatch((req: Request, res: Response) => {
 export const signup = asyncCatch(async (req: Request, res: Response) => {
   const { username, password, email } = req.body;
 
-  const user = await userService.createLocalUser({
+  await userService.createLocalUser({
     username,
     email,
     password,
   });
 
-  return res.send(user);
+  return res.render('signup-success');
 });
 
 export const verify = asyncCatch(async (req: Request, res: Response) => {
