@@ -6,12 +6,16 @@
     --bg : #161728;
 	--bg-input : #23263D;
   }
-
   
+
 *{
 	font-family: 'Noto Sans JP', sans-serif;
 	font-size : 11px;
 	color : var(--font-white);
+
+	-webkit-user-select: none;
+  -ms-user-select: none; 
+  user-select: none;
 }
 
 body{
