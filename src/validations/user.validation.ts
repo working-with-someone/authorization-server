@@ -5,6 +5,7 @@ const createUser: Record<string, any> = {
     username: joi.string().min(1).max(12).required(),
     email: joi.string().required().email(),
     password: joi.string().min(12).max(36).required(),
+    confirmPassword: joi.string().min(12).max(36).required(),
   }),
 };
 
