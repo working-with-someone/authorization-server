@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/signup.css">
+</head>
+<body>
+    <section class="signup">
+      <div class="left">
+        <img src="/images/stuart.png" alt="">
+      </div>
+      <div class="right">
+        <form action="/auth/signup" method="POST">
+          <input type="text" name="username" placeholder="username">
+          <input type="password" name="password" placeholder="password">
+          <input type="password" name="confirmPassword" placeholder="confirm password">  
+          <input type="email" name="email" placeholder="email">
+
+          <button>Send Verification Link</button>
+        </form>
+      </div>
+    </section>
+</body>
+</html>

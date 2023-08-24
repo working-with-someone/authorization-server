@@ -1,0 +1,42 @@
+section.signup {
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -40%);
+  height: auto;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.left img {
+  width: 30em;
+}
+
+
+.right form {
+  display: flex;
+  gap: 1em;
+  flex-direction: column;
+}
+
+.right form input {
+  width: 20em;
+  background-color: var(--bg-input);
+}
+
+.right form input[type="text"] {
+  margin-bottom: 1em;
+}
+
+.right form input[type="email"] {
+  margin-top: 1em;
+}
+
+.right form button {
+  margin-top: 2em;
+  background-color: #FFCA36;
+  color: #161728;
+  width: 100%;
+}
