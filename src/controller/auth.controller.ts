@@ -14,6 +14,12 @@ export const renderSignin = asyncCatch((req: Request, res: Response) => {
   return res.render('signin');
 });
 
+export const signin = asyncCatch(async (req: Request, res: Response) => {
+  const user = await userService.signinUser(req.body);
+
+  return res.send(user);
+});
+
 export const renderSignup = asyncCatch((req: Request, res: Response) => {
   return res.render('signup');
 });

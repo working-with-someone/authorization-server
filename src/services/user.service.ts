@@ -19,6 +19,11 @@ interface OauthUserCreateInput {
   code: string;
 }
 
+interface UserSigninInput {
+  email: string;
+  password: string;
+}
+
 const publicUserSelect: Prisma.UserSelect = {
   id: true,
   username: true,
@@ -205,4 +210,27 @@ export const getUser = async (data: Prisma.UserFindFirstArgs) => {
   const user = await prismaClient.user.findFirst(data);
 
   return user;
+};
+
+export const signinUser = async (data: UserSigninInput) => {
+  const user = await prismaClient.user.findFirst({
+    where: {
+      local: {
+        email: data.email,
+        email_verified: true,
+      },
+    },
+    include: {
+      local: true,
+    },
+  });
+
+  if (user?.local?.encrypted_password) {
+    if (await bcrypt.compare(data.password, user?.local?.encrypted_password)) {
+      return user;
+    }
+  }
+
+  //if user does not exist or registered incorrectly respoonse with 400
+  throw new wwsError(HttpStatusCode.BAD_REQUEST, 'account does not registered');
 };
