@@ -1,0 +1,44 @@
+section.verification-success {
+  position: fixed;
+  top: 30%;
+  left: 15%;
+  width: 70%;
+  height: auto;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.left {}
+
+.left img {
+  width: 40em;
+
+}
+
+.right {}
+
+.right .text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.right .text h2 {
+  margin-top: 2em;
+  font-size: 2.5em;
+}
+
+.right .text p {
+  font-size: 1.5em;
+  text-align: center;
+}
+
+.right .text a {
+  margin-top: 4em;
+  padding: 1em;
+  font-size: 1.3em;
+  background-color: #FFCA36;
+  color: #161728;
+}
