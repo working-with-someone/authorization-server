@@ -35,7 +35,7 @@ export const verify = asyncCatch(async (req: Request, res: Response) => {
 
   await userService.verifyUser(parseInt(user_id as string), token as string);
 
-  return res.send('done!');
+  return res.render('verification-success');
 });
 
 export const redirectToAuth = asyncCatch((req: Request, res: Response) => {
