@@ -17,7 +17,28 @@ export const renderSignin = asyncCatch((req: Request, res: Response) => {
 export const signin = asyncCatch(async (req: Request, res: Response) => {
   const user = await userService.signinUser(req.body);
 
-  return res.send(user);
+  //generate JWT with user profile
+  const userToken = jwt.sign(
+    user as object,
+    process.env.TOKEN_USER_SECRET as string,
+    {
+      algorithm: 'HS512',
+    }
+  );
+
+  if (
+    isValidURL(req.cookies.redirect_uri, ['http', 'https', 'wwsp', 'wwsp-dev'])
+  ) {
+    const redirectURL = new URL(req.cookies.redirect_uri);
+
+    res.clearCookie('redirect_uri');
+
+    redirectURL.searchParams.append('jwt', userToken);
+
+    return res.redirect(redirectURL.toString());
+  } else {
+    return res.redirect('/');
+  }
 });
 
 export const renderSignup = asyncCatch((req: Request, res: Response) => {
