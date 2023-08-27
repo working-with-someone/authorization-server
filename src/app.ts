@@ -8,7 +8,16 @@ import cookieParser from 'cookie-parser';
 
 const app = express();
 
-app.use(helmet({}));
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        formAction: ['self', 'wwsp-dev: *', 'wwsp: *'],
+      },
+    },
+  })
+);
+
 app.set('view engine', 'ejs');
 app.set('views', `${process.cwd()}/views`);
 app.use(favicon(`${process.cwd()}/favicon.ico`));
