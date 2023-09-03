@@ -1,15 +1,15 @@
 import 'dotenv/config';
-import { userService } from '../../../services';
-import { prismaMock } from './singleton';
+import { userService } from '../../../src/services';
+import { prismaMock } from '../../jest/singleton';
 import { mockReset } from 'jest-mock-extended';
-import { wwsError } from '../../../utils/wwsError';
+import { wwsError } from '../../../src/utils/wwsError';
 import HttpStatusCode from 'http-status-codes';
 
 beforeEach(() => {
   mockReset(prismaMock);
 });
 
-jest.mock('../../../utils/mailer.ts');
+jest.mock('../../../src/utils/mailer.ts');
 
 describe('User_Service_Logic', () => {
   describe('create_Local_User', () => {
