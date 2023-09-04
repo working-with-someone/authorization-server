@@ -99,6 +99,7 @@ export const verifyUser = async (userId: number, verifyToken: string) => {
     where: {
       user_id: userId,
       verify_token: verifyToken,
+      email_verified: false,
     },
   });
 
