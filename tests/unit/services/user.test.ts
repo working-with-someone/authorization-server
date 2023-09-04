@@ -186,4 +186,35 @@ describe('User_Service_Logic', () => {
       expect(prismaMock.user.create).toHaveBeenCalledTimes(0);
     });
   });
+
+  describe('verifyUser', () => {
+    test('Resolve_If_There_Is_Updated_User', async () => {
+      const notVerifiedLocal = {
+        id: 1,
+        email: 'kmc54320@gmail.com',
+        email_verified: false,
+        verify_token: '1234',
+        encrypted_password: '1234',
+        user_id: 2,
+      };
+      prismaMock.local.update.mockResolvedValueOnce(notVerifiedLocal);
+
+      await expect(
+        userService.verifyUser(1, 'verify_token')
+      ).resolves.toBeUndefined();
+    });
+
+    test('Throw_WWSError_With_404_If_There_Is_Not_Updated_User', async () => {
+      prismaMock.local.update.mockResolvedValueOnce(null as never);
+
+      await expect(
+        userService.verifyUser(1, 'verify_token')
+      ).rejects.toThrowError(
+        new wwsError(
+          HttpStatusCode.NOT_FOUND,
+          HttpStatusCode.getStatusText(HttpStatusCode.NOT_FOUND)
+        )
+      );
+    });
+  });
 });
