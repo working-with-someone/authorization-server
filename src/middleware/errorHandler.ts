@@ -22,7 +22,7 @@ const errorHandler = (
     // is optional to log other custom wws errors.
   }
 
-  return res.render('error', { err });
+  return res.status(err.status).render('error', { err });
 };
 
 export default errorHandler;
