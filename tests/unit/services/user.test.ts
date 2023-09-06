@@ -4,6 +4,7 @@ import { prismaMock } from '../../jest/singleton';
 import { mockReset } from 'jest-mock-extended';
 import { wwsError } from '../../../src/utils/wwsError';
 import HttpStatusCode from 'http-status-codes';
+import bcrypt from 'bcrypt';
 
 beforeEach(() => {
   mockReset(prismaMock);
@@ -25,6 +26,10 @@ jest.mock('../../../src/lib/api', () => ({
     }
   ),
 }));
+
+jest.mock('bcrypt');
+
+const bcryptMock = bcrypt as jest.Mocked<typeof bcrypt>;
 
 describe('User_Service_Logic', () => {
   describe('createLocalUser', () => {
@@ -214,6 +219,70 @@ describe('User_Service_Logic', () => {
           HttpStatusCode.NOT_FOUND,
           HttpStatusCode.getStatusText(HttpStatusCode.NOT_FOUND)
         )
+      );
+    });
+  });
+
+  describe('signinUser', () => {
+    const user = {
+      id: 2,
+      username: 'seungho-hub2',
+      pfp: '/pfp.png',
+      created_at: new Date(),
+      updated_at: new Date(),
+      local: {
+        id: 1,
+        email: 'kmc54320@gmail.com',
+        email_verified: true,
+        verify_token: '1234',
+        encrypted_password: '1234',
+        user_id: 2,
+      },
+    };
+
+    test('Throw_WWSError_With_400_If_There_is_Not_User_With_Email', async () => {
+      prismaMock.user.findFirst.mockResolvedValueOnce(null);
+
+      await expect(
+        userService.signinUser({
+          email: user.local.email,
+          password: 'StrongPassword!',
+        })
+      ).rejects.toThrowError(
+        new wwsError(HttpStatusCode.BAD_REQUEST, 'account does not registered')
+      );
+    });
+
+    test('Resolve_With_Hided_Local_User', async () => {
+      prismaMock.user.findFirst.mockResolvedValueOnce(user);
+      bcryptMock.compare.mockResolvedValueOnce(true as never);
+
+      await expect(
+        userService.signinUser({
+          email: user.local.email,
+          password: 'StringPassword!',
+        })
+      ).resolves.toEqual({
+        id: user.id,
+        username: user.username,
+        pfp: user.pfp,
+        local: {
+          email: user.local.email,
+        },
+      });
+    });
+
+    test('Throw_WWSError_With_400_If_Password_Doest_Not_Match', async () => {
+      prismaMock.user.findFirst.mockResolvedValueOnce(user);
+      bcryptMock.compare.mockResolvedValueOnce(false as never);
+
+      await expect(
+        userService.signinUser({
+          email: user.local.email,
+          password: 'StrongPassword!',
+        })
+      ).rejects.toThrowError(
+        new wwsError(HttpStatusCode.BAD_REQUEST, 'account does not registered')
       );
     });
   });
