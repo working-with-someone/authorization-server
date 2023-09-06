@@ -8,15 +8,25 @@ const httpFormat = winston.format.combine(
   })
 );
 
+const generateTransports = (logFileName: string) => {
+  const transports: winston.transport[] = [
+    new winston.transports.File({
+      filename: path.join(process.cwd(), `log/${logFileName}`),
+    }),
+  ];
+
+  // development mode에서 log file에 기록될 log를 console에도 출력한다.
+  if (process.env.NODE_ENV === 'development') {
+    transports.push(new winston.transports.Console());
+  }
+
+  return transports;
+};
+
 const webServerLoggerConfig: LoggerOptions = {
   defaultMeta: { timestamp: true },
   format: httpFormat,
-  transports: [
-    new winston.transports.Console(),
-    new winston.transports.File({
-      filename: path.join(process.cwd(), 'log/webserver.log'),
-    }),
-  ],
+  transports: generateTransports('webserver.log'),
 };
 
 const sysErrorLoggerConfig: LoggerOptions = {
@@ -32,12 +42,7 @@ const sysErrorLoggerConfig: LoggerOptions = {
       return logMessage;
     })
   ),
-  transports: [
-    new winston.transports.Console(),
-    new winston.transports.File({
-      filename: path.join(process.cwd(), 'log/sys-error.log'),
-    }),
-  ],
+  transports: generateTransports('sys-error.log'),
 };
 
 const databaseLoggerConfig: LoggerOptions = {
@@ -49,12 +54,7 @@ const databaseLoggerConfig: LoggerOptions = {
       return `${timestamp} ${level.toUpperCase()} ${message}`;
     })
   ),
-  transports: [
-    new winston.transports.Console(),
-    new winston.transports.File({
-      filename: path.join(process.cwd(), 'log/database.log'),
-    }),
-  ],
+  transports: generateTransports('database.log'),
 };
 
 export { webServerLoggerConfig, sysErrorLoggerConfig, databaseLoggerConfig };
