@@ -1,4 +1,3 @@
-import 'dotenv/config';
 import { userService } from '../../../src/services';
 import { prismaMock } from '../../jest/singleton';
 import { mockReset } from 'jest-mock-extended';
