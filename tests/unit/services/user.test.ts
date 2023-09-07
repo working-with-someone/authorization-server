@@ -1,12 +1,12 @@
 import { userService } from '../../../src/services';
-import { prismaMock } from '../../jest/singleton';
+import { prismaClientMock } from '../../jest/singleton';
 import { mockReset } from 'jest-mock-extended';
 import { wwsError } from '../../../src/utils/wwsError';
 import HttpStatusCode from 'http-status-codes';
 import bcrypt from 'bcrypt';
 
 beforeEach(() => {
-  mockReset(prismaMock);
+  mockReset(prismaClientMock);
 });
 
 jest.mock('../../../src/utils/mailer.ts');
@@ -39,7 +39,7 @@ describe('User_Service_Logic', () => {
     };
 
     test('Create_New_User_If_User_Does_Not_Exist_With_Email', async () => {
-      prismaMock.user.findFirst.mockResolvedValueOnce(null);
+      prismaClientMock.user.findFirst.mockResolvedValueOnce(null);
 
       await expect(
         userService.createLocalUser({
@@ -50,7 +50,7 @@ describe('User_Service_Logic', () => {
       ).resolves.toBeUndefined();
 
       expect(
-        prismaMock.user.create.mock.calls[0][0].data.local?.create?.email
+        prismaClientMock.user.create.mock.calls[0][0].data.local?.create?.email
       ).toBe(newUser.email);
     });
 
@@ -71,11 +71,11 @@ describe('User_Service_Logic', () => {
         },
       };
 
-      prismaMock.user.findFirst.mockResolvedValueOnce(
+      prismaClientMock.user.findFirst.mockResolvedValueOnce(
         existNotVerifiedUserGetResult
       );
 
-      prismaMock.user.delete.mockResolvedValueOnce(
+      prismaClientMock.user.delete.mockResolvedValueOnce(
         existNotVerifiedUserGetResult
       );
 
@@ -89,11 +89,11 @@ describe('User_Service_Logic', () => {
 
       //create new user
       expect(
-        prismaMock.user.create.mock.calls[0][0].data.local?.create?.email
+        prismaClientMock.user.create.mock.calls[0][0].data.local?.create?.email
       ).toBe(newUser.email);
 
       //delete exist user
-      expect(prismaMock.user.delete).toHaveBeenCalledWith({
+      expect(prismaClientMock.user.delete).toHaveBeenCalledWith({
         where: {
           id: existNotVerifiedUserGetResult.id,
         },
@@ -117,7 +117,7 @@ describe('User_Service_Logic', () => {
         },
       };
 
-      prismaMock.user.findFirst.mockResolvedValueOnce(
+      prismaClientMock.user.findFirst.mockResolvedValueOnce(
         existVerifiedUserGetResult
       );
 
@@ -168,26 +168,26 @@ describe('User_Service_Logic', () => {
     };
 
     test('Create_New_User_If_User_Not_Registered', async () => {
-      prismaMock.user.findFirst.mockResolvedValueOnce(null);
+      prismaClientMock.user.findFirst.mockResolvedValueOnce(null);
 
-      prismaMock.user.create.mockResolvedValueOnce(newUser);
+      prismaClientMock.user.create.mockResolvedValueOnce(newUser);
 
       await expect(
         userService.createOrGetOauthUser(OauthInfo)
       ).resolves.toEqual(hidedUserInfo);
 
-      expect(prismaMock.user.create).toHaveBeenCalledTimes(1);
+      expect(prismaClientMock.user.create).toHaveBeenCalledTimes(1);
     });
 
     test('Does_Not_Create_New_User_If_User_Registered', async () => {
       //user registered
-      prismaMock.user.findFirst.mockResolvedValueOnce(newUser);
+      prismaClientMock.user.findFirst.mockResolvedValueOnce(newUser);
 
       await expect(
         userService.createOrGetOauthUser(OauthInfo)
       ).resolves.toEqual(hidedUserInfo);
 
-      expect(prismaMock.user.create).toHaveBeenCalledTimes(0);
+      expect(prismaClientMock.user.create).toHaveBeenCalledTimes(0);
     });
   });
 
@@ -201,7 +201,7 @@ describe('User_Service_Logic', () => {
         encrypted_password: '1234',
         user_id: 2,
       };
-      prismaMock.local.update.mockResolvedValueOnce(notVerifiedLocal);
+      prismaClientMock.local.update.mockResolvedValueOnce(notVerifiedLocal);
 
       await expect(
         userService.verifyUser(1, 'verify_token')
@@ -209,7 +209,7 @@ describe('User_Service_Logic', () => {
     });
 
     test('Throw_WWSError_With_404_If_There_Is_Not_Updated_User', async () => {
-      prismaMock.local.update.mockResolvedValueOnce(null as never);
+      prismaClientMock.local.update.mockResolvedValueOnce(null as never);
 
       await expect(
         userService.verifyUser(1, 'verify_token')
@@ -240,7 +240,7 @@ describe('User_Service_Logic', () => {
     };
 
     test('Throw_WWSError_With_400_If_There_is_Not_User_With_Email', async () => {
-      prismaMock.user.findFirst.mockResolvedValueOnce(null);
+      prismaClientMock.user.findFirst.mockResolvedValueOnce(null);
 
       await expect(
         userService.signinUser({
@@ -253,7 +253,7 @@ describe('User_Service_Logic', () => {
     });
 
     test('Resolve_With_Hided_Local_User', async () => {
-      prismaMock.user.findFirst.mockResolvedValueOnce(user);
+      prismaClientMock.user.findFirst.mockResolvedValueOnce(user);
       bcryptMock.compare.mockResolvedValueOnce(true as never);
 
       await expect(
@@ -272,7 +272,7 @@ describe('User_Service_Logic', () => {
     });
 
     test('Throw_WWSError_With_400_If_Password_Doest_Not_Match', async () => {
-      prismaMock.user.findFirst.mockResolvedValueOnce(user);
+      prismaClientMock.user.findFirst.mockResolvedValueOnce(user);
       bcryptMock.compare.mockResolvedValueOnce(false as never);
 
       await expect(
