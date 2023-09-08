@@ -122,5 +122,40 @@ describe('Authentication', () => {
           .end(done);
       });
     });
+
+    describe('Verify', () => {
+      test('Response_Verification_Success_Page_With_200_If_Verification_Success', async () => {
+        const user = await prismaClient.user.findFirst({
+          where: {
+            username: testUserData.newLocalUser.username,
+            local: {
+              email: testUserData.newLocalUser.email,
+            },
+          },
+          include: {
+            local: true,
+          },
+        });
+
+        const res = await request(app).get(
+          `/auth/signup/verify?user_id=${user?.id}&token=${user?.local?.verify_token}`
+        );
+
+        expect(res.status).toEqual(200);
+      });
+
+      test('Response_Error_Page_With_400_If_Verification_Request_Include_Invalid_Query_Parameters', (done) => {
+        request(app).get('/auth/signup/verify').expect(400).end(done);
+      });
+
+      test('Response_Error_Page_With_404_If_Verification_Request_Is_Bad_Request', (done) => {
+        request(app)
+          .get(
+            `/auth/signup/verify?user_id=1234&token=${testUserData.verifyQuery.invalid.token}`
+          )
+          .expect(400)
+          .end(done);
+      });
+    });
   });
 });
