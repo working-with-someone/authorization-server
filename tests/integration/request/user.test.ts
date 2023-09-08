@@ -35,6 +35,21 @@ describe('Authentication', () => {
           .end(done);
       });
 
+      test('Response_Error_Page_With_409_If_Signup_Request_Include_Conflict_Input', (done) => {
+        request(app)
+          .post('/auth/signup')
+          .send({
+            username: testUserData.localUsers[0].username,
+            email: testUserData.localUsers[0].local.create.email,
+            password: 'strongPassword12!',
+          })
+          .set({
+            'Content-Type': 'application/x-www-form-urlencoded',
+          })
+          .expect(409)
+          .end(done);
+      });
+
       test('Response_Error_Page_With_400_If_Signup_Request_Doest_Not_Include_Username', (done) => {
         request(app)
           .post('/auth/signup')
