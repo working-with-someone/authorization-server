@@ -92,7 +92,24 @@ export const createLocalUser = async (data: LocalUserCreateInput) => {
 };
 
 export const verifyUser = async (userId: number, verifyToken: string) => {
-  const updatedUser = await prismaClient.local.update({
+  const targetUser = await prismaClient.user.findFirst({
+    where: {
+      local: {
+        user_id: userId,
+        verify_token: verifyToken,
+        email_verified: false,
+      },
+    },
+  });
+
+  if (!targetUser) {
+    throw new wwsError(
+      HttpStatusCode.BAD_REQUEST,
+      HttpStatusCode.getStatusText(HttpStatusCode.BAD_REQUEST)
+    );
+  }
+
+  await prismaClient.local.update({
     data: {
       email_verified: true,
     },
@@ -102,13 +119,6 @@ export const verifyUser = async (userId: number, verifyToken: string) => {
       email_verified: false,
     },
   });
-
-  if (!updatedUser) {
-    throw new wwsError(
-      HttpStatusCode.NOT_FOUND,
-      HttpStatusCode.getStatusText(HttpStatusCode.NOT_FOUND)
-    );
-  }
 };
 
 export const createOrGetOauthUser = async (data: OauthUserCreateInput) => {

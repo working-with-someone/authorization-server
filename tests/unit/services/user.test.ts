@@ -193,30 +193,51 @@ describe('User_Service_Logic', () => {
 
   describe('verifyUser', () => {
     test('Resolve_If_There_Is_Updated_User', async () => {
-      const notVerifiedLocal = {
+      const existNotVerifiedUserGetResult = {
+        id: 2,
+        username: 'seungho-hub2',
+        pfp: '/pfp.png',
+        created_at: new Date(),
+        updated_at: new Date(),
+        local: {
+          id: 1,
+          email: 'kmc54320@gmail.com',
+          email_verified: false,
+          verify_token: '1234',
+          encrypted_password: '1234',
+          user_id: 2,
+        },
+      };
+
+      prismaClientMock.user.findFirst.mockResolvedValueOnce(
+        existNotVerifiedUserGetResult
+      );
+
+      const verifiedLocal = {
         id: 1,
         email: 'kmc54320@gmail.com',
-        email_verified: false,
+        email_verified: true,
         verify_token: '1234',
         encrypted_password: '1234',
         user_id: 2,
       };
-      prismaClientMock.local.update.mockResolvedValueOnce(notVerifiedLocal);
+
+      prismaClientMock.local.update.mockResolvedValueOnce(verifiedLocal);
 
       await expect(
         userService.verifyUser(1, 'verify_token')
       ).resolves.toBeUndefined();
     });
 
-    test('Throw_WWSError_With_404_If_There_Is_Not_Updated_User', async () => {
-      prismaClientMock.local.update.mockResolvedValueOnce(null as never);
+    test('Throw_WWSError_With_400_If_There_Is_Not_Updated_User', async () => {
+      prismaClientMock.user.findFirst.mockResolvedValueOnce(null);
 
       await expect(
         userService.verifyUser(1, 'verify_token')
       ).rejects.toThrowError(
         new wwsError(
-          HttpStatusCode.NOT_FOUND,
-          HttpStatusCode.getStatusText(HttpStatusCode.NOT_FOUND)
+          HttpStatusCode.BAD_REQUEST,
+          HttpStatusCode.getStatusText(HttpStatusCode.BAD_REQUEST)
         )
       );
     });
