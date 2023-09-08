@@ -5,6 +5,8 @@ import app from '../../../src/app';
 
 jest.unmock('../../../src/database');
 
+jest.mock('../../../src/utils/mailer.ts');
+
 describe('Authentication', () => {
   beforeAll(async () => {
     testUserData.localUsers.forEach(async (localUser) => {
