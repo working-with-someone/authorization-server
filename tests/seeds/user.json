@@ -1,0 +1,66 @@
+{
+  "localUsers": [
+    {
+      "id": 1,
+      "username": "testUser1",
+      "pfp": "./pfp.png",
+      "local": {
+        "create": {
+          "encrypted_password": "encryptedTestPassword",
+          "email": "testEmail1@test.com",
+          "email_verified": true,
+          "verify_token": "testVerifyToken"
+        }
+      }
+    },
+    {
+      "id": 2,
+      "username": "testUser2",
+      "pfp": "./pfp.png",
+      "local": {
+        "create": {
+          "encrypted_password": "encryptedTestPassword",
+          "email": "testEmail2@test.com",
+          "email_verified": true,
+          "verify_token": "testVerifyToken"
+        }
+      }
+    },
+    {
+      "id": 3,
+      "username": "testUser3",
+      "pfp": "./pfp.png",
+      "local": {
+        "create": {
+          "encrypted_password": "encryptedTestPassword",
+          "email": "testEmail3@test.com",
+          "email_verified": true,
+          "verify_token": "testVerifyToken"
+        }
+      }
+    }
+  ],
+  "newLocalUser": {
+    "username": "testUser4",
+    "email": "testEmail4@test.com",
+    "password": "testStrongPassword"
+  },
+  "verifyQuery": {
+    "invalid": {
+      "user_id": 123456,
+      "token": "notExistVerifyToken"
+    }
+  },
+  "signupInput": {
+    "invalid": {
+      "username": "username must be longer than 12 characters",
+      "password": "weakPW",
+      "email": "invalidEmail"
+    },
+    "valid": {
+      "username": "testUser4",
+      "password": "strongPassword12!",
+      "email": "testEmail@test.com"
+    }
+  }
+}
