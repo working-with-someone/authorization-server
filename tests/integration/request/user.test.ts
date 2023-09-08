@@ -172,5 +172,36 @@ describe('Authentication', () => {
           .end(done);
       });
     });
+
+    describe('Signin', () => {
+      test('Response_Signin_Page_With_200', (done) => {
+        request(app).get('/auth/signin').expect(200).end(done);
+      });
+
+      test('Redirect_To_Home_With_302_If_Signin_Success_But_Redirect_Uri_Does_Not_Provided', (done) => {
+        request(app)
+          .post('/auth/signin')
+          .send({
+            email: testUserData.newLocalUser.email,
+            password: testUserData.newLocalUser.password,
+          })
+          .set({
+            'Content-Type': 'application/x-www-form-urlencoded',
+          })
+          .expect(302)
+          .end(done);
+      });
+
+      test('Response_Error_Page_With_400_If_Signin_Failed', (done) => {
+        request(app)
+          .post('/auth/signin')
+          .send({
+            email: 'doesNotExist@example.com',
+            password: 'strongPassword12!',
+          })
+          .expect(400)
+          .end(done);
+      });
+    });
   });
 });
