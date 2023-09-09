@@ -7,7 +7,8 @@
     "dev": "cross-env NODE_ENV=development nodemon",
     "build": "tsc",
     "migrate-prod": "dotenv -e ./.env -- yarn prisma migrate deploy",
-    "migrate-dev": "dotenv -e ./.env -- yarn prisma migrate dev && dotenv -e ./.env.test -- yarn prisma migrate dev",
+    "migrate-dev": "dotenv -e ./.env -- yarn prisma migrate dev",
+    "migrate-test": "dotenv -e ./.env.test -- yarn prisma migrate dev",
     "test": "cross-env NODE_ENV=test jest"
   },
   "devDependencies": {
