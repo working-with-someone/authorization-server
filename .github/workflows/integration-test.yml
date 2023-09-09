@@ -1,0 +1,62 @@
+name: integration Test
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    name: unit test
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js 18.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: yarn
+          
+      - name : Setup Mysql Latest
+        uses : 'mirromutth/mysql-action@v1.1'
+        with:
+          mysql root password: ${{ secrets.DATABASE_PASSWORD }}
+          mysql password: ${{ secrets.DATABASE_PASSWORD }}
+
+      - name: Install Dependencies
+        run: yarn install --immutable
+        
+      - name: create dotenv
+        run: |
+         touch ./.env.test
+         echo "PROTOCOL=${{ secrets.PROTOCOL }}" >> ./.env
+         echo "HOST=${{ secrets.HOST }}" >> ./.env
+         echo "PORT=${{ secrets.PORT }}" >> ./.env
+         echo "SERVER_URL=${{ secrets.SERVER_URL }}" >> ./.env
+         echo "APP_SECRET=${{ secrets.APP_SECRET }}" >> ./.env
+         echo "TOKEN_USER_SECRET=${{ secrets.TOKEN_USER_SECRET }}" >> ./.env
+         echo "DATABASE_HOST=${{ secrets.DATABASE_HOST }}" >> ./.env
+         echo "DATABASE_PORT=${{ secrets.DATABASE_PORT }}" >> ./.env
+         echo "DATABASE_NAME=${{ secrets.DATABASE_NAME }}" >> ./.env
+         echo "DATABASE_USER=${{ secrets.DATABASE_USER }}" >> ./.env
+         echo "DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}" >> ./.env
+         echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> ./.env
+         echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> ./.env
+         echo "GOOGLE_GMAIL=${{ secrets.GOOGLE_GMAIL }}" >> ./.env
+         echo "GOOGLE_GMAIL_SECRET=${{ secrets.GOOGLE_GMAIL_SECRET }}" >> ./.env
+         echo "GITHUB_CLIENT_ID=${{ secrets.GH_CLIENT_ID }}" >> ./.env
+         echo "GITHUB_CLIENT_SECRET=${{ secrets.GH_CLIENT_SECRET }}" >> ./.env
+         echo "KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}" >> ./.env
+         echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> ./.env
+
+      - name: migrate database
+        run: yarn run migrate-test
+
+      - name: run all integration tests
+        run: yarn jest tests/integration
+
