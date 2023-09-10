@@ -180,7 +180,7 @@ describe('Authentication', () => {
         request(app).get('/auth/signin').expect(200).end(done);
       });
 
-      test('Redirect_To_Home_With_302_If_Signin_Success_But_Redirect_Uri_Does_Not_Provided', (done) => {
+      test('Redirect_To_Home_With_Cookie_With_302_If_Signin_Success_But_Redirect_Uri_Does_Not_Provided', (done) => {
         request(app)
           .post('/auth/signin')
           .send({
@@ -191,6 +191,10 @@ describe('Authentication', () => {
             'Content-Type': 'application/x-www-form-urlencoded',
           })
           .expect(302)
+          .expect('Location', '/')
+          .expect((res) => {
+            expect(res.headers['set-cookie'][0]).toBeDefined();
+          })
           .end(done);
       });
 

@@ -37,6 +37,7 @@ export const signin = asyncCatch(async (req: Request, res: Response) => {
 
     return res.redirect(redirectURL.toString());
   } else {
+    res.cookie('seungho.hub.token', userToken);
     return res.redirect('/');
   }
 });
