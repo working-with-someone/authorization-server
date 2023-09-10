@@ -180,6 +180,18 @@ describe('Authentication', () => {
         request(app).get('/auth/signin').expect(200).end(done);
       });
 
+      test('Response_Signin_Page_With_Cookie_With_200', (done) => {
+        request(app)
+          .get('/auth/signin')
+          .query({
+            redirect_uri: 'http://example.com',
+          })
+          .expect(200)
+          .expect((res) => {
+            expect(res.headers['set-cookie'][0]).toBeDefined();
+          })
+          .end(done);
+      });
       test('Redirect_To_Home_With_Cookie_With_302_If_Signin_Success_But_Redirect_Uri_Does_Not_Provided', (done) => {
         request(app)
           .post('/auth/signin')
@@ -194,6 +206,28 @@ describe('Authentication', () => {
           .expect('Location', '/')
           .expect((res) => {
             expect(res.headers['set-cookie'][0]).toBeDefined();
+          })
+          .end(done);
+      });
+
+      test('Redirect_To_Redirect_Uri_With_QueryParam_With_302_If_Signin_Success_And_Redirect_Uri_Provided', (done) => {
+        request(app)
+          .post('/auth/signin')
+          .set('Cookie', ['redirect_uri=https://example.com'])
+          .send({
+            email: testUserData.newLocalUser.email,
+            password: testUserData.newLocalUser.password,
+          })
+          .set({
+            'Content-Type': 'application/x-www-form-urlencoded',
+          })
+          .expect(302)
+          .expect((res) => {
+            const redirectUriRegex = /https:\/\/example.com\/\?jwt=*/;
+            expect(res.headers.location).toMatch(redirectUriRegex);
+          })
+          .expect((res) => {
+            expect(res.headers['set-cookie'][0]).toBeDefined;
           })
           .end(done);
       });
