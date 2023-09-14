@@ -18,7 +18,7 @@ export const signin = asyncCatch(async (req: Request, res: Response) => {
   const user = await userService.signinUser(req.body);
 
   //generate JWT with user profile
-  const userToken = jwt.sign(
+  const accessToken = jwt.sign(
     user as object,
     process.env.TOKEN_USER_SECRET as string,
     {
@@ -33,11 +33,11 @@ export const signin = asyncCatch(async (req: Request, res: Response) => {
 
     res.clearCookie('redirect_uri');
 
-    redirectURL.searchParams.append('jwt', userToken);
+    redirectURL.searchParams.append('jwt', accessToken);
 
     return res.redirect(redirectURL.toString());
   } else {
-    res.cookie('seungho.hub.token', userToken);
+    res.cookie('seungho.hub.token', accessToken);
     return res.redirect('/');
   }
 });
@@ -71,7 +71,7 @@ export const codeCallback = asyncCatch(async (req: Request, res: Response) => {
   });
 
   //generate JWT with user profile
-  const userToken = jwt.sign(
+  const accessToken = jwt.sign(
     user as object,
     process.env.TOKEN_USER_SECRET as string,
     {
@@ -86,7 +86,7 @@ export const codeCallback = asyncCatch(async (req: Request, res: Response) => {
 
     res.clearCookie('redirect_uri');
 
-    redirectURL.searchParams.append('jwt', userToken);
+    redirectURL.searchParams.append('jwt', accessToken);
 
     return res.redirect(redirectURL.toString());
   } else {
