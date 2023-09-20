@@ -4,19 +4,12 @@ import HttpStatusCode from 'http-status-codes';
 import bcrypt from 'bcrypt';
 import getRandomString from '../lib/rs';
 import mailer from '../utils/mailer';
-import OAuths from '../lib/api';
-import { Tokens } from '../lib/api/apiInterface';
 import pick from '../utils/pick';
 
 interface LocalUserCreateInput {
   username: string;
   email: string;
   password: string;
-}
-
-interface OauthUserCreateInput {
-  provider: string;
-  code: string;
 }
 
 interface UserSigninInput {
@@ -121,52 +114,6 @@ export const verifyUser = async (userId: number, verifyToken: string) => {
   });
 };
 
-export const createOrGetOauthUser = async (data: OauthUserCreateInput) => {
-  const { provider, code } = data;
-
-  //get api interface
-  const apiInterface = OAuths[provider];
-
-  //get access token from provider with authorization code
-  const tokens: Tokens = await apiInterface.getTokens(code);
-
-  //get profile from provider with acess token
-  const profile = await apiInterface.getUserProfile(tokens.accessToken);
-
-  let user = await prismaClient.user.findFirst({
-    where: {
-      oauth: {
-        id: profile.id,
-      },
-    },
-    include: {
-      oauth: true,
-    },
-  });
-
-  if (!user) {
-    user = await prismaClient.user.create({
-      data: {
-        username: profile.username,
-        pfp: profile.pfp,
-        oauth: {
-          create: {
-            provider: data.provider,
-            id: profile.id,
-            access_token: tokens.accessToken,
-            refresh_token: tokens.refreshToken,
-          },
-        },
-      },
-      include: {
-        oauth: true,
-      },
-    });
-  }
-
-  return hideOauthUserSensitiveInfo(user);
-};
-
 export const signinUser = async (body: UserSigninInput) => {
   const user = await prismaClient.user.findFirst({
     where: {
@@ -188,13 +135,6 @@ export const signinUser = async (body: UserSigninInput) => {
 
   //if user does not exist or registered incorrectly respoonse with 400
   throw new wwsError(HttpStatusCode.BAD_REQUEST, 'account does not registered');
-};
-
-export const hideOauthUserSensitiveInfo = (user: Record<string, any>) => {
-  return {
-    ...pick(user, ['username', 'pfp', 'id']),
-    oauth: pick(user.oauth, ['id', 'provider']),
-  };
 };
 
 export const hideLocalUserSensitiveInfo = (user: Record<string, any>) => {

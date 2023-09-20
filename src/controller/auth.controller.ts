@@ -1,6 +1,4 @@
 import { Request, Response } from 'express';
-
-import OAuth from '../lib/api';
 import jwt from 'jsonwebtoken';
 import asyncCatch from '../utils/asyncCatch';
 import { isValidURL } from '../lib/url';
@@ -58,38 +56,4 @@ export const verify = asyncCatch(async (req: Request, res: Response) => {
   await userService.verifyUser(parseInt(user_id as string), token as string);
 
   return res.render('verification-success');
-});
-
-export const redirectToAuth = asyncCatch((req: Request, res: Response) => {
-  return res.redirect(OAuth[req.params.provider].authCodeURL);
-});
-
-export const codeCallback = asyncCatch(async (req: Request, res: Response) => {
-  const user = await userService.createOrGetOauthUser({
-    provider: req.params.provider,
-    code: req.query.code as string,
-  });
-
-  //generate JWT with user profile
-  const accessToken = jwt.sign(
-    user as object,
-    process.env.TOKEN_USER_SECRET as string,
-    {
-      algorithm: 'HS512',
-    }
-  );
-
-  if (
-    isValidURL(req.cookies.redirect_uri, ['http', 'https', 'wwsp', 'wwsp-dev'])
-  ) {
-    const redirectURL = new URL(req.cookies.redirect_uri);
-
-    res.clearCookie('redirect_uri');
-
-    redirectURL.searchParams.append('jwt', accessToken);
-
-    return res.redirect(redirectURL.toString());
-  } else {
-    return res.redirect('/');
-  }
 });
