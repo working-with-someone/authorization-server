@@ -45,13 +45,8 @@ jobs:
          echo "DATABASE_NAME=${{ secrets.DATABASE_NAME }}" >> ./.env
          echo "DATABASE_USER=${{ secrets.DATABASE_USER }}" >> ./.env
          echo "DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}" >> ./.env
-         echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> ./.env
-         echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> ./.env
          echo "GOOGLE_GMAIL=${{ secrets.GOOGLE_GMAIL }}" >> ./.env
          echo "GOOGLE_GMAIL_SECRET=${{ secrets.GOOGLE_GMAIL_SECRET }}" >> ./.env
-         echo "GITHUB_CLIENT_ID=${{ secrets.GH_CLIENT_ID }}" >> ./.env
-         echo "GITHUB_CLIENT_SECRET=${{ secrets.GH_CLIENT_SECRET }}" >> ./.env
-         echo "KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}" >> ./.env
          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> ./.env
 
       - name: migrate database
