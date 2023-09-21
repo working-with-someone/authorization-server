@@ -54,8 +54,8 @@ jobs:
          echo "KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}" >> ./.env
          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> ./.env
 
-      - name: migrate database
-        run: yarn run migrate-test
+      - name: push schema to database
+        run: yarn prisma db push
 
       - name: run all integration tests
         run: yarn jest tests/integration
