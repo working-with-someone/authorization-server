@@ -13,7 +13,7 @@ jest.mock('../../../src/utils/mailer.ts');
 jest.mock('bcrypt');
 
 describe('User_Service_Logic', () => {
-  describe('createLocalUser', () => {
+  describe('createUser', () => {
     const newUser = {
       username: 'latto',
       email: 'latto@gmail.com',
@@ -24,7 +24,7 @@ describe('User_Service_Logic', () => {
       prismaClientMock.user.findFirst.mockResolvedValueOnce(null);
 
       await expect(
-        userService.createLocalUser({
+        userService.createUser({
           username: newUser.username,
           email: newUser.email,
           password: newUser.password,
@@ -62,7 +62,7 @@ describe('User_Service_Logic', () => {
       );
 
       await expect(
-        userService.createLocalUser({
+        userService.createUser({
           username: newUser.username,
           email: newUser.email,
           password: newUser.password,
@@ -104,7 +104,7 @@ describe('User_Service_Logic', () => {
       );
 
       await expect(
-        userService.createLocalUser({
+        userService.createUser({
           username: newUser.username,
           email: newUser.email,
           password: newUser.password,

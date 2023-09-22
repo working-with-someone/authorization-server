@@ -7,7 +7,7 @@ import mailer from '../utils/mailer';
 import pick from '../utils/pick';
 import moment from 'moment';
 
-interface LocalUserCreateInput {
+interface UserCreateInput {
   username: string;
   email: string;
   password: string;
@@ -18,7 +18,7 @@ interface UserSigninInput {
   password: string;
 }
 
-export const createLocalUser = async (data: LocalUserCreateInput) => {
+export const createUser = async (data: UserCreateInput) => {
   const registeredUser = await prismaClient.user.findFirst({
     where: { email: data.email },
     include: { email_verification: true },
@@ -34,7 +34,7 @@ export const createLocalUser = async (data: LocalUserCreateInput) => {
       );
     }
     //이미 존재하는 user가 email verified 되지 않은 상태
-    //해당 user를 제거하고 local user creation으로 넘어간다.
+    //해당 user를 제거하고  user creation으로 넘어간다.
     else {
       const deletedUser = await prismaClient.user.delete({
         where: { id: registeredUser.id },
@@ -49,7 +49,7 @@ export const createLocalUser = async (data: LocalUserCreateInput) => {
     }
   }
 
-  //정상적인 local user creation을 수행한다.
+  //정상적인  user creation을 수행한다.
   const salt = await bcrypt.genSalt(10);
 
   const encrypted_password = await bcrypt.hash(data.password, salt);
