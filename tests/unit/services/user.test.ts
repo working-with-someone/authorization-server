@@ -31,24 +31,24 @@ describe('User_Service_Logic', () => {
         })
       ).resolves.toBeUndefined();
 
-      expect(
-        prismaClientMock.user.create.mock.calls[0][0].data.local?.create?.email
-      ).toBe(newUser.email);
+      expect(prismaClientMock.user.create.mock.calls[0][0].data.email).toBe(
+        newUser.email
+      );
     });
 
     test('Delete_Exist_User_And_Create_New_User_If_User_Already_Exist_But_Not_Verified', async () => {
       const existNotVerifiedUserGetResult = {
         id: 2,
         username: 'seungho-hub2',
+        email: 'kmc54320@gmail.com',
+        encrypted_password: '1234',
         pfp: '/pfp.png',
         created_at: new Date(),
         updated_at: new Date(),
-        local: {
-          id: 1,
-          email: 'kmc54320@gmail.com',
+        email_verification: {
+          expired_at: '2023-09-22T12:34:56.789Z',
           email_verified: false,
           verify_token: '1234',
-          encrypted_password: '1234',
           user_id: 2,
         },
       };
@@ -70,9 +70,9 @@ describe('User_Service_Logic', () => {
       ).resolves.toBeUndefined();
 
       //create new user
-      expect(
-        prismaClientMock.user.create.mock.calls[0][0].data.local?.create?.email
-      ).toBe(newUser.email);
+      expect(prismaClientMock.user.create.mock.calls[0][0].data.email).toBe(
+        newUser.email
+      );
 
       //delete exist user
       expect(prismaClientMock.user.delete).toHaveBeenCalledWith({
@@ -86,15 +86,15 @@ describe('User_Service_Logic', () => {
       const existVerifiedUserGetResult = {
         id: 2,
         username: 'seungho-hub2',
+        email: 'kmc54320@gmail.com',
+        encrypted_password: '1234',
         pfp: '/pfp.png',
         created_at: new Date(),
         updated_at: new Date(),
-        local: {
-          id: 1,
-          email: 'kmc54320@gmail.com',
+        email_verification: {
+          expired_at: '2023-09-22T12:34:56.789Z',
           email_verified: true,
           verify_token: '1234',
-          encrypted_password: '1234',
           user_id: 2,
         },
       };
