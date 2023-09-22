@@ -5,6 +5,7 @@ import bcrypt from 'bcrypt';
 import getRandomString from '../lib/rs';
 import mailer from '../utils/mailer';
 import pick from '../utils/pick';
+import moment from 'moment';
 
 interface LocalUserCreateInput {
   username: string;
@@ -19,20 +20,14 @@ interface UserSigninInput {
 
 export const createLocalUser = async (data: LocalUserCreateInput) => {
   const registeredUser = await prismaClient.user.findFirst({
-    where: {
-      local: {
-        email: data.email,
-      },
-    },
-    include: {
-      local: true,
-    },
+    where: { email: data.email },
+    include: { email_verification: true },
   });
 
   if (registeredUser) {
-    //이미 존재하는 user가 email verified 상태 즉, user.
+    //이미 존재하는 user가 email verified 상태 즉, verified user.
     //409 Conflict와 함께 Conflict msg를 응답한다.
-    if (registeredUser.local?.email_verified) {
+    if (registeredUser.email_verification?.email_verified) {
       throw new wwsError(
         HttpStatusCode.CONFLICT,
         'account already registered with email'
@@ -42,9 +37,7 @@ export const createLocalUser = async (data: LocalUserCreateInput) => {
     //해당 user를 제거하고 local user creation으로 넘어간다.
     else {
       const deletedUser = await prismaClient.user.delete({
-        where: {
-          id: registeredUser.id,
-        },
+        where: { id: registeredUser.id },
       });
 
       if (!deletedUser) {
@@ -67,12 +60,13 @@ export const createLocalUser = async (data: LocalUserCreateInput) => {
     data: {
       username: data.username,
       pfp: '',
-      local: {
+      encrypted_password,
+      email: data.email,
+      email_verification: {
         create: {
-          encrypted_password,
-          email: data.email,
-          email_verified: false,
           verify_token,
+          email_verified: false,
+          expired_at: moment().add(15, 'minute').toDate(),
         },
       },
     },
@@ -87,8 +81,8 @@ export const createLocalUser = async (data: LocalUserCreateInput) => {
 export const verifyUser = async (userId: number, verifyToken: string) => {
   const targetUser = await prismaClient.user.findFirst({
     where: {
-      local: {
-        user_id: userId,
+      id: userId,
+      email_verification: {
         verify_token: verifyToken,
         email_verified: false,
       },
@@ -102,7 +96,7 @@ export const verifyUser = async (userId: number, verifyToken: string) => {
     );
   }
 
-  await prismaClient.local.update({
+  await prismaClient.email_verification.update({
     data: {
       email_verified: true,
     },
@@ -117,29 +111,21 @@ export const verifyUser = async (userId: number, verifyToken: string) => {
 export const signinUser = async (body: UserSigninInput) => {
   const user = await prismaClient.user.findFirst({
     where: {
-      local: {
-        email: body.email,
+      email: body.email,
+      email_verification: {
         email_verified: true,
       },
     },
-    include: {
-      local: true,
-    },
   });
 
-  if (user?.local?.encrypted_password) {
-    if (await bcrypt.compare(body.password, user?.local?.encrypted_password)) {
-      return hideLocalUserSensitiveInfo(user);
+  if (user) {
+    if (await bcrypt.compare(body.password, user.encrypted_password)) {
+      return getPubliclUserInfo(user);
     }
   }
-
   //if user does not exist or registered incorrectly respoonse with 400
   throw new wwsError(HttpStatusCode.BAD_REQUEST, 'account does not registered');
 };
 
-export const hideLocalUserSensitiveInfo = (user: Record<string, any>) => {
-  return {
-    ...pick(user, ['username', 'pfp', 'id']),
-    local: pick(user.local, ['email']),
-  };
-};
+export const getPubliclUserInfo = (user: Record<string, any>) =>
+  pick(user, ['username', 'pfp', 'email']);
