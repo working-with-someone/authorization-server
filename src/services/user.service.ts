@@ -85,6 +85,9 @@ export const verifyUser = async (userId: number, verifyToken: string) => {
       email_verification: {
         verify_token: verifyToken,
         email_verified: false,
+        expired_at: {
+          gte: moment().subtract(15, 'minute').toDate(),
+        },
       },
     },
   });
