@@ -54,6 +54,20 @@
       "token": "notExistVerifyToken"
     }
   },
+  "expired_user": {
+    "id": 200,
+    "username": "expiredTestUser",
+    "pfp": "./pfp.png",
+    "encrypted_password": "encryptedTestPassword",
+    "email": "testEmailExpired@test.com",
+    "email_verification": {
+      "create": {
+        "email_verified": false,
+        "verify_token": "testVerifyToken",
+        "expired_at": ""
+      }
+    }
+  },
   "signupInput": {
     "invalid": {
       "username": "username must be longer than 12 characters",

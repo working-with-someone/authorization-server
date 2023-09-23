@@ -2,6 +2,7 @@ import prismaClient from '../../../src/database';
 import request from 'supertest';
 import testUserData from '../../seeds/user.json';
 import app from '../../../src/app';
+import moment from 'moment';
 
 jest.unmock('../../../src/database');
 
@@ -28,7 +29,11 @@ describe('Authentication', () => {
     test('Response_Signup_Success_Page_With_200_If_Signup_Success', (done) => {
       request(app)
         .post('/auth/signup')
-        .send(testUserData.newUser)
+        .send({
+          username: testUserData.newUser.username,
+          password: testUserData.newUser.password,
+          email: testUserData.newUser.email,
+        })
         .set({
           'Content-Type': 'application/x-www-form-urlencoded',
         })
@@ -140,6 +145,17 @@ describe('Authentication', () => {
   });
 
   describe('Verify', () => {
+    beforeAll(async () => {
+      testUserData.expired_user.email_verification.create.expired_at = moment()
+        .subtract(16, 'minute')
+        .toDate()
+        .toISOString();
+
+      await prismaClient.user.create({
+        data: testUserData.expired_user,
+      });
+    });
+
     test('Response_Verification_Success_Page_With_200_If_Verification_Success', async () => {
       const user = await prismaClient.user.findFirst({
         where: {
@@ -158,6 +174,23 @@ describe('Authentication', () => {
       expect(res.status).toEqual(200);
     });
 
+    test('Response_Error_Page_With_400_If_Verify_Code_Expired', async () => {
+      const user = await prismaClient.user.findFirst({
+        where: {
+          username: testUserData.expired_user.username,
+          email: testUserData.expired_user.email,
+        },
+        include: {
+          email_verification: true,
+        },
+      });
+
+      const res = await request(app).get(
+        `/auth/signup/verify?user_id=${user?.id}&token=${user?.email_verification?.verify_token}`
+      );
+
+      expect(res.status).toEqual(400);
+    });
     test('Response_Error_Page_With_400_If_Verification_Request_Include_Invalid_Query_Parameters', (done) => {
       request(app).get('/auth/signup/verify').expect(400).end(done);
     });
