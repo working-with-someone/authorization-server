@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import asyncCatch from '../utils/asyncCatch';
-import { isValidURL } from '../lib/url';
+import { isValidURL } from '../utils/url';
 import { userService } from '../services';
 
 export const renderSignin = asyncCatch((req: Request, res: Response) => {

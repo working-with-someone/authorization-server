@@ -2,7 +2,7 @@ import prismaClient from '../database';
 import { wwsError } from '../utils/wwsError';
 import HttpStatusCode from 'http-status-codes';
 import bcrypt from 'bcrypt';
-import getRandomString from '../lib/rs';
+import getRandomString from '../utils/rs';
 import mailer from '../utils/mailer';
 import pick from '../utils/pick';
 import moment from 'moment';
