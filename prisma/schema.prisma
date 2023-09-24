@@ -11,14 +11,18 @@ datasource db {
 }
 
 model user {
-  id                 Int                 @id @default(autoincrement())
-  username           String
-  encrypted_password String
-  email              String
-  pfp                String
-  created_at         DateTime            @default(now())
-  updated_at         DateTime            @updatedAt
-  email_verification email_verification?
+  id                  Int                  @id @default(autoincrement())
+  username            String
+  encrypted_password  String
+  email               String
+  pfp                 String
+  created_at          DateTime             @default(now())
+  updated_at          DateTime             @updatedAt
+  email_verification  email_verification?
+  oauth_client        oauth_client[]
+  oauth_user          oauth_user[]
+  oauth_access_token  oauth_access_token?
+  oauth_refresh_token oauth_refresh_token?
 }
 
 model email_verification {
@@ -28,4 +32,44 @@ model email_verification {
   expired_at     DateTime
   user_id        Int      @unique
   user           user     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
+
+model oauth_client {
+  id                  String                @id
+  client_secret       String
+  redirect_uri        String
+  grant_type          String
+  scope               String
+  user_id             Int                   @unique
+  user                user                  @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  oauth_access_token  oauth_access_token[]
+  oauth_refresh_token oauth_refresh_token[]
+  oauth_user          oauth_user[]
+}
+
+model oauth_access_token {
+  access_token String       @id
+  client_id    String
+  user_id      Int          @unique
+  expired_at   DateTime
+  scope        String
+  client       oauth_client @relation(fields: [client_id], references: [id], onDelete: Cascade)
+  user         user         @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
+
+model oauth_refresh_token {
+  refresh_token String       @id
+  user_id       Int          @unique
+  client_id     String
+  expired_at    DateTime
+  client        oauth_client @relation(fields: [client_id], references: [id], onDelete: Cascade)
+  user          user         @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
+
+model oauth_user {
+  id        Int          @id @default(autoincrement())
+  user_id   Int
+  client_id String
+  client    oauth_client @relation(fields: [client_id], references: [id], onDelete: Cascade)
+  user      user         @relation(fields: [user_id], references: [id], onDelete: Cascade)
 }
