@@ -1,33 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
+<%-include('base.ejs')%>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>seungho.hub</title>
-
-    <link rel="stylesheet" href="/css/global.css">
     <link rel="stylesheet" href="/css/error.css">
-</head>
 
-<body>
-    <section class="error">
-        <div class="left">
-            <h1>ERROR</h1>
-            <h3>
-                <%= err.status %>
-                    <%= err.statusText %>
-            </h3>
-            <div class="error-message">
-                <p>
-                    <%= err.message %>
-                </p>
+    <body>
+        <section class="error">
+            <div class="left">
+                <h1>ERROR</h1>
+                <h3>
+                    <%= err.status %>
+                        <%= err.statusText %>
+                </h3>
+                <div class="error-message">
+                    <p>
+                        <%= err.message %>
+                    </p>
+                </div>
             </div>
-        </div>
-        <div class="right">
-            <img src="/images/stuart.png" alt="">
-        </div>
-    </section>
-</body>
+            <div class="right">
+                <img src="/images/stuart.png" alt="">
+            </div>
+        </section>
+    </body>
 
-</html>
+    </html>
