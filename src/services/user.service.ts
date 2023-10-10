@@ -131,4 +131,4 @@ export const signinUser = async (body: UserSigninInput) => {
 };
 
 export const getPublicUserInfo = (user: Record<string, any>) =>
-  pick(user, ['username', 'pfp', 'email']);
+  pick(user, ['id', 'username', 'pfp', 'email']);
