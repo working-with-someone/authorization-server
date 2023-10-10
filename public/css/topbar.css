@@ -6,10 +6,8 @@ section.topbar {
   height: 82px;
   background-color: var(--bg-bar);
 
-  padding: 0 10px;
-  display: grid;
-  grid-template-columns: 10fr 4fr 6fr 1fr;
-  grid-template-areas: "logo . menus others";
+  padding: 0 20px;
+  display: flex;
 }
 
 section.topbar>* {
@@ -19,12 +17,12 @@ section.topbar>* {
 }
 
 section.topbar .logo {
-  grid-area: logo;
-  gap: 10px;
+  margin-right: auto
 }
 
 section.topbar .logo img {
   width: 50px;
+  margin-right: 10px;
 }
 
 section.topbar .logo p {
@@ -32,20 +30,13 @@ section.topbar .logo p {
 }
 
 section.topbar .menus {
-  grid-area: menus;
-  display: flex;
-  flex-direction: row;
   gap: 40px;
+  margin-right: 30px;
 }
 
 section.topbar .menus .menu {
   font-size: 1.3em;
   text-align: center;
-}
-
-section.topbar .others {
-  grid-area: others;
-  justify-content: center;
 }
 
 section.topbar .others span {
