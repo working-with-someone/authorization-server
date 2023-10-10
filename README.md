@@ -1,1 +1,1 @@
-# seungho.hub Authorization server
+# wws Authorization server
