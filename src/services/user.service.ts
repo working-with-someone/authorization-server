@@ -123,12 +123,12 @@ export const signinUser = async (body: UserSigninInput) => {
 
   if (user) {
     if (await bcrypt.compare(body.password, user.encrypted_password)) {
-      return getPubliclUserInfo(user);
+      return getPublicUserInfo(user);
     }
   }
   //if user does not exist or registered incorrectly respoonse with 400
   throw new wwsError(HttpStatusCode.BAD_REQUEST, 'account does not registered');
 };
 
-export const getPubliclUserInfo = (user: Record<string, any>) =>
+export const getPublicUserInfo = (user: Record<string, any>) =>
   pick(user, ['username', 'pfp', 'email']);
