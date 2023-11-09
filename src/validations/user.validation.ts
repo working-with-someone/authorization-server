@@ -8,7 +8,7 @@ const createUser: Record<string, any> = {
   }),
 };
 
-const signin: Record<string, any> = {
+const login: Record<string, any> = {
   body: joi.object().keys({
     //length validation은 필요없다.
     //등록되지 않은 user는 로그인에 실패한다.
@@ -25,6 +25,6 @@ const verifyUser: Record<string, any> = {
 
 export default {
   createUser,
-  signin,
+  login,
   verifyUser,
 };

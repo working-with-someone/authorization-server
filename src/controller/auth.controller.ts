@@ -4,16 +4,16 @@ import asyncCatch from '../utils/asyncCatch';
 import { isValidURL } from '../utils/url';
 import { userService } from '../services';
 
-export const renderSignin = asyncCatch((req: Request, res: Response) => {
+export const renderLogin = asyncCatch((req: Request, res: Response) => {
   const redirectURL = req.query.redirect_uri;
 
   res.cookie('redirect_uri', redirectURL);
 
-  return res.render('signin');
+  return res.render('login');
 });
 
-export const signin = asyncCatch(async (req: Request, res: Response) => {
-  const user = await userService.signinUser(req.body);
+export const login = asyncCatch(async (req: Request, res: Response) => {
+  const user = await userService.loginUser(req.body);
 
   //generate JWT with user profile
   const accessToken = jwt.sign(

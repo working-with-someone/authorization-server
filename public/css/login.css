@@ -1,4 +1,4 @@
-section.signin {
+section.login {
     position: fixed;
     top: 45%;
     left: 50%;
@@ -11,7 +11,7 @@ section.signin {
     align-items: center;
 }
 
-section.signin>* {
+section.login>* {
     width: 100%;
 }
 
@@ -26,7 +26,7 @@ section.signin>* {
     width: 7em;
 }
 
-#signin-form {
+#login-form {
     display: flex;
     flex-direction: column;
     gap: 1em;
@@ -34,22 +34,22 @@ section.signin>* {
     margin-bottom: 6px;
 }
 
-#signin-form button {
+#login-form button {
     background-color: #FFCA36;
     color: #161728;
     width: 100%;
 }
 
-#signin-form input {
+#login-form input {
     width: 100%;
     background-color: var(--bg-input);
 }
 
-#signin-form input:focus {
+#login-form input:focus {
     outline: none;
 }
 
-#signin-form button {
+#login-form button {
     margin-top: 10px;
 }
 

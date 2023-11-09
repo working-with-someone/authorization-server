@@ -13,7 +13,7 @@ interface UserCreateInput {
   password: string;
 }
 
-interface UserSigninInput {
+interface UserLoginInput {
   email: string;
   password: string;
 }
@@ -111,7 +111,7 @@ export const verifyUser = async (userId: number, verifyToken: string) => {
   });
 };
 
-export const signinUser = async (body: UserSigninInput) => {
+export const loginUser = async (body: UserLoginInput) => {
   const user = await prismaClient.user.findFirst({
     where: {
       email: body.email,

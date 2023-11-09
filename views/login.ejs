@@ -1,16 +1,16 @@
 <%-include('base.ejs')%>
 
-    <link rel="stylesheet" href="/css/signin.css">
+    <link rel="stylesheet" href="/css/login.css">
 
     <body>
-        <section class="signin">
+        <section class="login">
             <div class="logo">
                 <img src="/images/logo.png" alt="">
             </div>
-            <form id="signin-form" action="/auth/signin" method="POST">
+            <form id="login-form" action="/auth/login" method="POST">
                 <input type="email" name="email" placeholder="email">
                 <input type="password" name="password" placeholder="password">
-                <button>signin</button>
+                <button>login</button>
             </form>
             <div class="signup-link">
                 <a href="/auth/signup">register now</a>
