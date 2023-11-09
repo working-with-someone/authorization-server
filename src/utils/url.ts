@@ -12,9 +12,13 @@ function generateURL(url: string, params?: params): string {
     .join('&')}`;
 }
 
-function isValidURL(url: string, protocols: string[]): boolean {
+function isValidURL(url: string, protocols?: string[]): boolean {
   try {
     const s = new URL(url);
+
+    if (!protocols) {
+      return true;
+    }
 
     return protocols
       ? s.protocol
