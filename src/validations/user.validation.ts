@@ -20,6 +20,7 @@ const login: Record<string, any> = {
     //등록되지 않은 user는 로그인에 실패한다.
     email: joi.string().required(),
     password: joi.string().required(),
+    continue: joi.string().uri().required(),
   }),
 };
 const verifyUser: Record<string, any> = {
