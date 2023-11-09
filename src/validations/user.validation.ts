@@ -8,6 +8,12 @@ const createUser: Record<string, any> = {
   }),
 };
 
+const renderLogin: Record<string, any> = {
+  query: joi.object().keys({
+    continue: joi.string().uri().required(),
+  }),
+};
+
 const login: Record<string, any> = {
   body: joi.object().keys({
     //length validation은 필요없다.
@@ -25,6 +31,7 @@ const verifyUser: Record<string, any> = {
 
 export default {
   createUser,
+  renderLogin,
   login,
   verifyUser,
 };
