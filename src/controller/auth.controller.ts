@@ -1,21 +1,15 @@
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import asyncCatch from '../utils/asyncCatch';
-import { isValidURL } from '../utils/url';
 import { userService } from '../services';
 
 export const renderLogin = asyncCatch((req: Request, res: Response) => {
-  const redirectURL = req.query.redirect_uri;
-
-  res.cookie('redirect_uri', redirectURL);
-
   return res.render('login');
 });
 
 export const login = asyncCatch(async (req: Request, res: Response) => {
   const user = await userService.loginUser(req.body);
 
-  //generate JWT with user profile
   const accessToken = jwt.sign(
     user as object,
     process.env.TOKEN_USER_SECRET as string,
@@ -24,20 +18,11 @@ export const login = asyncCatch(async (req: Request, res: Response) => {
     }
   );
 
-  if (
-    isValidURL(req.cookies.redirect_uri, ['http', 'https', 'wwsp', 'wwsp-dev'])
-  ) {
-    const redirectURL = new URL(req.cookies.redirect_uri);
+  const continueURL = new URL(req.body.continue);
 
-    res.clearCookie('redirect_uri');
+  continueURL.searchParams.append('jwt', accessToken);
 
-    redirectURL.searchParams.append('jwt', accessToken);
-
-    return res.redirect(redirectURL.toString());
-  } else {
-    res.cookie('seungho.hub.token', accessToken);
-    return res.redirect('/');
-  }
+  return res.redirect(continueURL.toString());
 });
 
 export const renderSignup = asyncCatch((req: Request, res: Response) => {
