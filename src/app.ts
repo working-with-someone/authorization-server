@@ -5,6 +5,7 @@ import RequestLogger from './middleware/requestLogger';
 import favicon from 'serve-favicon';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
+import { authMiddleware } from './middleware/auth.';
 import cors from 'cors';
 
 const app = express();
@@ -39,8 +40,10 @@ app.use(express.static(`${process.cwd()}/public`));
 app.use(RequestLogger);
 
 //import routers
-import { authRouter, homeRouter } from './routes';
+import { authRouter, homeRouter, appRouter } from './routes';
 
+//use middleware
+app.use('/app', authMiddleware, appRouter);
 //use router
 app.use('/', homeRouter);
 app.use('/auth', authRouter);
