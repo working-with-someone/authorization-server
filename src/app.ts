@@ -5,6 +5,7 @@ import RequestLogger from './middleware/requestLogger';
 import favicon from 'serve-favicon';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
 
 const app = express();
 
@@ -15,6 +16,12 @@ app.use(
         formAction: ['self', 'wwsp-dev: *', 'wwsp: *'],
       },
     },
+  })
+);
+
+app.use(
+  cors({
+    origin: process.env.CORS_ALLOWED_ORIGIN?.split(' '),
   })
 );
 
