@@ -40,12 +40,12 @@ app.use(express.static(`${process.cwd()}/public`));
 app.use(RequestLogger);
 
 //import routers
-import { authRouter, homeRouter, appRouter } from './routes';
+import { authRouter, appRouter } from './routes';
 
 //use middleware
 app.use('/app', authMiddleware, appRouter);
+
 //use router
-app.use('/', homeRouter);
 app.use('/auth', authRouter);
 
 //response 404 for any request to unknown endpoint
