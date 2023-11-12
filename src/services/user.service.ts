@@ -1,5 +1,5 @@
 import prismaClient from '../database';
-import { wwsError } from '../utils/wwsError';
+import { wwsError } from '../error/wwsError';
 import HttpStatusCode from 'http-status-codes';
 import bcrypt from 'bcrypt';
 import getRandomString from '../utils/rs';

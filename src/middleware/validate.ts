@@ -1,7 +1,7 @@
 import joi from 'joi';
 import httpStatusCode from 'http-status-codes';
 import pick from '../utils/pick';
-import { wwsError } from '../utils/wwsError';
+import { wwsError } from '../error/wwsError';
 import { NextFunction, Request, Response } from 'express';
 
 const validate =

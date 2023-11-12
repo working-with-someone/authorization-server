@@ -1,4 +1,4 @@
-import { wwsError } from '../utils/wwsError';
+import { wwsError } from '../error/wwsError';
 import { Request, Response, NextFunction } from 'express';
 import { sysErrorLogger } from '../logger/winston';
 import httpStatusCode from 'http-status-codes';

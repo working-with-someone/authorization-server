@@ -1,6 +1,6 @@
 import { RequestHandler, Request, Response, NextFunction } from 'express';
 import httpStatusCode from 'http-status-codes';
-import { wwsError } from './wwsError';
+import { wwsError } from '../error/wwsError';
 
 const asyncCatch =
   (controller: RequestHandler) =>

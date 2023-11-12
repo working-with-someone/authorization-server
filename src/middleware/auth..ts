@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import httpStatusCode from 'http-status-codes';
-import { wwsError } from '../utils/wwsError';
+import { wwsError } from '../error/wwsError';
 
 const authMiddleware = async (
   req: Request,
