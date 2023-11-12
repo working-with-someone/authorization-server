@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import httpStatusCode from 'http-status-codes';
 import { wwsError } from '../error/wwsError';
+import { isExist } from '../services/user.service';
 
 const authMiddleware = async (
   req: Request,
@@ -12,11 +13,17 @@ const authMiddleware = async (
 
   if (token) {
     try {
-      res.locals.user = jwt.verify(
+      const info = jwt.verify(
         token,
         process.env.TOKEN_USER_SECRET as string
-      );
-      return next();
+      ) as JwtPayload;
+
+      if (!(await isExist(info.id))) {
+        throw new Error();
+      }
+
+      res.locals.user = info;
+      next();
     } catch (err) {
       return next(
         new wwsError(

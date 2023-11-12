@@ -78,6 +78,14 @@ export const createUser = async (data: UserCreateInput) => {
   });
 };
 
+export const isExist = async (userId: number) => {
+  const user = await prismaClient.user.findFirst({
+    where: { id: userId },
+  });
+
+  return user ? true : false;
+};
+
 export const verifyUser = async (userId: number, verifyToken: string) => {
   const targetUser = await prismaClient.user.findFirst({
     where: {
