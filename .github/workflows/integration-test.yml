@@ -12,7 +12,7 @@ on:
 jobs:
   unit:
     runs-on: ubuntu-latest
-    name: unit test
+    name: integration test
     steps:
       - uses: actions/checkout@v3
 
@@ -27,13 +27,18 @@ jobs:
         with:
           mysql root password: ${{ secrets.DATABASE_PASSWORD }}
           mysql password: ${{ secrets.DATABASE_PASSWORD }}
+      
+      - name: start mysql
+        run: sudo service mysql start
+          
+          
 
       - name: Install Dependencies
         run: yarn install --immutable
         
       - name: create dotenv
         run: |
-         touch ./.env.test
+         touch ./.env
          echo "PROTOCOL=${{ secrets.PROTOCOL }}" >> ./.env
          echo "HOST=${{ secrets.HOST }}" >> ./.env
          echo "PORT=${{ secrets.PORT }}" >> ./.env
@@ -50,7 +55,7 @@ jobs:
          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> ./.env
 
       - name: push schema to database
-        run: yarn prisma db push
+        run: yarn prisma db push  
 
       - name: run all integration tests
         run: yarn jest tests/integration
