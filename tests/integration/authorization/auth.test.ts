@@ -207,43 +207,16 @@ describe('Authentication', () => {
 
   describe('Login', () => {
     test('Response_Login_Page_With_200', (done) => {
-      request(app).get('/auth/login').expect(200).end(done);
-    });
-
-    test('Response_Login_Page_With_Cookie_With_200', (done) => {
       request(app)
         .get('/auth/login')
-        .query({
-          redirect_uri: 'http://example.com',
-        })
+        .query({ continue: 'http://example.com' })
         .expect(200)
-        .expect((res) => {
-          expect(res.headers['set-cookie'][0]).toBeDefined();
-        })
-        .end(done);
-    });
-    test('Redirect_To_Home_With_Cookie_With_302_If_Login_Success_But_Redirect_Uri_Does_Not_Provided', (done) => {
-      request(app)
-        .post('/auth/login')
-        .send({
-          email: testUserData.newUser.email,
-          password: testUserData.newUser.password,
-        })
-        .set({
-          'Content-Type': 'application/x-www-form-urlencoded',
-        })
-        .expect(302)
-        .expect('Location', '/')
-        .expect((res) => {
-          expect(res.headers['set-cookie'][0]).toBeDefined();
-        })
         .end(done);
     });
 
-    test('Redirect_To_Redirect_Uri_With_QueryParam_With_302_If_Login_Success_And_Redirect_Uri_Provided', (done) => {
+    test('Response_Error_Page_With_400_If_Login_Success_But_Continue_Uri_Does_Not_Provided', (done) => {
       request(app)
         .post('/auth/login')
-        .set('Cookie', ['redirect_uri=https://example.com'])
         .send({
           email: testUserData.newUser.email,
           password: testUserData.newUser.password,
@@ -251,13 +224,25 @@ describe('Authentication', () => {
         .set({
           'Content-Type': 'application/x-www-form-urlencoded',
         })
+        .expect(400)
+        .end(done);
+    });
+
+    test('Redirect_To_Redirect_Uri_With_QueryParam_With_302_If_Login_Success_And_Continue_Uri_Provided', (done) => {
+      request(app)
+        .post('/auth/login')
+        .send({
+          email: testUserData.newUser.email,
+          password: testUserData.newUser.password,
+          continue: 'http://example.com',
+        })
+        .set({
+          'Content-Type': 'application/x-www-form-urlencoded',
+        })
         .expect(302)
         .expect((res) => {
-          const redirectUriRegex = /https:\/\/example.com\/\?jwt=*/;
+          const redirectUriRegex = /http:\/\/example.com\/\?jwt=*/;
           expect(res.headers.location).toMatch(redirectUriRegex);
-        })
-        .expect((res) => {
-          expect(res.headers['set-cookie'][0]).toBeDefined;
         })
         .end(done);
     });

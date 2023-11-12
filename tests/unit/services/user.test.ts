@@ -1,7 +1,7 @@
 import { userService } from '../../../src/services';
 import { prismaClientMock } from '../../jest/singleton';
 import { mockReset } from 'jest-mock-extended';
-import { wwsError } from '../../../src/utils/wwsError';
+import { wwsError } from '../../../src/error/wwsError';
 import HttpStatusCode from 'http-status-codes';
 
 beforeEach(() => {
