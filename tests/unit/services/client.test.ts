@@ -57,4 +57,34 @@ describe('Client_Service_Logic', () => {
       ).resolves.toEqual(null);
     });
   });
+
+  describe('getClients', () => {
+    test('Get_Clients_Successfully', async () => {
+      prismaClientMock.oauth_client.findMany.mockResolvedValueOnce([
+        existClient,
+        existClient,
+        existClient,
+      ]);
+
+      await expect(clientService.getClients(1)).resolves.toEqual([
+        existClient,
+        existClient,
+        existClient,
+      ]);
+
+      expect(
+        prismaClientMock.oauth_client.findMany.mock.results[0].value
+      ).resolves.toEqual([existClient, existClient, existClient]);
+    });
+
+    test('Get_Clients_Successfully_Even_If_There_Is_No_Clients', async () => {
+      prismaClientMock.oauth_client.findMany.mockResolvedValueOnce([]);
+
+      await expect(clientService.getClients(1)).resolves.toEqual([]);
+
+      expect(
+        prismaClientMock.oauth_client.findMany.mock.results[0].value
+      ).resolves.toEqual([]);
+    });
+  });
 });
