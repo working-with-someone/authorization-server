@@ -11,7 +11,7 @@ CREATE TABLE `oauth_client` (
     `jwks_uri` VARCHAR(191) NULL,
     `redirect_uri` JSON NOT NULL,
     `token_endpoint_auth_method` VARCHAR(191) NOT NULL DEFAULT 'client_secret_post',
-    `respons_type` VARCHAR(191) NOT NULL DEFAULT 'code',
+    `response_type` VARCHAR(191) NOT NULL DEFAULT 'code',
     `grant_types` JSON NOT NULL,
     `scope` VARCHAR(191) NOT NULL,
     `user_id` INTEGER NOT NULL,
