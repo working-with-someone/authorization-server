@@ -40,10 +40,10 @@ app.use(express.static(`${process.cwd()}/public`));
 app.use(RequestLogger);
 
 //import routers
-import { authRouter, appRouter } from './routes';
+import { authRouter, clientRouter } from './routes';
 
 //use middleware
-app.use('/app', authMiddleware, appRouter);
+app.use('/app', authMiddleware, clientRouter);
 
 //use router
 app.use('/auth', authRouter);

@@ -1,4 +1,4 @@
 import authRouter from './auth.route';
-import appRouter from './app.route';
+import clientRouter from './client.route';
 
-export { authRouter, appRouter };
+export { authRouter, clientRouter };
