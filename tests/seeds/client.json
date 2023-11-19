@@ -1,0 +1,48 @@
+{
+  "clients": [
+    {
+      "client_id": "testClient1",
+      "client_name": "testClient1",
+      "client_secret": "testClientSecret",
+      "client_uri": "testClient.com",
+      "redirect_uri": [
+        "testClient.com"
+      ],
+      "scope": "pfp username",
+      "user_id": 1
+    },
+    {
+      "client_id": "testClient2",
+      "client_name": "testClient2",
+      "client_secret": "testClientSecret",
+      "client_uri": "testClient.com",
+      "redirect_uri": [
+        "testClient.com"
+      ],
+      "scope": "pfp username",
+      "user_id": 1
+    },
+    {
+      "client_id": "testClient3",
+      "client_name": "testClient3",
+      "client_secret": "testClientSecret",
+      "client_uri": "testClient.com",
+      "redirect_uri": [
+        "testClient.com"
+      ],
+      "scope": "pfp username",
+      "user_id": 1
+    },
+    {
+      "client_id": "testClient4",
+      "client_name": "testClient4",
+      "client_secret": "testClientSecret",
+      "client_uri": "testClient.com",
+      "redirect_uri": [
+        "testClient.com"
+      ],
+      "scope": "pfp username",
+      "user_id": 2
+    }
+  ]
+}
