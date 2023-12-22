@@ -6,6 +6,7 @@ import getRandomString from '../utils/rs';
 import mailer from '../utils/mailer';
 import pick from '../utils/pick';
 import moment from 'moment';
+import { PublicUserInfo } from '../@types/express/user';
 
 interface UserCreateInput {
   username: string;
@@ -139,4 +140,4 @@ export const loginUser = async (body: UserLoginInput) => {
 };
 
 export const getPublicUserInfo = (user: Record<string, any>) =>
-  pick(user, ['id', 'username', 'pfp', 'email']);
+  pick(user, ['id', 'username', 'pfp', 'email']) as PublicUserInfo;

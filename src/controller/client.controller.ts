@@ -4,7 +4,7 @@ import { clientService } from '../services';
 
 export const getClient = asyncCatch(async (req: Request, res: Response) => {
   const client = await clientService.getClient(
-    res.locals.user.id,
+    req.user.id,
     req.params.clientId
   );
 
@@ -12,7 +12,7 @@ export const getClient = asyncCatch(async (req: Request, res: Response) => {
 });
 
 export const getClients = asyncCatch(async (req: Request, res: Response) => {
-  const clients = await clientService.getClients(res.locals.user.id);
+  const clients = await clientService.getClients(req.user.id);
 
   return res.json(clients);
 });

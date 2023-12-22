@@ -3,6 +3,7 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 import httpStatusCode from 'http-status-codes';
 import { wwsError } from '../error/wwsError';
 import { isExist } from '../services/user.service';
+import { PublicUserInfo } from '../@types/express/user';
 
 const authMiddleware = async (
   req: Request,
@@ -22,7 +23,8 @@ const authMiddleware = async (
         throw new Error();
       }
 
-      res.locals.user = info;
+      req.user = info as PublicUserInfo;
+
       next();
     } catch (err) {
       return next(
