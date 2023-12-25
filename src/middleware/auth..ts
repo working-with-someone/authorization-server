@@ -3,7 +3,7 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 import httpStatusCode from 'http-status-codes';
 import { wwsError } from '../error/wwsError';
 import { isExist } from '../services/user.service';
-import { PublicUserInfo } from '../@types/express/user';
+import { PublicUserInfo } from '../@types/user';
 
 const authMiddleware = async (
   req: Request,
@@ -16,7 +16,7 @@ const authMiddleware = async (
     try {
       const info = jwt.verify(
         token,
-        process.env.TOKEN_USER_SECRET as string
+        process.env.TOKEN_USER_SECRET
       ) as JwtPayload;
 
       if (!(await isExist(info.id))) {

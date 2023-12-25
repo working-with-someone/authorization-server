@@ -10,13 +10,9 @@ export const renderLogin = asyncCatch((req: Request, res: Response) => {
 export const login = asyncCatch(async (req: Request, res: Response) => {
   const user = await userService.loginUser(req.body);
 
-  const accessToken = jwt.sign(
-    user as object,
-    process.env.TOKEN_USER_SECRET as string,
-    {
-      algorithm: 'HS512',
-    }
-  );
+  const accessToken = jwt.sign(user as object, process.env.TOKEN_USER_SECRET, {
+    algorithm: 'HS512',
+  });
 
   const continueURL = new URL(req.body.continue);
 

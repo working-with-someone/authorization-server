@@ -22,7 +22,7 @@ app.use(
 
 app.use(
   cors({
-    origin: process.env.CORS_ALLOWED_ORIGIN?.split(' '),
+    origin: process.env.CORS_ALLOWED_ORIGIN.split(' '),
   })
 );
 

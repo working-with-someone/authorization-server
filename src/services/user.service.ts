@@ -6,7 +6,7 @@ import getRandomString from '../utils/rs';
 import mailer from '../utils/mailer';
 import pick from '../utils/pick';
 import moment from 'moment';
-import { PublicUserInfo } from '../@types/express/user';
+import { PublicUserInfo } from '../@types/user';
 
 interface UserCreateInput {
   username: string;
