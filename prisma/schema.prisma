@@ -35,12 +35,12 @@ model oauth_client {
   client_id                  String  @id
   client_name                String
   client_secret              String
-  client_uri                 String?
+  client_uri                 String? @db.VarChar(2048)
   contacts                   Json?   @default("[]")
-  logo_uri                   String  @default("app/icon/default.png")
-  tos_uri                    String?
-  policy_uri                 String?
-  jwks_uri                   String?
+  logo_uri                   String  @db.VarChar(2048)
+  tos_uri                    String? @db.VarChar(2048)
+  policy_uri                 String? @db.VarChar(2048)
+  jwks_uri                   String? @db.VarChar(2048)
   redirect_uri               Json    @default("[]")
   token_endpoint_auth_method String  @default("client_secret_post")
   response_type              String  @default("code")
