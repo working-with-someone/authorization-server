@@ -36,6 +36,7 @@ app.use(express.urlencoded({ extended: true }));
 
 //serve statics
 app.use(express.static(`${process.cwd()}/public`));
+app.use(express.static(`${process.cwd()}/uploads`));
 
 app.use(RequestLogger);
 
