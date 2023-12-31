@@ -1,6 +1,7 @@
 import joi from 'joi';
+import { ValidationSchema } from '../@types/validator';
 
-const createUser: Record<string, any> = {
+const createUser: ValidationSchema = {
   body: joi.object().keys({
     username: joi.string().min(1).max(12).required(),
     email: joi.string().required().email(),
@@ -8,13 +9,13 @@ const createUser: Record<string, any> = {
   }),
 };
 
-const renderLogin: Record<string, any> = {
+const renderLogin: ValidationSchema = {
   query: joi.object().keys({
     continue: joi.string().uri().required(),
   }),
 };
 
-const login: Record<string, any> = {
+const login: ValidationSchema = {
   body: joi.object().keys({
     //length validation은 필요없다.
     //등록되지 않은 user는 로그인에 실패한다.
@@ -23,7 +24,7 @@ const login: Record<string, any> = {
     continue: joi.string().uri().required(),
   }),
 };
-const verifyUser: Record<string, any> = {
+const verifyUser: ValidationSchema = {
   query: joi.object().keys({
     user_id: joi.string().required(),
     token: joi.string().required(),
