@@ -1,11 +1,9 @@
-const pick = (object: Record<string, any>, keys: string[]) => {
-  const result: Record<string, any> = {};
-  for (const key of keys) {
-    if (key in object) {
-      result[key] = object[key];
-    }
-  }
-  return result;
-};
+function pick<T, K extends keyof T>(obj: T, keys: K[]): Pick<T, K> {
+  const ret: any = {};
+  keys.forEach((key) => {
+    ret[key] = obj[key];
+  });
+  return ret;
+}
 
 export default pick;
