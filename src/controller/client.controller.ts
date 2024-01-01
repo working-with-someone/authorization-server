@@ -16,3 +16,14 @@ export const getClients = asyncCatch(async (req: Request, res: Response) => {
 
   return res.json(clients);
 });
+
+export const createClient = asyncCatch(async (req: Request, res: Response) => {
+  const client = await clientService.createClient({
+    userId: req.user.id,
+    name: req.body.name,
+    uri: req.body.uri,
+    file: req.file,
+  });
+
+  return res.json(client);
+});

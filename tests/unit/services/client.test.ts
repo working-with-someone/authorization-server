@@ -27,6 +27,13 @@ describe('Client_Service_Logic', () => {
     user_id: 1,
   };
 
+  const existClientPublic = {
+    client_id: '1234',
+    client_name: 'exist_client',
+    client_uri: 'http://example.com',
+    logo_uri: 'http://www.example.com/example.png',
+  };
+
   describe('getClient', () => {
     test('Get_Client_Successfully', async () => {
       prismaClientMock.oauth_client.findFirst.mockResolvedValueOnce(
@@ -34,10 +41,10 @@ describe('Client_Service_Logic', () => {
       );
 
       await expect(clientService.getClient(1, '1234')).resolves.toEqual(
-        existClient
+        existClientPublic
       );
 
-      expect(
+      await expect(
         prismaClientMock.oauth_client.findFirst.mock.results[0].value
       ).resolves.toEqual(existClient);
     });
@@ -52,7 +59,7 @@ describe('Client_Service_Logic', () => {
         )
       );
 
-      expect(
+      await expect(
         prismaClientMock.oauth_client.findFirst.mock.results[0].value
       ).resolves.toEqual(null);
     });
@@ -67,9 +74,9 @@ describe('Client_Service_Logic', () => {
       ]);
 
       await expect(clientService.getClients(1)).resolves.toEqual([
-        existClient,
-        existClient,
-        existClient,
+        existClientPublic,
+        existClientPublic,
+        existClientPublic,
       ]);
 
       expect(

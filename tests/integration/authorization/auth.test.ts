@@ -1,6 +1,6 @@
 import prismaClient from '../../../src/database';
 import request from 'supertest';
-import testUserData from '../../seeds/user.json';
+import testUserData from '../../data/user.json';
 import app from '../../../src/app';
 import moment from 'moment';
 
