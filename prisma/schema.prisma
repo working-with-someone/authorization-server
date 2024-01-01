@@ -35,7 +35,7 @@ model oauth_client {
   client_id                  String  @id
   client_name                String
   client_secret              String
-  client_uri                 String? @db.VarChar(2048)
+  client_uri                 String  @db.VarChar(2048)
   contacts                   Json?   @default("[]")
   logo_uri                   String  @db.VarChar(2048)
   tos_uri                    String? @db.VarChar(2048)
