@@ -44,4 +44,4 @@ jobs:
          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> ./.env.test
 
       - name: run all unit tests
-        run: yarn jest tests/unit
+        run: yarn run test:unit

@@ -53,9 +53,10 @@ jobs:
          echo "GOOGLE_GMAIL=${{ secrets.GOOGLE_GMAIL }}" >> ./.env.test
          echo "GOOGLE_GMAIL_SECRET=${{ secrets.GOOGLE_GMAIL_SECRET }}" >> ./.env.test
          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> ./.env.test
-
+         echo "CORS_ALLOWED_ORIGIN=${{ secrets.CORS_ALLOWED_ORIGIN }}" >> ./.env.test
+         
       - name: push schema to database
-        run: yarn prisma db push  
+        run: yarn run db:push:test
 
       - name: run all integration tests
         run: yarn jest tests/integration

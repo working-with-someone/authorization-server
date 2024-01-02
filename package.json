@@ -6,11 +6,14 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon",
     "build": "tsc",
-    "db:migrate:prod": "dotenv -e ./.env -- yarn prisma migrate deploy",
-    "db:migrate:dev": "dotenv -e ./.env -- yarn prisma migrate dev",
-    "db:migrate:test": "dotenv -e ./.env.test -- yarn prisma migrate dev",
-    "db:push:test": "dotenv -e ./.env.test -- yarn prisma db push",
-    "test": "cross-env NODE_ENV=test jest"
+    "db:migrate:prod": "dotenv -e ./.env -- prisma migrate deploy",
+    "db:migrate:dev": "dotenv -e ./.env -- prisma migrate dev",
+    "db:migrate:test": "dotenv -e ./.env.test -- prisma migrate dev",
+    "db:push:dev": "dotenv -e ./.env -- prisma db push",
+    "db:push:test": "dotenv -e ./.env.test -- prisma db push",
+    "test": "cross-env NODE_ENV=test jest",
+    "test:unit": "jest tests/unit",
+    "test:integration": "jest tests/integration"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
