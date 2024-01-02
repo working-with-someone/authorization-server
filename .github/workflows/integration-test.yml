@@ -38,21 +38,21 @@ jobs:
         
       - name: create dotenv
         run: |
-         touch ./.env
-         echo "PROTOCOL=${{ secrets.PROTOCOL }}" >> ./.env
-         echo "HOST=${{ secrets.HOST }}" >> ./.env
-         echo "PORT=${{ secrets.PORT }}" >> ./.env
-         echo "SERVER_URL=${{ secrets.SERVER_URL }}" >> ./.env
-         echo "APP_SECRET=${{ secrets.APP_SECRET }}" >> ./.env
-         echo "TOKEN_USER_SECRET=${{ secrets.TOKEN_USER_SECRET }}" >> ./.env
-         echo "DATABASE_HOST=${{ secrets.DATABASE_HOST }}" >> ./.env
-         echo "DATABASE_PORT=${{ secrets.DATABASE_PORT }}" >> ./.env
-         echo "DATABASE_NAME=${{ secrets.DATABASE_NAME }}" >> ./.env
-         echo "DATABASE_USER=${{ secrets.DATABASE_USER }}" >> ./.env
-         echo "DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}" >> ./.env
-         echo "GOOGLE_GMAIL=${{ secrets.GOOGLE_GMAIL }}" >> ./.env
-         echo "GOOGLE_GMAIL_SECRET=${{ secrets.GOOGLE_GMAIL_SECRET }}" >> ./.env
-         echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> ./.env
+         touch ./.env.test
+         echo "PROTOCOL=${{ secrets.PROTOCOL }}" >> ./.env.test
+         echo "HOST=${{ secrets.HOST }}" >> ./.env.test
+         echo "PORT=${{ secrets.PORT }}" >> ./.env.test
+         echo "SERVER_URL=${{ secrets.SERVER_URL }}" >> ./.env.test
+         echo "APP_SECRET=${{ secrets.APP_SECRET }}" >> ./.env.test
+         echo "TOKEN_USER_SECRET=${{ secrets.TOKEN_USER_SECRET }}" >> ./.env.test
+         echo "DATABASE_HOST=${{ secrets.DATABASE_HOST }}" >> ./.env.test
+         echo "DATABASE_PORT=${{ secrets.DATABASE_PORT }}" >> ./.env.test
+         echo "DATABASE_NAME=${{ secrets.DATABASE_NAME }}" >> ./.env.test
+         echo "DATABASE_USER=${{ secrets.DATABASE_USER }}" >> ./.env.test
+         echo "DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}" >> ./.env.test
+         echo "GOOGLE_GMAIL=${{ secrets.GOOGLE_GMAIL }}" >> ./.env.test
+         echo "GOOGLE_GMAIL_SECRET=${{ secrets.GOOGLE_GMAIL_SECRET }}" >> ./.env.test
+         echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> ./.env.test
 
       - name: push schema to database
         run: yarn prisma db push  

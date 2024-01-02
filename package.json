@@ -6,9 +6,10 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon",
     "build": "tsc",
-    "migrate-prod": "dotenv -e ./.env -- yarn prisma migrate deploy",
-    "migrate-dev": "dotenv -e ./.env -- yarn prisma migrate dev",
-    "migrate-test": "dotenv -e ./.env.test -- yarn prisma migrate dev",
+    "db:migrate:prod": "dotenv -e ./.env -- yarn prisma migrate deploy",
+    "db:migrate:dev": "dotenv -e ./.env -- yarn prisma migrate dev",
+    "db:migrate:test": "dotenv -e ./.env.test -- yarn prisma migrate dev",
+    "db:push:test": "dotenv -e ./.env.test -- yarn prisma db push",
     "test": "cross-env NODE_ENV=test jest"
   },
   "devDependencies": {
