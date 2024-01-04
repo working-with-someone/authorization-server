@@ -1,10 +1,9 @@
-declare namespace Express {
-  interface Request {
-    user: {
-      id: number;
-      username: string;
-      pfp: string;
-      email: string;
-    };
+import { PublicUserInfo } from '../../user';
+
+declare global {
+  namespace Express {
+    interface Request {
+      user: PublicUserInfo;
+    }
   }
 }
