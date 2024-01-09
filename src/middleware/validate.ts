@@ -4,10 +4,10 @@ import pick from '../utils/pick';
 import { wwsError } from '../error/wwsError';
 import { NextFunction, Request, Response } from 'express';
 import { ValidationSchema } from '../@types/validator';
+import asyncCatch from '../utils/asyncCatch';
 
-const validate =
-  (validationSchema: ValidationSchema) =>
-  (req: Request, res: Response, next: NextFunction) => {
+const validate = (validationSchema: ValidationSchema) =>
+  asyncCatch(async (req: Request, res: Response, next: NextFunction) => {
     //get validate target object from req object
     const object = pick(
       req,
@@ -31,6 +31,6 @@ const validate =
 
     //next
     return next();
-  };
+  });
 
 export default validate;
