@@ -1,8 +1,9 @@
+import type { File } from '../middleware/minions';
 export interface ClientCreationInput {
   userId: number;
   name: string;
   uri: string;
-  file?: Express.Multer.File;
+  file?: File;
 }
 
 export interface PublicClientInfo {

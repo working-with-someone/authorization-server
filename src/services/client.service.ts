@@ -3,9 +3,12 @@ import HttpStatusCode from 'http-status-codes';
 import { wwsError } from '../error/wwsError';
 import SHA3 from 'sha3';
 import { v4 } from 'uuid';
-import { servingURL } from '../config/path.config';
+import { servingURL, uploadPath } from '../config/path.config';
 import { ClientCreationInput, PublicClientInfo } from '../@types/client';
 import pick from '../utils/pick';
+import fs from 'fs';
+import { generateCompleteFileName } from '../utils/fileHandler';
+import path from 'path';
 
 export const getClient = async (userId: number, clientId: string) => {
   const client = await prismaClient.oauth_client.findFirst({
@@ -38,19 +41,18 @@ export const getClients = async (userId: number) => {
 export const createClient = async (
   input: ClientCreationInput
 ): Promise<PublicClientInfo> => {
-  let clientId;
-  let logoUri;
+  const clientId = v4();
 
-  //if file uploaded
+  let completeFileName = 'default.png';
+  let logoUri = new URL(completeFileName, servingURL.client.logo);
+
   if (input.file) {
-    //clientId will be uuid which used in uploaded filename
-    //clientId는 file의 name에 사용된 UUID를 사용하며
-    clientId = input.file.filename.split('.')[0];
-    //logo uri will be serving uri of uploaded file
-    logoUri = new URL(input.file.filename, servingURL.client.logo);
-  } else {
-    clientId = v4();
-    logoUri = new URL('default.png', servingURL.client.logo);
+    completeFileName = generateCompleteFileName({
+      name: clientId,
+      mimeType: input.file?.mimetype,
+    });
+
+    logoUri = new URL(completeFileName, servingURL.client.logo);
   }
 
   //generate client secret
@@ -68,6 +70,14 @@ export const createClient = async (
       user_id: input.userId,
     },
   });
+
+  if (input.file) {
+    const fileUploadPath = path.join(uploadPath.client.logo, completeFileName);
+
+    const logoWritableStream = fs.createWriteStream(fileUploadPath);
+
+    input.file.stream.pipe(logoWritableStream);
+  }
 
   return getPublicClientInfo(client);
 };

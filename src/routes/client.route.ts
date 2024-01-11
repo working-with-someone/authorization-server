@@ -4,27 +4,13 @@ import {
   getClient,
   getClients,
 } from '../controller/client.controller';
-import multer from 'multer';
-import { uploadPath } from '../config/path.config';
-import { generateCompleteFileName } from '../utils/fileHandler';
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadPath.client.logo);
-  },
+import minion from '../middleware/minions';
 
-  filename: (req, file, cb) => {
-    cb(null, generateCompleteFileName({ file }));
-  },
-});
-
-const logoUpload = multer({
-  storage,
-});
 const router = Router();
 
 router.get('/', getClients);
 router.get('/:clientId', getClient);
-router.post('/', logoUpload.single('logo'), createClient);
+router.post('/', minion({ limits: { files: 1 } }), createClient);
 
 export default router;

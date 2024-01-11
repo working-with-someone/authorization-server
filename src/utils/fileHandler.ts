@@ -1,13 +1,11 @@
 import { v4 } from 'uuid';
 import mime from 'mime-types';
 
-interface generateNameOption {
-  file: Express.Multer.File;
+interface generateCompleteFileNameOption {
   name?: string;
+  mimeType: string;
 }
-
-export function generateCompleteFileName(option: generateNameOption) {
-  const extension = mime.extension(option.file.mimetype);
-
-  return option.name ? option.name + '.' + extension : v4() + '.' + extension;
+export function generateCompleteFileName(data: generateCompleteFileNameOption) {
+  const extension = mime.extension(data.mimeType);
+  return data.name ? data.name + '.' + extension : v4() + '.' + extension;
 }

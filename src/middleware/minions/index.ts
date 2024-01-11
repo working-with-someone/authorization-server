@@ -5,9 +5,8 @@ import contentType from 'content-type';
 import { wwsError } from '../../error/wwsError';
 import { NextFunction } from 'express-serve-static-core';
 import asyncCatch from '../../utils/asyncCatch';
-import { Readable } from 'stream';
+import { PassThrough } from 'stream';
 import { IncomingHttpHeaders } from 'http';
-import fs from 'fs';
 
 const formTypes = ['multipart/form-data'];
 
@@ -18,7 +17,7 @@ export interface File {
   originalName: string;
   encoding: string;
   mimetype: string;
-  stream: Readable;
+  stream: PassThrough;
 }
 
 export interface Field {
@@ -78,16 +77,20 @@ function minion(options: Config) {
     const fileAppender = new FileAppender(req, options.limits.files);
 
     bb.on('file', (name, stream, fileInfo) => {
+      const _stream = new PassThrough();
+      stream.pipe(_stream);
+
       const file: File = {
         fieldName: name,
         originalName: fileInfo.filename,
         encoding: fileInfo.encoding,
         mimetype: fileInfo.mimeType,
-        stream,
+        stream: _stream,
       };
 
       fileAppender.append(file);
 
+      //file stream of busboy must be resumed for emit 'finish' event
       stream.resume();
     });
 
