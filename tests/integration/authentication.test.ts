@@ -1,12 +1,12 @@
-import prismaClient from '../../../src/database';
+import prismaClient from '../../src/database';
 import request from 'supertest';
-import testUserData from '../../data/user.json';
-import app from '../../../src/app';
+import testUserData from '../data/user.json';
+import app from '../../src/app';
 import moment from 'moment';
 
-jest.unmock('../../../src/database');
+jest.unmock('../../src/database');
 
-jest.mock('../../../src/utils/mailer.ts');
+jest.mock('../../src/utils/mailer.ts');
 
 describe('Authentication', () => {
   beforeAll(async () => {
