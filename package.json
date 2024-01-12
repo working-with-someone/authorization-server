@@ -13,7 +13,7 @@
     "db:push:test": "dotenv -e ./.env.test -- prisma db push",
     "test": "cross-env NODE_ENV=test jest",
     "test:unit": "jest tests/unit",
-    "test:integration": "jest tests/integration"
+    "test:integration": "jest tests/integration --runInBand"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
