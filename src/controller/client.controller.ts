@@ -25,5 +25,5 @@ export const createClient = asyncCatch(async (req: Request, res: Response) => {
     file: req.file,
   });
 
-  return res.json(client);
+  return res.status(201).json(client);
 });
