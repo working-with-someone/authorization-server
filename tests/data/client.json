@@ -5,6 +5,12 @@
       "client_name": "testClient1",
       "client_secret": "testClientSecret",
       "client_uri": "testClient.com",
+      "logo_uri": "http://example.com/example.png",
+      "token_endpoint_auth_method": "client_secret_post",
+      "response_type": "code",
+      "grant_types": [
+        "authorization_code"
+      ],
       "redirect_uri": [
         "testClient.com"
       ],
@@ -16,6 +22,12 @@
       "client_name": "testClient2",
       "client_secret": "testClientSecret",
       "client_uri": "testClient.com",
+      "logo_uri": "http://example.com/example.png",
+      "token_endpoint_auth_method": "client_secret_post",
+      "response_type": "code",
+      "grant_types": [
+        "authorization_code"
+      ],
       "redirect_uri": [
         "testClient.com"
       ],
@@ -27,6 +39,12 @@
       "client_name": "testClient3",
       "client_secret": "testClientSecret",
       "client_uri": "testClient.com",
+      "logo_uri": "http://example.com/example.png",
+      "token_endpoint_auth_method": "client_secret_post",
+      "response_type": "code",
+      "grant_types": [
+        "authorization_code"
+      ],
       "redirect_uri": [
         "testClient.com"
       ],
@@ -38,11 +56,100 @@
       "client_name": "testClient4",
       "client_secret": "testClientSecret",
       "client_uri": "testClient.com",
+      "logo_uri": "http://example.com/example.png",
+      "token_endpoint_auth_method": "client_secret_post",
+      "response_type": "code",
+      "grant_types": [
+        "authorization_code"
+      ],
       "redirect_uri": [
         "testClient.com"
       ],
       "scope": "pfp username",
+      "user_id": 1
+    }
+  ],
+  "clientsOfOtherUser": [
+    {
+      "client_id": "otherClient1",
+      "client_name": "otherClient1",
+      "client_secret": "otherClientSecret",
+      "client_uri": "otherClient.com",
+      "logo_uri": "http://example.com/example.png",
+      "token_endpoint_auth_method": "client_secret_post",
+      "response_type": "code",
+      "grant_types": [
+        "authorization_code"
+      ],
+      "redirect_uri": [
+        "otherClient.com"
+      ],
+      "scope": "pfp username",
       "user_id": 2
+    },
+    {
+      "client_id": "otherClient2",
+      "client_name": "otherClient2",
+      "client_secret": "otherClientSecret",
+      "client_uri": "otherClient.com",
+      "logo_uri": "http://example.com/example.png",
+      "token_endpoint_auth_method": "client_secret_post",
+      "response_type": "code",
+      "grant_types": [
+        "authorization_code"
+      ],
+      "redirect_uri": [
+        "otherClient.com"
+      ],
+      "scope": "pfp username",
+      "user_id": 2
+    },
+    {
+      "client_id": "otherClient3",
+      "client_name": "otherClient3",
+      "client_secret": "otherClientSecret",
+      "client_uri": "otherClient.com",
+      "logo_uri": "http://example.com/example.png",
+      "token_endpoint_auth_method": "client_secret_post",
+      "response_type": "code",
+      "grant_types": [
+        "authorization_code"
+      ],
+      "redirect_uri": [
+        "otherClient.com"
+      ],
+      "scope": "pfp username",
+      "user_id": 2
+    }
+  ],
+  "newClient": {
+    "client_name": "newClient",
+    "client_uri": "http://example.com"
+  },
+  "publicClientsInfo": [
+    {
+      "client_id": "testClient1",
+      "client_name": "testClient1",
+      "client_uri": "testClient.com",
+      "logo_uri": "http://example.com/example.png"
+    },
+    {
+      "client_id": "testClient2",
+      "client_name": "testClient2",
+      "client_uri": "testClient.com",
+      "logo_uri": "http://example.com/example.png"
+    },
+    {
+      "client_id": "testClient3",
+      "client_name": "testClient3",
+      "client_uri": "testClient.com",
+      "logo_uri": "http://example.com/example.png"
+    },
+    {
+      "client_id": "testClient4",
+      "client_name": "testClient4",
+      "client_uri": "testClient.com",
+      "logo_uri": "http://example.com/example.png"
     }
   ]
 }
