@@ -1,6 +1,6 @@
 import { wwsError } from '../error/wwsError';
 import { Request, Response, NextFunction } from 'express';
-import { sysErrorLogger } from '../logger/winston';
+import { sysErrorLogger, webServerLogger } from '../logger/winston';
 import httpStatusCode from 'http-status-codes';
 
 const errorHandler = (
@@ -9,20 +9,14 @@ const errorHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  //should log errors that occur in other packages.
+  //logging system error
   if (err.originError) {
     const originError = err.originError;
 
     sysErrorLogger.error(originError.message, { stack: originError.stack });
   }
 
-  if (err.status == httpStatusCode.NOT_FOUND) {
-    // do not need to log wws not found error
-  } else {
-    // is optional to log other custom wws errors.
-  }
-
-  return res.status(err.status).render('error', { err });
+  return res.status(err.status).json(err);
 };
 
 export default errorHandler;
