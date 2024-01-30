@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import jwt from 'jsonwebtoken';
 import asyncCatch from '../utils/asyncCatch';
 import { userService } from '../services';
 
@@ -10,13 +9,9 @@ export const renderLogin = asyncCatch((req: Request, res: Response) => {
 export const login = asyncCatch(async (req: Request, res: Response) => {
   const user = await userService.loginUser(req.body);
 
-  const accessToken = jwt.sign(user as object, process.env.TOKEN_USER_SECRET, {
-    algorithm: 'HS512',
-  });
+  req.session.userId = user.id;
 
   const continueURL = new URL(req.body.continue);
-
-  continueURL.searchParams.append('jwt', accessToken);
 
   return res.redirect(continueURL.toString());
 });

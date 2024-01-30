@@ -4,9 +4,10 @@ import NotFound from './middleware/notFound';
 import RequestLogger from './middleware/requestLogger';
 import favicon from 'serve-favicon';
 import helmet from 'helmet';
-import cookieParser from 'cookie-parser';
 import { authMiddleware } from './middleware/auth.';
 import cors from 'cors';
+import session from 'express-session';
+import sessionConfig from './config/session.config';
 
 const app = express();
 
@@ -23,13 +24,14 @@ app.use(
 app.use(
   cors({
     origin: process.env.CORS_ALLOWED_ORIGIN.split(' '),
+    credentials: true,
   })
 );
 
 app.set('view engine', 'ejs');
 app.set('views', `${process.cwd()}/views`);
 app.use(favicon(`${process.cwd()}/favicon.ico`));
-app.use(cookieParser());
+app.use(session(sessionConfig));
 
 //urlencoded body parser
 app.use(express.urlencoded({ extended: true }));

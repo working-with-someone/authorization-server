@@ -1,45 +1,27 @@
 import { Request, Response, NextFunction } from 'express';
-import jwt, { JwtPayload } from 'jsonwebtoken';
 import httpStatusCode from 'http-status-codes';
 import { wwsError } from '../error/wwsError';
-import { isExist } from '../services/user.service';
-import { PublicUserInfo } from '../@types/user';
 import asyncCatch from '../utils/asyncCatch';
+import { userService } from '../services';
+import { getPublicUserInfo } from '../services/user.service';
 
 const authMiddleware = asyncCatch(
   async (req: Request, res: Response, next: NextFunction) => {
-    const token = req.headers.authorization?.split('Bearer ')[1];
+    if (req.session.userId) {
+      const user = await userService.getUser(req.session.userId);
 
-    if (token) {
-      try {
-        const info = jwt.verify(
-          token,
-          process.env.TOKEN_USER_SECRET
-        ) as JwtPayload;
-
-        if (!(await isExist(info.id))) {
-          throw new Error();
-        }
-
-        req.user = info as PublicUserInfo;
-
-        next();
-      } catch (err) {
-        return next(
-          new wwsError(
-            httpStatusCode.UNAUTHORIZED,
-            httpStatusCode.getStatusText(httpStatusCode.UNAUTHORIZED)
-          )
-        );
+      if (user) {
+        req.user = getPublicUserInfo(user);
+        return next();
       }
-    } else {
-      return next(
-        new wwsError(
-          httpStatusCode.UNAUTHORIZED,
-          httpStatusCode.getStatusText(httpStatusCode.UNAUTHORIZED)
-        )
-      );
     }
+
+    return next(
+      new wwsError(
+        httpStatusCode.UNAUTHORIZED,
+        httpStatusCode.getStatusText(httpStatusCode.UNAUTHORIZED)
+      )
+    );
   }
 );
 
