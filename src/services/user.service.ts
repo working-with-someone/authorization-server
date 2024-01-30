@@ -19,6 +19,12 @@ interface UserLoginInput {
   password: string;
 }
 
+export const getUser = async (userId: number) => {
+  const user = await prismaClient.user.findUnique({ where: { id: userId } });
+
+  return user;
+};
+
 export const createUser = async (data: UserCreateInput) => {
   const registeredUser = await prismaClient.user.findFirst({
     where: { email: data.email },
