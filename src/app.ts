@@ -4,7 +4,7 @@ import NotFound from './middleware/notFound';
 import RequestLogger from './middleware/requestLogger';
 import favicon from 'serve-favicon';
 import helmet from 'helmet';
-import { authMiddleware } from './middleware/auth.';
+import { authMiddleware } from './middleware/auth';
 import cors from 'cors';
 import session from 'express-session';
 import sessionConfig from './config/session.config';
