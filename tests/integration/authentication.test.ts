@@ -3,6 +3,8 @@ import request from 'supertest';
 import testUserData from '../data/user.json';
 import app from '../../src/app';
 import moment from 'moment';
+import cookie from 'cookie';
+import { sessionIdName } from '../../src/config/session.config';
 
 jest.unmock('../../src/database');
 
@@ -228,7 +230,7 @@ describe('Authentication', () => {
         .end(done);
     });
 
-    test('Redirect_To_Redirect_Uri_With_QueryParam_With_302_If_Login_Success_And_Continue_Uri_Provided', (done) => {
+    test('Redirect_To_Redirect_Uri_With_With_Sid_302_If_Login_Success_And_Continue_Uri_Provided', (done) => {
       request(app)
         .post('/auth/login')
         .send({
@@ -241,8 +243,18 @@ describe('Authentication', () => {
         })
         .expect(302)
         .expect((res) => {
-          const redirectUriRegex = /http:\/\/example.com\/\?jwt=*/;
-          expect(res.headers.location).toMatch(redirectUriRegex);
+          const cookieStrings = res.headers['set-cookie'];
+          let sidCookie = '';
+
+          for (const cookieString of cookieStrings) {
+            if (
+              Object.keys(cookie.parse(cookieString)).includes(sessionIdName)
+            ) {
+              sidCookie = cookieString;
+            }
+          }
+
+          expect(sidCookie).toBeDefined();
         })
         .end(done);
     });

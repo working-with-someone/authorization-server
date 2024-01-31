@@ -6,12 +6,13 @@ const cookieConfig: CookieOptions = {
   httpOnly: true,
 };
 
+export const sessionIdName = '_dev_sid';
+
 if (process.env.NODE_ENV === 'production') {
   cookieConfig.secure = true;
 }
-
 const sessionConfig: SessionOptions = {
-  name: '_dev_sid',
+  name: sessionIdName,
   secret: process.env.APP_SECRET,
   resave: false,
   saveUninitialized: false,
