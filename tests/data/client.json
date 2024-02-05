@@ -5,16 +5,20 @@
       "client_name": "testClient1",
       "client_secret": "testClientSecret",
       "client_uri": "testClient.com",
-      "logo_uri": "http://example.com/example.png",
-      "token_endpoint_auth_method": "client_secret_post",
-      "response_type": "code",
+      "contacts": [],
       "grant_types": [
         "authorization_code"
       ],
+      "jwks_uri": null,
+      "logo_uri": "http://example.com/example.png",
+      "policy_uri": null,
       "redirect_uri": [
         "testClient.com"
       ],
+      "response_type": "code",
       "scope": "pfp username",
+      "token_endpoint_auth_method": "client_secret_post",
+      "tos_uri": null,
       "user_id": 1
     },
     {
@@ -22,16 +26,20 @@
       "client_name": "testClient2",
       "client_secret": "testClientSecret",
       "client_uri": "testClient.com",
-      "logo_uri": "http://example.com/example.png",
-      "token_endpoint_auth_method": "client_secret_post",
-      "response_type": "code",
+      "contacts": [],
       "grant_types": [
         "authorization_code"
       ],
+      "jwks_uri": null,
+      "logo_uri": "http://example.com/example.png",
+      "policy_uri": null,
       "redirect_uri": [
         "testClient.com"
       ],
+      "response_type": "code",
       "scope": "pfp username",
+      "token_endpoint_auth_method": "client_secret_post",
+      "tos_uri": null,
       "user_id": 1
     },
     {
@@ -39,16 +47,20 @@
       "client_name": "testClient3",
       "client_secret": "testClientSecret",
       "client_uri": "testClient.com",
-      "logo_uri": "http://example.com/example.png",
-      "token_endpoint_auth_method": "client_secret_post",
-      "response_type": "code",
+      "contacts": [],
       "grant_types": [
         "authorization_code"
       ],
+      "jwks_uri": null,
+      "logo_uri": "http://example.com/example.png",
+      "policy_uri": null,
       "redirect_uri": [
         "testClient.com"
       ],
+      "response_type": "code",
       "scope": "pfp username",
+      "token_endpoint_auth_method": "client_secret_post",
+      "tos_uri": null,
       "user_id": 1
     },
     {
@@ -56,16 +68,20 @@
       "client_name": "testClient4",
       "client_secret": "testClientSecret",
       "client_uri": "testClient.com",
-      "logo_uri": "http://example.com/example.png",
-      "token_endpoint_auth_method": "client_secret_post",
-      "response_type": "code",
+      "contacts": [],
       "grant_types": [
         "authorization_code"
       ],
+      "jwks_uri": null,
+      "logo_uri": "http://example.com/example.png",
+      "policy_uri": null,
       "redirect_uri": [
         "testClient.com"
       ],
+      "response_type": "code",
       "scope": "pfp username",
+      "token_endpoint_auth_method": "client_secret_post",
+      "tos_uri": null,
       "user_id": 1
     }
   ],

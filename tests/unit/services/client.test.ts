@@ -41,7 +41,7 @@ describe('Client_Service_Logic', () => {
       );
 
       await expect(clientService.getClient(1, '1234')).resolves.toEqual(
-        existClientPublic
+        existClient
       );
 
       await expect(

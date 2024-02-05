@@ -86,7 +86,7 @@ describe('Client API', () => {
         .set('Cookie', currentUser.sidCookie);
 
       expect(res.statusCode).toEqual(200);
-      expect(res.body).toEqual(testClientData.publicClientsInfo[0]);
+      expect(res.body).toEqual(testClientData.clients[0]);
     });
 
     test('Response_404_If_Access_Other_Client', async () => {

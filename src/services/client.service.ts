@@ -25,7 +25,7 @@ export const getClient = async (userId: number, clientId: string) => {
     );
   }
 
-  return getPublicClientInfo(client);
+  return client;
 };
 
 export const getClients = async (userId: number) => {
