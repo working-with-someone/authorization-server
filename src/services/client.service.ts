@@ -1,7 +1,6 @@
 import prismaClient from '../database';
 import HttpStatusCode from 'http-status-codes';
 import { wwsError } from '../error/wwsError';
-import SHA3 from 'sha3';
 import { v4 } from 'uuid';
 import { servingURL, uploadPath } from '../config/path.config';
 import { ClientCreationInput, PublicClientInfo } from '../@types/client';
@@ -9,6 +8,7 @@ import pick from '../utils/pick';
 import fs from 'fs';
 import { generateCompleteFileName } from '../utils/fileHandler';
 import path from 'path';
+import crypto from 'node:crypto';
 
 export const getClient = async (userId: number, clientId: string) => {
   const client = await prismaClient.oauth_client.findFirst({
@@ -56,8 +56,7 @@ export const createClient = async (
   }
 
   //generate client secret
-  const hash = new SHA3(512);
-  const clientSecret = hash.digest().toString();
+  const clientSecret = crypto.randomBytes(15).toString('hex');
 
   const client = await prismaClient.oauth_client.create({
     data: {
