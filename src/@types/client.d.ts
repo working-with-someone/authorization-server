@@ -6,6 +6,11 @@ export interface ClientCreationInput {
   file?: File;
 }
 
+export interface ClientUpdateInput extends ClientCreationInput {
+  client_id: string;
+  callback_uri: string;
+}
+
 export interface PublicClientInfo {
   client_id: string;
   client_name: string;
