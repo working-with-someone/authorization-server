@@ -18,6 +18,7 @@ app.use(
         formAction: ['self', 'wwsp-dev: *', 'wwsp: *'],
       },
     },
+    crossOriginResourcePolicy: { policy: 'same-site' },
   })
 );
 
