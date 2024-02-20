@@ -180,4 +180,65 @@ describe('Client API', () => {
       expect(res.statusCode).toEqual(400);
     });
   });
+
+  describe('PUT', () => {
+    // test 종료 후
+    afterAll(() => {
+      // update된 정보를 되돌린다.
+      prismaClient.oauth_client.update({
+        where: {
+          client_id: testClientData.clients[0].client_id,
+        },
+        data: testClientData.clients[0],
+      });
+    });
+
+    const updatedName = 'updatedClient1';
+    const updatedUri = 'http://www.updated.com';
+
+    test('Response_Updated_Client_With_200_With_Name_Uri', async () => {
+      const res = await request(app)
+        .put(`/app/${testClientData.clients[0].client_id}`)
+        .set('Cookie', currentUser.sidCookie)
+        .set('Content-Type', 'multipart/form-data')
+        .field('name', updatedName)
+        .field('uri', updatedUri);
+
+      expect(res.statusCode).toEqual(200);
+      expect(res.body.client_name).toEqual(updatedName);
+      expect(res.body.client_uri).toEqual(updatedUri);
+    });
+
+    test('Response_Updated_Client_With_400_With_Logo', async () => {
+      const res = await request(app)
+        .put(`/app/${testClientData.clients[0].client_id}`)
+        .set('Cookie', currentUser.sidCookie)
+        .set('Content-Type', 'multipart/form-data')
+        .attach(
+          'logo',
+          //must be relative path from where test running
+          fs.createReadStream('./tests/data/images/newClient.png')
+        );
+
+      expect(res.statusCode).toEqual(400);
+    });
+
+    test('Response_Updated_Client_With_200_With_Name_Uri_Logo', async () => {
+      const res = await request(app)
+        .put(`/app/${testClientData.clients[0].client_id}`)
+        .set('Cookie', currentUser.sidCookie)
+        .set('Content-Type', 'multipart/form-data')
+        .field('name', updatedName)
+        .field('uri', updatedUri)
+        .attach(
+          'logo',
+          //must be relative path from where test running
+          fs.createReadStream('./tests/data/images/newClient.png')
+        );
+
+      expect(res.statusCode).toEqual(200);
+      expect(res.body.client_name).toEqual(updatedName);
+      expect(res.body.client_uri).toEqual(updatedUri);
+    });
+  });
 });
