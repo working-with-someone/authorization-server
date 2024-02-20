@@ -16,6 +16,9 @@ const errorHandler = (
     sysErrorLogger.error(originError.message, { stack: originError.stack });
   }
 
+  //logging error response
+  webServerLogger.error(err.message, err.status);
+
   return res.status(err.status).json({
     status: err.status,
     statusText: err.statusText,
