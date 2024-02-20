@@ -1,6 +1,11 @@
 import winston, { LoggerOptions } from 'winston';
 import path from 'path';
 
+const logFileRoot = path.join(
+  process.cwd(),
+  process.env.NODE_ENV == 'test' ? 'log/test' : 'log'
+);
+
 const httpFormat = winston.format.combine(
   winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
   winston.format.printf(({ timestamp, level, message }) => {
@@ -11,7 +16,7 @@ const httpFormat = winston.format.combine(
 const generateTransports = (logFileName: string) => {
   const transports: winston.transport[] = [
     new winston.transports.File({
-      filename: path.join(process.cwd(), `log/${logFileName}`),
+      filename: `${logFileRoot}/${logFileName}`,
     }),
   ];
 
