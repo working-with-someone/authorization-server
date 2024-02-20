@@ -3,6 +3,7 @@ import {
   createClient,
   getClient,
   getClients,
+  updateClient,
 } from '../controller/client.controller';
 
 import minion from '../middleware/minions';
@@ -18,6 +19,13 @@ router.post(
   minion({ limits: { files: 1 } }),
   validate(clientValidation.createClient),
   createClient
+);
+
+router.put(
+  '/:clientId',
+  minion({ limits: { files: 1 } }),
+  validate(clientValidation.updateClient),
+  updateClient
 );
 
 export default router;

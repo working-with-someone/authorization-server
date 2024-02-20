@@ -3,7 +3,11 @@ import HttpStatusCode from 'http-status-codes';
 import { wwsError } from '../error/wwsError';
 import { v4 } from 'uuid';
 import { servingURL, uploadPath } from '../config/path.config';
-import { ClientCreationInput, PublicClientInfo } from '../@types/client';
+import {
+  ClientCreationInput,
+  PublicClientInfo,
+  ClientUpdateInput,
+} from '../@types/client';
 import pick from '../utils/pick';
 import fs from 'fs';
 import { generateCompleteFileName } from '../utils/fileHandler';
@@ -79,6 +83,40 @@ export const createClient = async (
   }
 
   return getPublicClientInfo(client);
+};
+
+export const updateClient = async (input: ClientUpdateInput) => {
+  const data = {
+    client_name: input.name,
+    client_uri: input.uri,
+    redirect_uri: input.callback_uri,
+  };
+
+  if (input.file) {
+    const completeFileName = generateCompleteFileName({
+      name: input.client_id,
+      mimeType: input.file?.mimetype,
+    });
+    const logoUri = new URL(completeFileName, servingURL.client.logo);
+
+    const fileUploadPath = path.join(uploadPath.client.logo, completeFileName);
+
+    const logoWritableStream = fs.createWriteStream(fileUploadPath);
+
+    input.file.stream.pipe(logoWritableStream);
+
+    Object.assign('logo_uri', logoUri);
+  }
+
+  const updatedClient = await prismaClient.oauth_client.update({
+    data,
+    where: {
+      user_id: input.userId,
+      client_id: input.client_id,
+    },
+  });
+
+  return updatedClient;
 };
 
 const getPublicClientInfo = (

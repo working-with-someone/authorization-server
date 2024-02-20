@@ -27,3 +27,16 @@ export const createClient = asyncCatch(async (req: Request, res: Response) => {
 
   return res.status(201).json(client);
 });
+
+export const updateClient = asyncCatch(async (req: Request, res: Response) => {
+  const updatedClient = await clientService.updateClient({
+    userId: req.user.id,
+    client_id: req.params.clientId,
+    name: req.body.name,
+    uri: req.body.uri,
+    file: req.file,
+    callback_uri: req.body.callback_uri,
+  });
+
+  return res.json(updatedClient);
+});
