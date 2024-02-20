@@ -16,7 +16,11 @@ const errorHandler = (
     sysErrorLogger.error(originError.message, { stack: originError.stack });
   }
 
-  return res.status(err.status).json(err);
+  return res.status(err.status).json({
+    status: err.status,
+    statusText: err.statusText,
+    message: err.message,
+  });
 };
 
 export default errorHandler;
