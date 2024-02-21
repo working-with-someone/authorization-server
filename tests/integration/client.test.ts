@@ -89,7 +89,7 @@ describe('Client API', () => {
       expect(res.body).toEqual(testClientData.clients[0]);
     });
 
-    test('Response_404_If_Access_Other_Client', async () => {
+    test('Response_404_clientId(not_authorized)', async () => {
       const res = await request(app)
         .get(`/app/${testClientData.clientsOfOtherUser[0].client_id}`)
         .set('Cookie', currentUser.sidCookie);
@@ -97,7 +97,7 @@ describe('Client API', () => {
       expect(res.statusCode).toEqual(404);
     });
 
-    test('Response_404_If_Access_Does_Not_Exist_Client', async () => {
+    test('Response_404_clientId(does_not_exist)', async () => {
       const res = await request(app)
         .get('/app/doesnotExistClient')
         .set('Cookie', currentUser.sidCookie);
@@ -115,7 +115,27 @@ describe('Client API', () => {
       });
     });
 
-    test('Response_Created_Client_With_200_Without_Logo', async () => {
+    test('Response_Created_Client_With_200', async () => {
+      const res = await request(app)
+        .post('/app')
+        .set('Cookie', currentUser.sidCookie)
+        .set('Content-Type', 'multipart/form-data')
+        .attach(
+          'logo',
+          //must be relative path from where test running
+          fs.createReadStream('./tests/data/images/newClient.png')
+        )
+        .field('name', testClientData.newClient.client_name)
+        .field('uri', testClientData.newClient.client_uri);
+
+      expect(res.statusCode).toEqual(201);
+      expect(res.body.client_name).toEqual(
+        testClientData.newClient.client_name
+      );
+      expect(res.statusCode).toEqual(201);
+    });
+
+    test('Response_Created_Client_With_200_Logo(x)', async () => {
       const res = await request(app)
         .post('/app')
         .set('Cookie', currentUser.sidCookie)
@@ -130,27 +150,7 @@ describe('Client API', () => {
       expect(res.body.client_uri).toEqual(testClientData.newClient.client_uri);
     });
 
-    test('Response_Created_Client_With_200_With_Logo', async () => {
-      const res = await request(app)
-        .post('/app')
-        .set('Cookie', currentUser.sidCookie)
-        .set('Content-Type', 'multipart/form-data')
-        .attach(
-          'logo',
-          //must be relative path from where test running
-          fs.createReadStream('./tests/data/images/newClient.png')
-        )
-        .field('name', testClientData.newClient.client_name)
-        .field('uri', testClientData.newClient.client_uri);
-
-      expect(res.statusCode).toEqual(201);
-      expect(res.body.client_name).toEqual(
-        testClientData.newClient.client_name
-      );
-      expect(res.statusCode).toEqual(201);
-    });
-
-    test('Response_404_If_Client_Name_Does_Not_Provided', async () => {
+    test('Response_400_Name(x)', async () => {
       const res = await request(app)
         .post('/app')
         .set('Cookie', currentUser.sidCookie)
@@ -165,7 +165,7 @@ describe('Client API', () => {
       expect(res.statusCode).toEqual(400);
     });
 
-    test('Response_404_If_Client_Uri_Does_Not_Provided', async () => {
+    test('Response_400_Uri(x)', async () => {
       const res = await request(app)
         .post('/app')
         .set('Cookie', currentUser.sidCookie)
@@ -196,34 +196,7 @@ describe('Client API', () => {
     const updatedName = 'updatedClient1';
     const updatedUri = 'http://www.updated.com';
 
-    test('Response_Updated_Client_With_200_With_Name_Uri', async () => {
-      const res = await request(app)
-        .put(`/app/${testClientData.clients[0].client_id}`)
-        .set('Cookie', currentUser.sidCookie)
-        .set('Content-Type', 'multipart/form-data')
-        .field('name', updatedName)
-        .field('uri', updatedUri);
-
-      expect(res.statusCode).toEqual(200);
-      expect(res.body.client_name).toEqual(updatedName);
-      expect(res.body.client_uri).toEqual(updatedUri);
-    });
-
-    test('Response_Updated_Client_With_400_With_Logo', async () => {
-      const res = await request(app)
-        .put(`/app/${testClientData.clients[0].client_id}`)
-        .set('Cookie', currentUser.sidCookie)
-        .set('Content-Type', 'multipart/form-data')
-        .attach(
-          'logo',
-          //must be relative path from where test running
-          fs.createReadStream('./tests/data/images/newClient.png')
-        );
-
-      expect(res.statusCode).toEqual(400);
-    });
-
-    test('Response_Updated_Client_With_200_With_Name_Uri_Logo', async () => {
+    test('Response_Updated_Client_With_200', async () => {
       const res = await request(app)
         .put(`/app/${testClientData.clients[0].client_id}`)
         .set('Cookie', currentUser.sidCookie)
@@ -239,6 +212,33 @@ describe('Client API', () => {
       expect(res.statusCode).toEqual(200);
       expect(res.body.client_name).toEqual(updatedName);
       expect(res.body.client_uri).toEqual(updatedUri);
+    });
+
+    test('Response_Updated_Client_With_200_Logo(x)', async () => {
+      const res = await request(app)
+        .put(`/app/${testClientData.clients[0].client_id}`)
+        .set('Cookie', currentUser.sidCookie)
+        .set('Content-Type', 'multipart/form-data')
+        .field('name', updatedName)
+        .field('uri', updatedUri);
+
+      expect(res.statusCode).toEqual(200);
+      expect(res.body.client_name).toEqual(updatedName);
+      expect(res.body.client_uri).toEqual(updatedUri);
+    });
+
+    test('Response_Updated_Client_With_400_Name(x)_Uri(x)', async () => {
+      const res = await request(app)
+        .put(`/app/${testClientData.clients[0].client_id}`)
+        .set('Cookie', currentUser.sidCookie)
+        .set('Content-Type', 'multipart/form-data')
+        .attach(
+          'logo',
+          //must be relative path from where test running
+          fs.createReadStream('./tests/data/images/newClient.png')
+        );
+
+      expect(res.statusCode).toEqual(400);
     });
   });
 });
