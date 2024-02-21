@@ -142,6 +142,10 @@
     "client_name": "newClient",
     "client_uri": "http://example.com"
   },
+  "invalidateField": {
+    "client_name": "longerthan 20 bytes.........",
+    "client_uri": "invalid uri"
+  },
   "publicClientsInfo": [
     {
       "client_id": "testClient1",

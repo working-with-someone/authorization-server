@@ -33,7 +33,7 @@ model email_verification {
 
 model oauth_client {
   client_id                  String  @id
-  client_name                String
+  client_name                String  @db.VarChar(20)
   client_secret              String
   client_uri                 String  @db.VarChar(2048)
   contacts                   Json?   @default("[]")

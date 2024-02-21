@@ -23,6 +23,7 @@ const updateClient: ValidationSchema = {
     clientId: joi.string().required(),
   }),
 };
+
 export default {
   getClient,
   createClient,
