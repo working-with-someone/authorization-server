@@ -9,15 +9,15 @@ const getClient: ValidationSchema = {
 
 const createClient: ValidationSchema = {
   body: joi.object().keys({
-    name: joi.string().required(),
-    uri: joi.string().uri().required(),
+    client_name: joi.string().required(),
+    client_uri: joi.string().uri().required(),
   }),
 };
 
 const updateClient: ValidationSchema = {
   body: joi.object().keys({
-    name: joi.string().required(),
-    uri: joi.string().uri().required(),
+    client_name: joi.string().required(),
+    client_uri: joi.string().uri().required(),
   }),
   params: joi.object().keys({
     clientId: joi.string().required(),

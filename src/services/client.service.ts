@@ -66,8 +66,8 @@ export const createClient = async (
     data: {
       client_id: clientId,
       client_secret: clientSecret,
-      client_name: input.name,
-      client_uri: input.uri,
+      client_name: input.client_name,
+      client_uri: input.client_uri,
       logo_uri: logoUri.toString(),
       scope: '',
       user_id: input.userId,
@@ -87,9 +87,9 @@ export const createClient = async (
 
 export const updateClient = async (input: ClientUpdateInput) => {
   const data = {
-    client_name: input.name,
-    client_uri: input.uri,
-    redirect_uri: input.callback_uri,
+    client_name: input.client_name,
+    client_uri: input.client_uri,
+    redirect_uri: input.redirect_uri,
   };
 
   if (input.file) {

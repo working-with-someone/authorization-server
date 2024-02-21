@@ -125,8 +125,8 @@ describe('Client API', () => {
           //must be relative path from where test running
           fs.createReadStream('./tests/data/images/newClient.png')
         )
-        .field('name', testClientData.newClient.client_name)
-        .field('uri', testClientData.newClient.client_uri);
+        .field('client_name', testClientData.newClient.client_name)
+        .field('client_uri', testClientData.newClient.client_uri);
 
       expect(res.statusCode).toEqual(201);
       expect(res.body.client_name).toEqual(
@@ -140,8 +140,8 @@ describe('Client API', () => {
         .post('/app')
         .set('Cookie', currentUser.sidCookie)
         .set('Content-Type', 'multipart/form-data')
-        .field('name', testClientData.newClient.client_name)
-        .field('uri', testClientData.newClient.client_uri);
+        .field('client_name', testClientData.newClient.client_name)
+        .field('client_uri', testClientData.newClient.client_uri);
 
       expect(res.statusCode).toEqual(201);
       expect(res.body.client_name).toEqual(
@@ -160,7 +160,7 @@ describe('Client API', () => {
           //must be relative path from where test running
           fs.createReadStream('./tests/data/images/newClient.png')
         )
-        .field('uri', testClientData.newClient.client_uri);
+        .field('client_uri', testClientData.newClient.client_uri);
 
       expect(res.statusCode).toEqual(400);
     });
@@ -175,7 +175,7 @@ describe('Client API', () => {
           //must be relative path from where test running
           fs.createReadStream('./tests/data/images/newClient.png')
         )
-        .field('name', testClientData.newClient.client_name);
+        .field('client_name', testClientData.newClient.client_name);
 
       expect(res.statusCode).toEqual(400);
     });
@@ -201,8 +201,8 @@ describe('Client API', () => {
         .put(`/app/${testClientData.clients[0].client_id}`)
         .set('Cookie', currentUser.sidCookie)
         .set('Content-Type', 'multipart/form-data')
-        .field('name', updatedName)
-        .field('uri', updatedUri)
+        .field('client_name', updatedName)
+        .field('client_uri', updatedUri)
         .attach(
           'logo',
           //must be relative path from where test running
@@ -219,8 +219,8 @@ describe('Client API', () => {
         .put(`/app/${testClientData.clients[0].client_id}`)
         .set('Cookie', currentUser.sidCookie)
         .set('Content-Type', 'multipart/form-data')
-        .field('name', updatedName)
-        .field('uri', updatedUri);
+        .field('client_name', updatedName)
+        .field('client_uri', updatedUri);
 
       expect(res.statusCode).toEqual(200);
       expect(res.body.client_name).toEqual(updatedName);
