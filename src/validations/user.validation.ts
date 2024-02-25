@@ -1,9 +1,10 @@
 import joi from 'joi';
 import { ValidationSchema } from '../@types/validator';
+import { stringBase } from './base';
 
 const createUser: ValidationSchema = {
   body: joi.object().keys({
-    username: joi.string().min(1).max(12).required(),
+    username: stringBase.withoutSpecialChar().min(1).max(12).required(),
     email: joi.string().required().email(),
     password: joi.string().min(12).max(36).required(),
   }),

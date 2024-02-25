@@ -1,5 +1,6 @@
 import { ValidationSchema } from '../@types/validator';
 import joi from 'joi';
+import { stringBase } from './base';
 
 const getClient: ValidationSchema = {
   params: joi.object().keys({
@@ -9,14 +10,14 @@ const getClient: ValidationSchema = {
 
 const createClient: ValidationSchema = {
   body: joi.object().keys({
-    client_name: joi.string().required(),
+    client_name: stringBase.withoutSpecialChar().required(),
     client_uri: joi.string().uri().required(),
   }),
 };
 
 const updateClient: ValidationSchema = {
   body: joi.object().keys({
-    client_name: joi.string().required(),
+    client_name: stringBase.withoutSpecialChar().required(),
     client_uri: joi.string().uri().required(),
   }),
   params: joi.object().keys({
