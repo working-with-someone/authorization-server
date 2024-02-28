@@ -19,6 +19,7 @@ const updateClient: ValidationSchema = {
   body: joi.object().keys({
     client_name: stringBase.withoutSpecialChar().required(),
     client_uri: joi.string().uri().required(),
+    redirect_uri: joi.any(),
   }),
   params: joi.object().keys({
     clientId: joi.string().required(),

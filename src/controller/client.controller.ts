@@ -35,7 +35,7 @@ export const updateClient = asyncCatch(async (req: Request, res: Response) => {
     client_name: req.body.client_name,
     client_uri: req.body.client_uri,
     file: req.file,
-    redirect_uri: req.body.redirect_uri,
+    redirect_uri: req.body.redirect_uri.split(','),
   });
 
   return res.json(updatedClient);
