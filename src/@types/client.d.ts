@@ -8,7 +8,7 @@ export interface ClientCreationInput {
 
 export interface ClientUpdateInput extends ClientCreationInput {
   client_id: string;
-  redirect_uri: string;
+  redirect_uri: string[];
 }
 
 export interface PublicClientInfo {

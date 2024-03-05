@@ -144,7 +144,8 @@
   },
   "invalidateField": {
     "client_name": "longerthan 20 bytes.........",
-    "client_uri": "invalid uri"
+    "client_uri": "invalid uri",
+    "redirect_uri": "callback!"
   },
   "publicClientsInfo": [
     {

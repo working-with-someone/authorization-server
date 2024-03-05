@@ -226,6 +226,7 @@ describe('Client API', () => {
 
     const updatedName = 'updatedClient1';
     const updatedUri = 'http://www.updated.com';
+    const updatedRedirectUri1 = 'https://wws.updated.com/callback';
 
     test('Response_Updated_Client_With_200', async () => {
       const res = await request(app)
@@ -234,6 +235,7 @@ describe('Client API', () => {
         .set('Content-Type', 'multipart/form-data')
         .field('client_name', updatedName)
         .field('client_uri', updatedUri)
+        .field('redirect_uri1', updatedRedirectUri1)
         .attach(
           'logo',
           //must be relative path from where test running
@@ -252,6 +254,24 @@ describe('Client API', () => {
         .set('Content-Type', 'multipart/form-data')
         .field('client_name', updatedName)
         .field('client_uri', updatedUri);
+
+      expect(res.statusCode).toEqual(200);
+      expect(res.body.client_name).toEqual(updatedName);
+      expect(res.body.client_uri).toEqual(updatedUri);
+    });
+
+    test('Response_Updated_Client_With_200_RedirectUri(x)', async () => {
+      const res = await request(app)
+        .put(`/app/${testClientData.clients[0].client_id}`)
+        .set('Cookie', currentUser.sidCookie)
+        .set('Content-Type', 'multipart/form-data')
+        .field('client_name', updatedName)
+        .field('client_uri', updatedUri)
+        .attach(
+          'logo',
+          //must be relative path from where test running
+          fs.createReadStream('./tests/data/images/newClient.png')
+        );
 
       expect(res.statusCode).toEqual(200);
       expect(res.body.client_name).toEqual(updatedName);
@@ -297,6 +317,23 @@ describe('Client API', () => {
         .field('name', updatedUri)
         //invalid client_uri
         .field('uri', testClientData.invalidateField.client_uri)
+        .attach(
+          'logo',
+          fs.createReadStream('./tests/data/images/newClient.png')
+        );
+
+      expect(res.statusCode).toEqual(400);
+    });
+
+    test('Response_400_RedirectUri(?)', async () => {
+      const res = await request(app)
+        .put(`/app/${testClientData.clients[0].client_id}`)
+        .set('Cookie', currentUser.sidCookie)
+        .set('Content-Type', 'multipart/form-data')
+        .field('name', updatedUri)
+        .field('uri', testClientData.invalidateField.client_uri)
+        //
+        .field('redirect_uri', testClientData.invalidateField.redirect_uri)
         .attach(
           'logo',
           fs.createReadStream('./tests/data/images/newClient.png')
