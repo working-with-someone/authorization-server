@@ -14,6 +14,18 @@ import { generateCompleteFileName } from '../utils/fileHandler';
 import path from 'path';
 import crypto from 'node:crypto';
 
+// not authprized client에 대한 정보를 숨기기 위해 userId 와 함께 clientId로 client의 존재 여부를 확인한다.
+export const isClientExist = async (userId: number, clientId: string) => {
+  const client = await prismaClient.oauth_client.findFirst({
+    where: {
+      user_id: userId,
+      client_id: clientId,
+    },
+  });
+
+  return client ? true : false;
+};
+
 export const getClient = async (userId: number, clientId: string) => {
   const client = await prismaClient.oauth_client.findFirst({
     where: {
