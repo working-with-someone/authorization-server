@@ -247,6 +247,40 @@ describe('Client API', () => {
       expect(res.body.client_uri).toEqual(updatedUri);
     });
 
+    test('Response_404_clientId(does_not_exist)', async () => {
+      const res = await request(app)
+        .put(`/app/doesnotExistClientId`)
+        .set('Cookie', currentUser.sidCookie)
+        .set('Content-Type', 'multipart/form-data')
+        .field('client_name', updatedName)
+        .field('client_uri', updatedUri)
+        .field('redirect_uri1', updatedRedirectUri1)
+        .attach(
+          'logo',
+          //must be relative path from where test running
+          fs.createReadStream('./tests/data/images/newClient.png')
+        );
+
+      expect(res.statusCode).toEqual(404);
+    });
+
+    test('Response_404_clientId(not_authorized)', async () => {
+      const res = await request(app)
+        .put(`/app/${testClientData.clientsOfOtherUser[0].client_id}`)
+        .set('Cookie', currentUser.sidCookie)
+        .set('Content-Type', 'multipart/form-data')
+        .field('client_name', updatedName)
+        .field('client_uri', updatedUri)
+        .field('redirect_uri1', updatedRedirectUri1)
+        .attach(
+          'logo',
+          //must be relative path from where test running
+          fs.createReadStream('./tests/data/images/newClient.png')
+        );
+
+      expect(res.statusCode).toEqual(404);
+    });
+
     test('Response_Updated_Client_With_200_Logo(x)', async () => {
       const res = await request(app)
         .put(`/app/${testClientData.clients[0].client_id}`)
