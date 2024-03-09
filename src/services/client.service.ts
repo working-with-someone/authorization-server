@@ -131,6 +131,37 @@ export const updateClient = async (input: ClientUpdateInput) => {
   return updatedClient;
 };
 
+export const deleteClient = async (userId: number, clientId: string) => {
+  if (!getClient(userId, clientId)) {
+    throw new wwsError(
+      HttpStatusCode.NOT_FOUND,
+      HttpStatusCode.getStatusText(HttpStatusCode.NOT_FOUND)
+    );
+  }
+
+  const deletedClient = await prismaClient.oauth_client.delete({
+    where: {
+      user_id: userId,
+      client_id: clientId,
+    },
+  });
+
+  const completeFileName = deletedClient.logo_uri.split('/').pop() as string;
+
+  const isDefaultLogo = completeFileName === 'default.png' ? true : false;
+
+  if (!isDefaultLogo) {
+    const logoUploadedPath = path.join(
+      uploadPath.client.logo,
+      completeFileName
+    );
+
+    if (fs.existsSync(logoUploadedPath)) fs.unlinkSync(logoUploadedPath);
+  }
+
+  return deletedClient;
+};
+
 const getPublicClientInfo = (
   client: Required<PublicClientInfo>
 ): PublicClientInfo =>
