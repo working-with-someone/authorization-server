@@ -46,3 +46,9 @@ export const updateClient = asyncCatch(async (req: Request, res: Response) => {
 
   return res.json(updatedClient);
 });
+
+export const deleteClient = asyncCatch(async (req: Request, res: Response) => {
+  await clientService.deleteClient(req.user.id, req.params.clientId);
+
+  return res.status(204).end();
+});

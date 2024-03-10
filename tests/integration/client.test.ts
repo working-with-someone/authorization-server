@@ -376,4 +376,36 @@ describe('Client API', () => {
       expect(res.statusCode).toEqual(400);
     });
   });
+
+  describe('DELETE', () => {
+    afterAll(async () => {
+      await prismaClient.oauth_client.create({
+        data: testClientData.clients[0],
+      });
+    });
+
+    test('Response_204', async () => {
+      const res = await request(app)
+        .delete(`/app/${testClientData.clients[0].client_id}`)
+        .set('Cookie', currentUser.sidCookie);
+
+      expect(res.statusCode).toEqual(204);
+    });
+
+    test('Response_404_clientId(not_authorized)', async () => {
+      const res = await request(app)
+        .delete(`/app/${testClientData.clients[0].client_id}`)
+        .set('Cookie', currentUser.sidCookie);
+
+      expect(res.statusCode).toEqual(404);
+    });
+
+    test('Response_404_clientId(does_not_exist)', async () => {
+      const res = await request(app)
+        .delete(`/app/${testClientData.clients[0].client_id}`)
+        .set('Cookie', currentUser.sidCookie);
+
+      expect(res.statusCode).toEqual(404);
+    });
+  });
 });

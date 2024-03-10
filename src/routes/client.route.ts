@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import {
   createClient,
+  deleteClient,
   getClient,
   getClients,
   updateClient,
@@ -32,6 +33,13 @@ router.put(
   validate(clientValidation.updateClient),
   checkClientExistence,
   updateClient
+);
+
+router.delete(
+  '/:clientId',
+  validate(clientValidation.deleteClient),
+  checkClientExistence,
+  deleteClient
 );
 
 export default router;

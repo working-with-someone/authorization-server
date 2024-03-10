@@ -30,8 +30,15 @@ const updateClient: ValidationSchema = {
   }),
 };
 
+const deleteClient: ValidationSchema = {
+  params: joi.object().keys({
+    clientId: joi.string().required(),
+  }),
+};
+
 export default {
   getClient,
   createClient,
   updateClient,
+  deleteClient,
 };
