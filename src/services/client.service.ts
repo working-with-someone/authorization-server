@@ -34,13 +34,6 @@ export const getClient = async (userId: number, clientId: string) => {
     },
   });
 
-  if (!client) {
-    throw new wwsError(
-      HttpStatusCode.NOT_FOUND,
-      HttpStatusCode.getStatusText(HttpStatusCode.NOT_FOUND)
-    );
-  }
-
   return client;
 };
 
@@ -132,13 +125,6 @@ export const updateClient = async (input: ClientUpdateInput) => {
 };
 
 export const deleteClient = async (userId: number, clientId: string) => {
-  if (!getClient(userId, clientId)) {
-    throw new wwsError(
-      HttpStatusCode.NOT_FOUND,
-      HttpStatusCode.getStatusText(HttpStatusCode.NOT_FOUND)
-    );
-  }
-
   const deletedClient = await prismaClient.oauth_client.delete({
     where: {
       user_id: userId,

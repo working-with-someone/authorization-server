@@ -48,21 +48,6 @@ describe('Client_Service_Logic', () => {
         prismaClientMock.oauth_client.findFirst.mock.results[0].value
       ).resolves.toEqual(existClient);
     });
-
-    test('Throw_WWSError_With_404_If_Client_Does_Not_Exist', async () => {
-      prismaClientMock.oauth_client.findFirst.mockResolvedValueOnce(null);
-
-      await expect(clientService.getClient(1, '1234')).rejects.toThrowError(
-        new wwsError(
-          HttpStatusCode.NOT_FOUND,
-          HttpStatusCode.getStatusText(HttpStatusCode.NOT_FOUND)
-        )
-      );
-
-      await expect(
-        prismaClientMock.oauth_client.findFirst.mock.results[0].value
-      ).resolves.toEqual(null);
-    });
   });
 
   describe('getClients', () => {
