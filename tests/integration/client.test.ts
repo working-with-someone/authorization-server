@@ -394,7 +394,7 @@ describe('Client API', () => {
 
     test('Response_404_clientId(not_authorized)', async () => {
       const res = await request(app)
-        .delete(`/app/${testClientData.clients[0].client_id}`)
+        .delete(`/app/${testClientData.clientsOfOtherUser[0].client_id}`)
         .set('Cookie', currentUser.sidCookie);
 
       expect(res.statusCode).toEqual(404);
