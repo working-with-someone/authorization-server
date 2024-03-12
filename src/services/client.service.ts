@@ -1,6 +1,4 @@
 import prismaClient from '../database';
-import HttpStatusCode from 'http-status-codes';
-import { wwsError } from '../error/wwsError';
 import { v4 } from 'uuid';
 import { servingURL, uploadPath } from '../config/path.config';
 import {
@@ -13,6 +11,7 @@ import fs from 'fs';
 import { generateCompleteFileName } from '../utils/fileHandler';
 import path from 'path';
 import crypto from 'node:crypto';
+import { File } from '../middleware/minions';
 
 // not authprized client에 대한 정보를 숨기기 위해 userId 와 함께 clientId로 client의 존재 여부를 확인한다.
 export const isClientExist = async (userId: number, clientId: string) => {
@@ -52,16 +51,11 @@ export const createClient = async (
 ): Promise<PublicClientInfo> => {
   const clientId = v4();
 
-  let completeFileName = 'default.png';
+  const completeFileName = 'default.png';
   let logoUri = new URL(completeFileName, servingURL.client.logo);
 
   if (input.file) {
-    completeFileName = generateCompleteFileName({
-      name: clientId,
-      mimeType: input.file?.mimetype,
-    });
-
-    logoUri = new URL(completeFileName, servingURL.client.logo);
+    logoUri = await uploadLogo(clientId, input.file);
   }
 
   //generate client secret
@@ -79,14 +73,6 @@ export const createClient = async (
     },
   });
 
-  if (input.file) {
-    const fileUploadPath = path.join(uploadPath.client.logo, completeFileName);
-
-    const logoWritableStream = fs.createWriteStream(fileUploadPath);
-
-    input.file.stream.pipe(logoWritableStream);
-  }
-
   return getPublicClientInfo(client);
 };
 
@@ -98,19 +84,11 @@ export const updateClient = async (input: ClientUpdateInput) => {
   };
 
   if (input.file) {
-    const completeFileName = generateCompleteFileName({
-      name: input.client_id,
-      mimeType: input.file?.mimetype,
-    });
-    const logoUri = new URL(completeFileName, servingURL.client.logo);
+    await deleteLogo(input.client_id);
 
-    const fileUploadPath = path.join(uploadPath.client.logo, completeFileName);
+    const logoUri = await uploadLogo(input.client_id, input.file);
 
-    const logoWritableStream = fs.createWriteStream(fileUploadPath);
-
-    input.file.stream.pipe(logoWritableStream);
-
-    Object.assign('logo_uri', logoUri);
+    Object.assign(data, { logo_uri: logoUri });
   }
 
   const updatedClient = await prismaClient.oauth_client.update({
@@ -125,25 +103,14 @@ export const updateClient = async (input: ClientUpdateInput) => {
 };
 
 export const deleteClient = async (userId: number, clientId: string) => {
+  await deleteLogo(clientId);
+
   const deletedClient = await prismaClient.oauth_client.delete({
     where: {
       user_id: userId,
       client_id: clientId,
     },
   });
-
-  const completeFileName = deletedClient.logo_uri.split('/').pop() as string;
-
-  const isDefaultLogo = completeFileName === 'default.png' ? true : false;
-
-  if (!isDefaultLogo) {
-    const logoUploadedPath = path.join(
-      uploadPath.client.logo,
-      completeFileName
-    );
-
-    if (fs.existsSync(logoUploadedPath)) fs.unlinkSync(logoUploadedPath);
-  }
 
   return deletedClient;
 };
@@ -152,3 +119,55 @@ const getPublicClientInfo = (
   client: Required<PublicClientInfo>
 ): PublicClientInfo =>
   pick(client, ['client_id', 'client_name', 'client_uri', 'logo_uri']);
+
+// logo를 upload한다.
+// pipe processing이 모두 종료되면 resolve되는 promise를 return한다.
+const uploadLogo = (clientId: string, file: File): Promise<URL> => {
+  const completeFileName = generateCompleteFileName({
+    name: clientId,
+    mimeType: file.mimetype,
+  });
+
+  const fileUploadPath = path.join(uploadPath.client.logo, completeFileName);
+
+  const logoWritableStream = fs.createWriteStream(fileUploadPath);
+
+  const logoUri = new URL(completeFileName, servingURL.client.logo);
+
+  return new Promise((resolve, reject) => {
+    file.stream.pipe(logoWritableStream);
+
+    file.stream.on('error', (err) => {
+      // processing 중 readable에서 erorr가 발생해도 writable은 auto close되지 않는다.
+      // 수동으로 close 해주지 않으면 writable은 open 상태로 유지되며 memory leak이 발생한다.
+      logoWritableStream.end();
+
+      reject(err);
+    });
+
+    file.stream.on('end', () => {
+      resolve(logoUri);
+    });
+  });
+};
+
+// client의 logo가 default가 아니라면 upload된 logo를 제거한다.
+// default logo를 사용한다면 아무런 동작도하지 않는다.
+const deleteLogo = async (clientId: string) => {
+  const client = await prismaClient.oauth_client.findFirst({
+    where: { client_id: clientId },
+  });
+
+  const isDefault = client?.logo_uri === 'default.png' ? true : false;
+
+  if (!isDefault) {
+    const completeFileName = client?.logo_uri.split('/').pop() as string;
+
+    const logoUploadedPath = path.join(
+      uploadPath.client.logo,
+      completeFileName
+    );
+
+    if (fs.existsSync(logoUploadedPath)) fs.unlinkSync(logoUploadedPath);
+  }
+};
