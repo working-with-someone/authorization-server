@@ -35,6 +35,7 @@ export const updateClient = asyncCatch(async (req: Request, res: Response) => {
     client_name: req.body.client_name,
     client_uri: req.body.client_uri,
     file: req.file,
+    logo_update_option: req.body.logo_update_option,
     redirect_uri: [
       req.body?.redirect_uri1,
       req.body?.redirect_uri2,
