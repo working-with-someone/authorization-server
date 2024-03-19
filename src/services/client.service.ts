@@ -83,10 +83,22 @@ export const updateClient = async (input: ClientUpdateInput) => {
     redirect_uri: input.redirect_uri,
   };
 
-  if (input.file) {
+  const logo_option = input.logo_update_option;
+
+  if (logo_option === 'update' || logo_option === 'delete') {
+    await deleteLogo(input.client_id);
+  }
+
+  if (logo_option === 'update' && input.file) {
     await deleteLogo(input.client_id);
 
     const logoUri = await uploadLogo(input.client_id, input.file);
+
+    Object.assign(data, { logo_uri: logoUri });
+  }
+
+  if (logo_option === 'delete') {
+    const logoUri = new URL('default.png', servingURL.client.logo);
 
     Object.assign(data, { logo_uri: logoUri });
   }
