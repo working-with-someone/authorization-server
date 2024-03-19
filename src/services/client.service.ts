@@ -158,11 +158,11 @@ const deleteLogo = async (clientId: string) => {
     where: { client_id: clientId },
   });
 
-  const isDefault = client?.logo_uri === 'default.png' ? true : false;
+  const completeFileName = client?.logo_uri.split('/').pop() as string;
+
+  const isDefault = completeFileName === 'default.png' ? true : false;
 
   if (!isDefault) {
-    const completeFileName = client?.logo_uri.split('/').pop() as string;
-
     const logoUploadedPath = path.join(
       uploadPath.client.logo,
       completeFileName
