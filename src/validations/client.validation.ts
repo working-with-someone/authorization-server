@@ -19,6 +19,10 @@ const updateClient: ValidationSchema = {
   body: joi.object().keys({
     client_name: stringBase.withoutSpecialChar().required(),
     client_uri: joi.string().uri().required(),
+    logo_update_option: joi
+      .string()
+      .equal('no-change', 'update', 'delete')
+      .required(),
     redirect_uri1: joi.string().uri(),
     redirect_uri2: joi.string().uri(),
     redirect_uri3: joi.string().uri(),
