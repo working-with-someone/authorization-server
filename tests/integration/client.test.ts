@@ -408,4 +408,17 @@ describe('Client API', () => {
       expect(res.statusCode).toEqual(404);
     });
   });
+
+  describe('PATCH', () => {
+    describe('PATCH ClientSecret', () => {
+      test('Response_Updated_Client_With_200', async () => {
+        const res = await request(app)
+          .patch(`/app/${testClientData.clients[0].client_id}/secret`)
+          .set('Cookie', currentUser.sidCookie);
+
+        expect(res.statusCode).toEqual(200);
+        expect(res.body).not.toEqual(testClientData.clients[0].client_secret);
+      });
+    });
+  });
 });
