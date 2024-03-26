@@ -40,9 +40,16 @@ const deleteClient: ValidationSchema = {
   }),
 };
 
+const refreshClientSecret: ValidationSchema = {
+  params: joi.object().keys({
+    clientId: joi.string().required(),
+  }),
+};
+
 export default {
   getClient,
   createClient,
   updateClient,
   deleteClient,
+  refreshClientSecret,
 };
