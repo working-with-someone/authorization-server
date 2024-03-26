@@ -115,6 +115,23 @@ export const deleteClient = async (userId: number, clientId: string) => {
   return deletedClient;
 };
 
+export const refreshClientSecret = async (userId: number, clientId: string) => {
+  //generate client secret
+  const clientSecret = crypto.randomBytes(15).toString('hex');
+
+  const updatedClient = await prismaClient.oauth_client.update({
+    where: {
+      user_id: userId,
+      client_id: clientId,
+    },
+    data: {
+      client_secret: clientSecret,
+    },
+  });
+
+  return updatedClient;
+};
+
 const getPublicClientInfo = (
   client: Required<PublicClientInfo>
 ): PublicClientInfo =>
