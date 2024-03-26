@@ -4,6 +4,7 @@ import {
   deleteClient,
   getClient,
   getClients,
+  refreshClientSecret,
   updateClient,
 } from '../controller/client.controller';
 
@@ -11,9 +12,11 @@ import minion from '../middleware/minions';
 import { clientValidation } from '../validations';
 import validate from '../middleware/validate';
 import { checkClientExistence } from '../middleware/client/client.middleware';
+
 const router = Router();
 
 router.get('/', getClients);
+
 router.get(
   '/:clientId',
   validate(clientValidation.getClient),
@@ -40,6 +43,13 @@ router.delete(
   validate(clientValidation.deleteClient),
   checkClientExistence,
   deleteClient
+);
+
+router.patch(
+  '/:clientId/secret',
+  validate(clientValidation.refreshClientSecret),
+  checkClientExistence,
+  refreshClientSecret
 );
 
 export default router;
