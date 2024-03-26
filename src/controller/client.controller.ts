@@ -52,3 +52,15 @@ export const deleteClient = asyncCatch(async (req: Request, res: Response) => {
 
   return res.status(204).end();
 });
+
+export const refreshClientSecret = asyncCatch(
+  async (req: Request, res: Response) => {
+    const updatedClient = await clientService.refreshClientSecret(
+      req.user.id,
+      req.params.clientId
+    );
+
+    // omitted response status code mean 200
+    return res.json(updatedClient);
+  }
+);
