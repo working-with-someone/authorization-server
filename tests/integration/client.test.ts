@@ -6,6 +6,7 @@ import app from '../../src/app';
 import fs from 'fs';
 import cookie from 'cookie';
 import { sessionIdName } from '../../src/config/session.config';
+import { servingURL, uploadPath } from '../../src/config/path.config';
 
 jest.unmock('../../src/database');
 
@@ -228,13 +229,14 @@ describe('Client API', () => {
     const updatedUri = 'http://www.updated.com';
     const updatedRedirectUri1 = 'https://wws.updated.com/callback';
 
-    test('Response_Updated_Client_With_200', async () => {
+    test('Response_Logo_Updated_Client_With_200', async () => {
       const res = await request(app)
         .put(`/app/${testClientData.clients[0].client_id}`)
         .set('Cookie', currentUser.sidCookie)
         .set('Content-Type', 'multipart/form-data')
         .field('client_name', updatedName)
         .field('client_uri', updatedUri)
+        .field('logo_update_option', 'update')
         .field('redirect_uri1', updatedRedirectUri1)
         .attach(
           'logo',
@@ -247,6 +249,24 @@ describe('Client API', () => {
       expect(res.body.client_uri).toEqual(updatedUri);
     });
 
+    test('Response_Logo_Removed_Client_With_200', async () => {
+      const res = await request(app)
+        .put(`/app/${testClientData.clients[0].client_id}`)
+        .set('Cookie', currentUser.sidCookie)
+        .set('Content-Type', 'multipart/form-data')
+        .field('client_name', updatedName)
+        .field('client_uri', updatedUri)
+        .field('logo_update_option', 'delete')
+        .field('redirect_uri1', updatedRedirectUri1);
+
+      expect(res.statusCode).toEqual(200);
+      expect(res.body.client_name).toEqual(updatedName);
+      expect(res.body.client_uri).toEqual(updatedUri);
+      expect(res.body.logo_uri).toEqual(
+        new URL('default.png', servingURL.client.logo).toString()
+      );
+    });
+
     test('Response_404_clientId(does_not_exist)', async () => {
       const res = await request(app)
         .put(`/app/doesnotExistClientId`)
@@ -254,6 +274,7 @@ describe('Client API', () => {
         .set('Content-Type', 'multipart/form-data')
         .field('client_name', updatedName)
         .field('client_uri', updatedUri)
+        .field('logo_update_option', 'update')
         .field('redirect_uri1', updatedRedirectUri1)
         .attach(
           'logo',
@@ -271,6 +292,7 @@ describe('Client API', () => {
         .set('Content-Type', 'multipart/form-data')
         .field('client_name', updatedName)
         .field('client_uri', updatedUri)
+        .field('logo_update_option', 'update')
         .field('redirect_uri1', updatedRedirectUri1)
         .attach(
           'logo',
@@ -287,7 +309,8 @@ describe('Client API', () => {
         .set('Cookie', currentUser.sidCookie)
         .set('Content-Type', 'multipart/form-data')
         .field('client_name', updatedName)
-        .field('client_uri', updatedUri);
+        .field('client_uri', updatedUri)
+        .field('logo_update_option', 'no-change');
 
       expect(res.statusCode).toEqual(200);
       expect(res.body.client_name).toEqual(updatedName);
@@ -301,6 +324,7 @@ describe('Client API', () => {
         .set('Content-Type', 'multipart/form-data')
         .field('client_name', updatedName)
         .field('client_uri', updatedUri)
+        .field('logo_update_option', 'update')
         .attach(
           'logo',
           //must be relative path from where test running
@@ -317,10 +341,27 @@ describe('Client API', () => {
         .put(`/app/${testClientData.clients[0].client_id}`)
         .set('Cookie', currentUser.sidCookie)
         .set('Content-Type', 'multipart/form-data')
+        .field('logo_update_option', 'update')
         // missed client_name, client_uri
         .attach(
           'logo',
           //must be relative path from where test running
+          fs.createReadStream('./tests/data/images/newClient.png')
+        );
+
+      expect(res.statusCode).toEqual(400);
+    });
+
+    test('Response_400_LogoUpdateOption(x)', async () => {
+      const res = await request(app)
+        .put(`/app/${testClientData.clients[0].client_id}`)
+        .set('Cookie', currentUser.sidCookie)
+        .set('Content-Type', 'multipart/form-data')
+        .field('name', updatedUri)
+        .field('uri', testClientData.invalidateField.client_uri)
+        .field('redirect_uri', testClientData.invalidateField.redirect_uri)
+        .attach(
+          'logo',
           fs.createReadStream('./tests/data/images/newClient.png')
         );
 
@@ -335,6 +376,7 @@ describe('Client API', () => {
         //invlalid client_name
         .field('name', testClientData.invalidateField.client_name)
         .field('uri', updatedUri)
+        .field('logo_update_option', 'update')
         .attach(
           'logo',
           fs.createReadStream('./tests/data/images/newClient.png')
@@ -351,6 +393,7 @@ describe('Client API', () => {
         .field('name', updatedUri)
         //invalid client_uri
         .field('uri', testClientData.invalidateField.client_uri)
+        .field('logo_update_option', 'update')
         .attach(
           'logo',
           fs.createReadStream('./tests/data/images/newClient.png')
@@ -366,8 +409,8 @@ describe('Client API', () => {
         .set('Content-Type', 'multipart/form-data')
         .field('name', updatedUri)
         .field('uri', testClientData.invalidateField.client_uri)
-        //
         .field('redirect_uri', testClientData.invalidateField.redirect_uri)
+        .field('logo_update_option', 'update')
         .attach(
           'logo',
           fs.createReadStream('./tests/data/images/newClient.png')
