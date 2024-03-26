@@ -408,4 +408,48 @@ describe('Client API', () => {
       expect(res.statusCode).toEqual(404);
     });
   });
+
+  describe('PATCH', () => {
+    describe('ClientSecret', () => {
+      test('Response_Updated_Client_With_200', async () => {
+        const res = await request(app)
+          .patch(`/app/${testClientData.clients[0].client_id}/secret`)
+          .set('Cookie', currentUser.sidCookie);
+
+        expect(res.statusCode).toEqual(200);
+        expect(res.body).not.toBeUndefined();
+
+        //update 된 client는 응답되어야하고, patch를 요청한 client secret을 제외하고는 모두 변경되지 않아야한다.
+        expect(res.body).toMatchObject({
+          ...testClientData.clients[0],
+          //client_secret은 patch되어 같지 않다. string이라면 match 판정이다.
+          client_secret: expect.any(String),
+        });
+
+        //client_secret은 patch되었어야한다.
+        expect(res.body.client_secret).not.toEqual(
+          testClientData.clients[0].client_secret
+        );
+      });
+
+      test('Response_404_clientId(not_authorized)', async () => {
+        const res = await request(app)
+          .delete(
+            `/app/${testClientData.clientsOfOtherUser[0].client_id}/secret`
+          )
+          .set('Cookie', currentUser.sidCookie);
+        // 권한이 없는 client에 대해서는 forbidden이 아닌 존재 자체가 숨겨진다.
+        expect(res.statusCode).toEqual(404);
+      });
+
+      test('Response_404_clientId(does_not_exist)', async () => {
+        const res = await request(app)
+          .patch(`/app/does_not_exist/secret`)
+          .set('Cookie', currentUser.sidCookie);
+
+        // 존재하지 않는 client
+        expect(res.status).toEqual(404);
+      });
+    });
+  });
 });
