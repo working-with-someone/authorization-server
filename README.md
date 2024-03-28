@@ -1,3 +1,7 @@
 # wws Authorization server
 
-wws 인증서버입니다
+- account management
+- authentication 
+- authorization
+
+모두 이 서버가 수행합니다
