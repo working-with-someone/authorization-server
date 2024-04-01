@@ -1,6 +1,6 @@
 import joi from 'joi';
 import { ValidationSchema } from '../@types/validator';
-import { stringBase } from './base';
+import { stringBase } from './joi/baseSchema';
 
 const createUser: ValidationSchema = {
   body: joi.object().keys({

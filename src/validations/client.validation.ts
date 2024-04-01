@@ -1,6 +1,6 @@
 import { ValidationSchema } from '../@types/validator';
 import joi from 'joi';
-import { stringBase } from './base';
+import { stringBase } from './joi/baseSchema';
 
 const getClient: ValidationSchema = {
   params: joi.object().keys({
