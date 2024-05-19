@@ -6,6 +6,7 @@ import {
   getClients,
   refreshClientSecret,
   updateClient,
+  patchClientScope,
 } from '../controller/client.controller';
 
 import minion from '../middleware/minions';
@@ -50,6 +51,13 @@ router.patch(
   validate(clientValidation.refreshClientSecret),
   checkClientExistence,
   refreshClientSecret
+);
+
+router.patch(
+  '/:clientId/scope',
+  validate(clientValidation.patchClientScope),
+  checkClientExistence,
+  patchClientScope
 );
 
 export default router;
