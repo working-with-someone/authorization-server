@@ -1,6 +1,6 @@
 import { ValidationSchema } from '../@types/validator';
 import joi from 'joi';
-import { stringBase } from './joi/baseSchema';
+import { stringBase, objectBase } from './joi/baseSchema';
 
 const getClient: ValidationSchema = {
   params: joi.object().keys({
@@ -46,10 +46,24 @@ const refreshClientSecret: ValidationSchema = {
   }),
 };
 
+const patchClientScope: ValidationSchema = {
+  params: joi.object().keys({
+    clientId: joi.string().required(),
+  }),
+  body: joi.array().items(
+    objectBase.patchDocument({
+      op: ['replace'],
+      path: '/',
+      value: true,
+    })
+  ),
+};
+
 export default {
   getClient,
   createClient,
   updateClient,
   deleteClient,
   refreshClientSecret,
+  patchClientScope,
 };
