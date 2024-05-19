@@ -65,3 +65,15 @@ export const refreshClientSecret = asyncCatch(
     return res.json(updatedClient);
   }
 );
+
+export const patchClientScope = asyncCatch(
+  async (req: Request, res: Response) => {
+    const patchedClient = await clientService.patchClientScope({
+      userId: req.user.id,
+      client_id: req.params.clientId,
+      patchDocument: req.body,
+    });
+
+    return res.json(patchedClient);
+  }
+);
