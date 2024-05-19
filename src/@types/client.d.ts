@@ -1,4 +1,6 @@
 import type { File } from '../middleware/minions';
+import { ReplacePatch } from './json-patch';
+
 export interface ClientCreationInput {
   userId: number;
   client_name: string;
@@ -10,6 +12,12 @@ export interface ClientUpdateInput extends ClientCreationInput {
   client_id: string;
   redirect_uri: string[];
   logo_update_option: 'no-change' | 'update' | 'delete';
+}
+
+export interface ClientPatchScopeInput {
+  userId: number;
+  client_id: string;
+  patchDocument: ReplacePatch[];
 }
 
 export interface PublicClientInfo {

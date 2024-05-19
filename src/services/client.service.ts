@@ -5,6 +5,7 @@ import {
   ClientCreationInput,
   PublicClientInfo,
   ClientUpdateInput,
+  ClientPatchScopeInput,
 } from '../@types/client';
 import pick from '../utils/pick';
 import fs from 'fs';
@@ -12,6 +13,9 @@ import { generateCompleteFileName } from '../utils/fileHandler';
 import path from 'path';
 import crypto from 'node:crypto';
 import { File } from '../middleware/minions';
+import scopeParser from '../utils/scopeParser';
+import { wwsError } from '../error/wwsError';
+import status from 'http-status-codes';
 
 // not authprized client에 대한 정보를 숨기기 위해 userId 와 함께 clientId로 client의 존재 여부를 확인한다.
 export const isClientExist = async (userId: number, clientId: string) => {
@@ -142,6 +146,25 @@ export const refreshClientSecret = async (userId: number, clientId: string) => {
   });
 
   return updatedClient;
+};
+
+// scope를 replace한다, 따라서 허용되는 patch Document의 operation은 오직 replace뿐이다.
+export const patchClientScope = async (input: ClientPatchScopeInput) => {
+  const strScope = input.patchDocument[0].value;
+
+  // invalid하다면 Bad Request를 응답한다.
+  if (!scopeParser.isValidStrScope(strScope)) {
+    throw new wwsError(status.BAD_REQUEST);
+  }
+
+  await prismaClient.oauth_client.update({
+    where: { user_id: input.userId, client_id: input.client_id },
+    data: { scope: strScope },
+  });
+
+  const client = await getClient(input.userId, input.client_id);
+
+  return client;
 };
 
 const getPublicClientInfo = (
