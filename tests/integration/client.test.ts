@@ -6,7 +6,7 @@ import app from '../../src/app';
 import fs from 'fs';
 import cookie from 'cookie';
 import { sessionIdName } from '../../src/config/session.config';
-import { servingURL, uploadPath } from '../../src/config/path.config';
+import { servingURL } from '../../src/config/path.config';
 
 jest.unmock('../../src/database');
 
@@ -462,7 +462,7 @@ describe('Client API', () => {
         expect(res.statusCode).toEqual(200);
         expect(res.body).not.toBeUndefined();
 
-        //update 된 client는 응답되어야하고, patch를 요청한 client secret을 제외하고는 모두 변경되지 않아야한다.
+        //update 된 client는 응답되어야하고, patch를 요청한 client secret을 제외하고는 모두 변경되지 않아야한다.
         expect(res.body).toMatchObject({
           ...testClientData.clients[0],
           //client_secret은 patch되어 같지 않다. string이라면 match 판정이다.
@@ -492,6 +492,120 @@ describe('Client API', () => {
 
         // 존재하지 않는 client
         expect(res.status).toEqual(404);
+      });
+    });
+
+    describe('Scope', () => {
+      beforeEach(async () => {
+        prismaClient.oauth_client.update({
+          where: {
+            client_id: testClientData.clients[0].client_id,
+          },
+          data: {
+            scope: '',
+          },
+        });
+      });
+
+      // 기존 client의 scope에 포함되어있지 않던 새로운 scope를 추가한다.
+      test('Response_Partial_Updated_Client_With_200', async () => {
+        const patchDocument = [
+          { op: 'replace', path: '/', value: 'user:username.read.write' },
+        ];
+
+        const res = await request(app)
+          .patch(`/app/${testClientData.clients[0].client_id}/scope`)
+          .set('Cookie', currentUser.sidCookie)
+          .set('Content-Type', 'application/json-patch+json')
+          .send(patchDocument);
+
+        expect(res.statusCode).toEqual(200);
+      });
+
+      // 기존 client의 scope에 포함되어있던 scope에 대해 다른 권한을 나타내는 scope를 add한다면 덮어씌워져야한다.
+      test('Response_Partial_Updated_Client_With_200', async () => {
+        const patchDocument = [
+          {
+            op: 'replace',
+            path: '/',
+            value: 'user:username.read.write user:pfp.read',
+          },
+        ];
+
+        const res = await request(app)
+          .patch(`/app/${testClientData.clients[0].client_id}/scope`)
+          .set('Cookie', currentUser.sidCookie)
+          .set('Content-Type', 'application/json-patch+json')
+          .send(patchDocument);
+
+        expect(res.statusCode).toEqual(200);
+      });
+
+      test('Response_400_PatchDocument(?(path(x)))', async () => {
+        // invalid : path property missed
+        const patchDocument = [{ op: 'replace', value: 'user:username.read' }];
+        const res = await request(app)
+          .patch(`/app/${testClientData.clients[0].client_id}/scope`)
+          .set('Cookie', currentUser.sidCookie)
+          .set('Content-Type', 'application/json-patch+json')
+          .send(patchDocument);
+
+        expect(res.statusCode).toEqual(400);
+      });
+
+      test('Response_400_PatchDocument(?(op(x)))', async () => {
+        // invalid : op property missed
+        const patchDocument = [{ path: '/', value: 'user:username.read' }];
+
+        // path property missed
+        const res = await request(app)
+          .patch(`/app/${testClientData.clients[0].client_id}/scope`)
+          .set('Cookie', currentUser.sidCookie)
+          .set('Content-Type', 'application/json-patch+json')
+          .send(patchDocument);
+
+        expect(res.statusCode).toEqual(400);
+      });
+
+      test('Response_400_PatchDocument(?(value(x)))', async () => {
+        // invalid : value property missed
+        const patchDocument = [{ op: 'replace', path: '/' }];
+
+        const res = await request(app)
+          .patch(`/app/${testClientData.clients[0].client_id}/scope`)
+          .set('Cookie', currentUser.sidCookie)
+          .set('Content-Type', 'application/json-patch+json')
+          .send(patchDocument);
+
+        expect(res.statusCode).toEqual(400);
+      });
+
+      test('Response_400_PatchDocument(?(value(invalidFormat))', async () => {
+        const patchDocument = [
+          { op: 'replace', path: '/', value: 'user;username.read.write' },
+        ];
+
+        const res = await request(app)
+          .patch(`/app/${testClientData.clients[0].client_id}/scope`)
+          .set('Cookie', currentUser.sidCookie)
+          .set('Content-Type', 'application/json-patch+json')
+          .send(patchDocument);
+
+        expect(res.statusCode).toEqual(400);
+      });
+
+      test('Response_400_PatchDocument(?(value(unReservedFormat))', async () => {
+        const patchDocument = [
+          { op: 'replace', path: '/', value: 'user:age.read.write' },
+        ];
+
+        const res = await request(app)
+          .patch(`/app/${testClientData.clients[0].client_id}/scope`)
+          .set('Cookie', currentUser.sidCookie)
+          .set('Content-Type', 'application/json-patch+json')
+          .send(patchDocument);
+
+        expect(res.statusCode).toEqual(400);
       });
     });
   });

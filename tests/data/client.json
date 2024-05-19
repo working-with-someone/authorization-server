@@ -16,7 +16,7 @@
         "testClient.com"
       ],
       "response_type": "code",
-      "scope": "pfp username",
+      "scope": "user:username.read",
       "token_endpoint_auth_method": "client_secret_post",
       "tos_uri": null,
       "user_id": 1
