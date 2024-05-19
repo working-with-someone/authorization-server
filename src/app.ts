@@ -34,6 +34,8 @@ app.set('views', `${process.cwd()}/views`);
 app.use(favicon(`${process.cwd()}/favicon.ico`));
 app.use(session(sessionConfig));
 
+// support json patch document
+app.use(express.json({ type: 'application/json-patch+json' }));
 //urlencoded body parser
 app.use(express.urlencoded({ extended: true }));
 
