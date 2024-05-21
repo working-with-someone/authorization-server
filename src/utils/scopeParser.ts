@@ -19,7 +19,7 @@ function isValidStrScope(strScope: string) {
 
   const scope = parseStrScopeToScope(strScope);
 
-  if (!isReservedScope(scope.hierarchy)) return false;
+  if (!isReservedScope(scope)) return false;
 
   return true;
 }
@@ -32,13 +32,13 @@ function isValidFormat(strScope: StrScope) {
 }
 
 //reserved scope인지 여부를 return한다.
-function isReservedScope(hierarchy: string[]) {
+function isReservedScope(scope: Scope) {
   let curr = reservedScope as any;
 
-  for (let i = 0; i < hierarchy.length; i++) {
-    if (!curr[hierarchy[i]]) return false;
+  for (let i = 0; i < scope.hierarchy.length; i++) {
+    if (!curr[scope.hierarchy[i]]) return false;
 
-    curr = curr[hierarchy[i]];
+    curr = curr[scope.hierarchy[i]];
   }
 
   return true;
@@ -72,7 +72,7 @@ function deserialize(strScopes: StrScope): Scope[] {
 
     const scope = parseStrScopeToScope(strScope);
 
-    if (!isReservedScope(scope.hierarchy)) {
+    if (!isReservedScope(scope)) {
       throw new Error('not defineded resource');
     }
 
