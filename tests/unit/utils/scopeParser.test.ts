@@ -22,7 +22,7 @@ describe('scopeParser', () => {
 
   test('isReservedScope(hierarchy(o))', () => {
     Scopes.validScopes.forEach((scope) => {
-      const isReserved = scopeParser.isReservedScope(scope.hierarchy);
+      const isReserved = scopeParser.isReservedScope(scope);
 
       expect(isReserved).toBe(true);
     });
@@ -30,7 +30,7 @@ describe('scopeParser', () => {
 
   test('isReservedScope(hierarchy(?))', () => {
     Scopes.unReservedScopes.forEach((scope) => {
-      const isReserved = scopeParser.isReservedScope(scope.hierarchy);
+      const isReserved = scopeParser.isReservedScope(scope);
 
       expect(isReserved).toBe(false);
     });

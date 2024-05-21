@@ -60,13 +60,23 @@
                 "doest",
                 "not",
                 "reserved"
-            ]
+            ],
+            "target": "pfp",
+            "permission": {
+                "write": true,
+                "read": true
+            }
         },
         {
             "hierarchy" : [
                 "user",
                 "doesNotReserved"
-            ]
+            ],
+            "target": "pfp",
+            "permission": {
+                "write": true,
+                "read": true
+            }
         }
     ],
     
