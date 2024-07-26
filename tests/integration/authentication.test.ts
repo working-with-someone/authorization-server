@@ -5,6 +5,7 @@ import app from '../../src/app';
 import moment from 'moment';
 import cookie from 'cookie';
 import { sessionIdName } from '../../src/config/session.config';
+import server from '../../src/server';
 
 jest.unmock('../../src/database');
 
@@ -21,18 +22,20 @@ describe('Authentication', () => {
 
   afterAll(async () => {
     await prismaClient.user.deleteMany({});
+
+    server.close();
   });
 
   describe('Signup', () => {
     describe('GET', () => {
       test('Response_200', (done) => {
-        request(app).get('/auth/signup').expect(200).end(done);
+        request(server).get('/auth/signup').expect(200).end(done);
       });
     });
 
     describe('POST', () => {
       test('Response_200', (done) => {
-        request(app)
+        request(server)
           .post('/auth/signup')
           .send({
             username: testUserData.newUser.username,
@@ -47,7 +50,7 @@ describe('Authentication', () => {
       });
 
       test('Response_409_Email(!)', (done) => {
-        request(app)
+        request(server)
           .post('/auth/signup')
           .send({
             username: testUserData.users[0].username,
@@ -62,7 +65,7 @@ describe('Authentication', () => {
       });
 
       test('Response_400_Username(x)', (done) => {
-        request(app)
+        request(server)
           .post('/auth/signup')
           .send({
             email: testUserData.signupInput.valid.username,
@@ -76,7 +79,7 @@ describe('Authentication', () => {
       });
 
       test('Response_400_Email(x)', (done) => {
-        request(app)
+        request(server)
           .post('/auth/signup')
           .send({
             username: testUserData.signupInput.valid.username,
@@ -90,7 +93,7 @@ describe('Authentication', () => {
       });
 
       test('Response_400_Password(x)', (done) => {
-        request(app)
+        request(server)
           .post('/auth/signup')
           .send({
             username: testUserData.signupInput.valid.username,
@@ -104,7 +107,7 @@ describe('Authentication', () => {
       });
 
       test('Response_400_Username(?)', (done) => {
-        request(app)
+        request(server)
           .post('/auth/signup')
           .send({
             username: testUserData.signupInput.invalid.username,
@@ -119,7 +122,7 @@ describe('Authentication', () => {
       });
 
       test('Response_400_Email(?)', (done) => {
-        request(app)
+        request(server)
           .post('/auth/signup')
           .send({
             username: testUserData.signupInput.valid.username,
@@ -134,7 +137,7 @@ describe('Authentication', () => {
       });
 
       test('Response_400_Password(?)', (done) => {
-        request(app)
+        request(server)
           .post('/auth/signup')
           .send({
             username: testUserData.signupInput.valid.username,
@@ -173,7 +176,7 @@ describe('Authentication', () => {
         },
       });
 
-      const res = await request(app).get(
+      const res = await request(server).get(
         `/auth/signup/verify?user_id=${user?.id}&token=${user?.email_verification?.verify_token}`
       );
 
@@ -191,18 +194,18 @@ describe('Authentication', () => {
         },
       });
 
-      const res = await request(app).get(
+      const res = await request(server).get(
         `/auth/signup/verify?user_id=${user?.id}&token=${user?.email_verification?.verify_token}`
       );
 
       expect(res.status).toEqual(400);
     });
     test('Response_400_UserId(x)_Token(X)', (done) => {
-      request(app).get('/auth/signup/verify').expect(400).end(done);
+      request(server).get('/auth/signup/verify').expect(400).end(done);
     });
 
     test('Response_404_Token(?)', (done) => {
-      request(app)
+      request(server)
         .get(
           `/auth/signup/verify?user_id=1234&token=${testUserData.verifyQuery.invalid.token}`
         )
@@ -213,7 +216,7 @@ describe('Authentication', () => {
 
   describe('Login', () => {
     test('Response_Login_Page_With_200', (done) => {
-      request(app)
+      request(server)
         .get('/auth/login')
         .query({ continue: 'http://example.com' })
         .expect(200)
@@ -221,7 +224,7 @@ describe('Authentication', () => {
     });
 
     test('Response_400_ContinueUri(x)', (done) => {
-      request(app)
+      request(server)
         .post('/auth/login')
         .send({
           email: testUserData.newUser.email,
@@ -235,7 +238,7 @@ describe('Authentication', () => {
     });
 
     test('Redirect_To_Redirect_Uri_With_With_Sid_302', (done) => {
-      request(app)
+      request(server)
         .post('/auth/login')
         .send({
           email: testUserData.newUser.email,
@@ -266,7 +269,7 @@ describe('Authentication', () => {
     });
 
     test('Response_400_Credential_Does_Not_Exist', (done) => {
-      request(app)
+      request(server)
         .post('/auth/login')
         .send({
           // not registered credential
