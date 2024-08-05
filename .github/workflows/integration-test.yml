@@ -21,7 +21,13 @@ jobs:
         with:
           node-version: 18
           cache: yarn
-          
+      
+      - name: Setup Redis
+        uses: zhulik/redis-action@1.1.0
+        with:
+          redis version: latest
+          number of databases: 16
+
       - name : Setup Mysql Latest
         uses : 'mirromutth/mysql-action@v1.1'
         with:
@@ -54,7 +60,14 @@ jobs:
          echo "GOOGLE_GMAIL_SECRET=${{ secrets.GOOGLE_GMAIL_SECRET }}" >> ./.env.test
          echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> ./.env.test
          echo "CORS_ALLOWED_ORIGIN=${{ secrets.CORS_ALLOWED_ORIGIN }}" >> ./.env.test
-         
+         echo "REDIS_HOST=${{ secrets.REDIS_HOST }}" >> ./env.test
+         echo "REDIS_PORT=${{ secrets.REDIS_PORT }}" >> ./.env.test
+         echo "REDIS_NAME=${{ secrets.REDIS_NAME }}" >> ./.env.test
+         echo "REDIS_DATABASE_NUMBER=${{ secrets.REDIS_DATABASE_NUMBER }}" >> ./.env.test
+         echo "REDIS_USERNAME=${{ secrets.REDIS_USERNAME }}" >> ./.env.test
+         echo "REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}" >> ./.env.test
+
+
       - name: push schema to database
         run: yarn run db:push:test
 
