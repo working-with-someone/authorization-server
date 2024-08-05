@@ -15,6 +15,15 @@ declare namespace NodeJS {
     DATABASE_USER: string;
     DATABASE_PASSWORD: string;
 
+    REDIS_HOST: string;
+    REDIS_PORT: string;
+
+    REDIS_NAME: string;
+    REDIS_DATABASE_NUMBER: string;
+
+    REDIS_USERNAME: string;
+    REDIS_PASSWORD: string;
+
     GOOGLE_GMAIL: string;
     GOOGLE_GMAIL_SECRET: string;
 
