@@ -7,6 +7,7 @@ import fs from 'fs';
 import cookie from 'cookie';
 import { sessionIdName } from '../../src/config/session.config';
 import { servingURL, uploadPath } from '../../src/config/path.config';
+import server from '../../src/server';
 
 jest.unmock('../../src/database');
 
@@ -23,7 +24,7 @@ describe('Client API', () => {
       });
     }
 
-    const res = await request(app)
+    const res = await request(server)
       .post('/auth/login')
       .set({
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -67,11 +68,13 @@ describe('Client API', () => {
   afterAll(async () => {
     await prismaClient.user.deleteMany({});
     await prismaClient.oauth_client.deleteMany({});
+
+    server.close();
   });
 
   describe('GETS', () => {
     test('Response_Clients_With_200', async () => {
-      const res = await request(app)
+      const res = await request(server)
         .get('/app')
         .set('Cookie', currentUser.sidCookie);
 
@@ -82,7 +85,7 @@ describe('Client API', () => {
 
   describe('GET', () => {
     test('Response_Client_With_200', async () => {
-      const res = await request(app)
+      const res = await request(server)
         .get(`/app/${testClientData.clients[0].client_id}`)
         .set('Cookie', currentUser.sidCookie);
 
@@ -91,7 +94,7 @@ describe('Client API', () => {
     });
 
     test('Response_404_clientId(not_authorized)', async () => {
-      const res = await request(app)
+      const res = await request(server)
         .get(`/app/${testClientData.clientsOfOtherUser[0].client_id}`)
         .set('Cookie', currentUser.sidCookie);
 
@@ -99,7 +102,7 @@ describe('Client API', () => {
     });
 
     test('Response_404_clientId(does_not_exist)', async () => {
-      const res = await request(app)
+      const res = await request(server)
         .get('/app/doesnotExistClient')
         .set('Cookie', currentUser.sidCookie);
 
@@ -117,7 +120,7 @@ describe('Client API', () => {
     });
 
     test('Response_Created_Client_With_200', async () => {
-      const res = await request(app)
+      const res = await request(server)
         .post('/app')
         .set('Cookie', currentUser.sidCookie)
         .set('Content-Type', 'multipart/form-data')
@@ -136,7 +139,7 @@ describe('Client API', () => {
     });
 
     test('Response_Created_Client_With_200_Logo(x)', async () => {
-      const res = await request(app)
+      const res = await request(server)
         .post('/app')
         .set('Cookie', currentUser.sidCookie)
         .set('Content-Type', 'multipart/form-data')
@@ -151,7 +154,7 @@ describe('Client API', () => {
     });
 
     test('Response_400_Name(x)', async () => {
-      const res = await request(app)
+      const res = await request(server)
         .post('/app')
         .set('Cookie', currentUser.sidCookie)
         .set('Content-Type', 'multipart/form-data')
@@ -166,7 +169,7 @@ describe('Client API', () => {
     });
 
     test('Response_400_Uri(x)', async () => {
-      const res = await request(app)
+      const res = await request(server)
         .post('/app')
         .set('Cookie', currentUser.sidCookie)
         .set('Content-Type', 'multipart/form-data')
@@ -181,7 +184,7 @@ describe('Client API', () => {
     });
 
     test('Response_400_Name(?)', async () => {
-      const res = await request(app)
+      const res = await request(server)
         .post('/app')
         .set('Cookie', currentUser.sidCookie)
         .set('Content-Type', 'multipart/form-data')
@@ -197,7 +200,7 @@ describe('Client API', () => {
     });
 
     test('Response_400_Uri(?)', async () => {
-      const res = await request(app)
+      const res = await request(server)
         .post('/app')
         .set('Cookie', currentUser.sidCookie)
         .set('Content-Type', 'multipart/form-data')
@@ -230,7 +233,7 @@ describe('Client API', () => {
     const updatedRedirectUri1 = 'https://wws.updated.com/callback';
 
     test('Response_Logo_Updated_Client_With_200', async () => {
-      const res = await request(app)
+      const res = await request(server)
         .put(`/app/${testClientData.clients[0].client_id}`)
         .set('Cookie', currentUser.sidCookie)
         .set('Content-Type', 'multipart/form-data')
@@ -250,7 +253,7 @@ describe('Client API', () => {
     });
 
     test('Response_Logo_Removed_Client_With_200', async () => {
-      const res = await request(app)
+      const res = await request(server)
         .put(`/app/${testClientData.clients[0].client_id}`)
         .set('Cookie', currentUser.sidCookie)
         .set('Content-Type', 'multipart/form-data')
@@ -268,7 +271,7 @@ describe('Client API', () => {
     });
 
     test('Response_404_clientId(does_not_exist)', async () => {
-      const res = await request(app)
+      const res = await request(server)
         .put(`/app/doesnotExistClientId`)
         .set('Cookie', currentUser.sidCookie)
         .set('Content-Type', 'multipart/form-data')
@@ -286,7 +289,7 @@ describe('Client API', () => {
     });
 
     test('Response_404_clientId(not_authorized)', async () => {
-      const res = await request(app)
+      const res = await request(server)
         .put(`/app/${testClientData.clientsOfOtherUser[0].client_id}`)
         .set('Cookie', currentUser.sidCookie)
         .set('Content-Type', 'multipart/form-data')
@@ -304,7 +307,7 @@ describe('Client API', () => {
     });
 
     test('Response_Updated_Client_With_200_Logo(x)', async () => {
-      const res = await request(app)
+      const res = await request(server)
         .put(`/app/${testClientData.clients[0].client_id}`)
         .set('Cookie', currentUser.sidCookie)
         .set('Content-Type', 'multipart/form-data')
@@ -318,7 +321,7 @@ describe('Client API', () => {
     });
 
     test('Response_Updated_Client_With_200_RedirectUri(x)', async () => {
-      const res = await request(app)
+      const res = await request(server)
         .put(`/app/${testClientData.clients[0].client_id}`)
         .set('Cookie', currentUser.sidCookie)
         .set('Content-Type', 'multipart/form-data')
@@ -337,7 +340,7 @@ describe('Client API', () => {
     });
 
     test('Response_400_Name(x)_Uri(x)', async () => {
-      const res = await request(app)
+      const res = await request(server)
         .put(`/app/${testClientData.clients[0].client_id}`)
         .set('Cookie', currentUser.sidCookie)
         .set('Content-Type', 'multipart/form-data')
@@ -353,7 +356,7 @@ describe('Client API', () => {
     });
 
     test('Response_400_LogoUpdateOption(x)', async () => {
-      const res = await request(app)
+      const res = await request(server)
         .put(`/app/${testClientData.clients[0].client_id}`)
         .set('Cookie', currentUser.sidCookie)
         .set('Content-Type', 'multipart/form-data')
@@ -369,7 +372,7 @@ describe('Client API', () => {
     });
 
     test('Response_400_Name(?)', async () => {
-      const res = await request(app)
+      const res = await request(server)
         .put(`/app/${testClientData.clients[0].client_id}`)
         .set('Cookie', currentUser.sidCookie)
         .set('Content-Type', 'multipart/form-data')
@@ -386,7 +389,7 @@ describe('Client API', () => {
     });
 
     test('Response_400_Uri(?)', async () => {
-      const res = await request(app)
+      const res = await request(server)
         .put(`/app/${testClientData.clients[0].client_id}`)
         .set('Cookie', currentUser.sidCookie)
         .set('Content-Type', 'multipart/form-data')
@@ -403,7 +406,7 @@ describe('Client API', () => {
     });
 
     test('Response_400_RedirectUri(?)', async () => {
-      const res = await request(app)
+      const res = await request(server)
         .put(`/app/${testClientData.clients[0].client_id}`)
         .set('Cookie', currentUser.sidCookie)
         .set('Content-Type', 'multipart/form-data')
@@ -428,7 +431,7 @@ describe('Client API', () => {
     });
 
     test('Response_204', async () => {
-      const res = await request(app)
+      const res = await request(server)
         .delete(`/app/${testClientData.clients[0].client_id}`)
         .set('Cookie', currentUser.sidCookie);
 
@@ -436,7 +439,7 @@ describe('Client API', () => {
     });
 
     test('Response_404_clientId(not_authorized)', async () => {
-      const res = await request(app)
+      const res = await request(server)
         .delete(`/app/${testClientData.clientsOfOtherUser[0].client_id}`)
         .set('Cookie', currentUser.sidCookie);
 
@@ -444,7 +447,7 @@ describe('Client API', () => {
     });
 
     test('Response_404_clientId(does_not_exist)', async () => {
-      const res = await request(app)
+      const res = await request(server)
         .delete(`/app/${testClientData.clients[0].client_id}`)
         .set('Cookie', currentUser.sidCookie);
 
@@ -455,7 +458,7 @@ describe('Client API', () => {
   describe('PATCH', () => {
     describe('ClientSecret', () => {
       test('Response_Updated_Client_With_200', async () => {
-        const res = await request(app)
+        const res = await request(server)
           .patch(`/app/${testClientData.clients[0].client_id}/secret`)
           .set('Cookie', currentUser.sidCookie);
 
@@ -476,7 +479,7 @@ describe('Client API', () => {
       });
 
       test('Response_404_clientId(not_authorized)', async () => {
-        const res = await request(app)
+        const res = await request(server)
           .delete(
             `/app/${testClientData.clientsOfOtherUser[0].client_id}/secret`
           )
@@ -486,7 +489,7 @@ describe('Client API', () => {
       });
 
       test('Response_404_clientId(does_not_exist)', async () => {
-        const res = await request(app)
+        const res = await request(server)
           .patch(`/app/does_not_exist/secret`)
           .set('Cookie', currentUser.sidCookie);
 

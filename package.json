@@ -53,6 +53,7 @@
     "axios": "^1.4.0",
     "bcrypt": "^5.1.1",
     "busboy": "^1.6.0",
+    "connect-redis": "^7.1.1",
     "content-type": "^1.0.5",
     "cookie": "^0.6.0",
     "cors": "^2.8.5",
@@ -69,6 +70,7 @@
     "mysql2": "^3.4.2",
     "nodemailer": "^6.9.4",
     "prisma": "^5.0.0",
+    "redis": "^4.6.15",
     "serve-favicon": "^2.5.0",
     "uuid": "^9.0.1",
     "winston": "^3.9.0"
