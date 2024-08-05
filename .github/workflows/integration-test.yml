@@ -21,7 +21,13 @@ jobs:
         with:
           node-version: 18
           cache: yarn
-          
+      
+      - name: Setup Redis
+        uses: zhulik/redis-action@1.1.0
+        with:
+          redis version: latest
+          number of databases: 16
+
       - name : Setup Mysql Latest
         uses : 'mirromutth/mysql-action@v1.1'
         with:
