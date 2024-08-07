@@ -12,7 +12,7 @@ const createUser: ValidationSchema = {
 
 const renderLogin: ValidationSchema = {
   query: joi.object().keys({
-    continue: joi.string().uri().required(),
+    continue: joi.string().uri().allow('').optional(),
   }),
 };
 
@@ -22,7 +22,7 @@ const login: ValidationSchema = {
     //등록되지 않은 user는 로그인에 실패한다.
     email: joi.string().required(),
     password: joi.string().required(),
-    continue: joi.string().uri().required(),
+    continue: joi.string().uri().allow('').optional(),
   }),
 };
 const verifyUser: ValidationSchema = {

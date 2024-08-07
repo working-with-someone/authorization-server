@@ -11,9 +11,13 @@ export const login = asyncCatch(async (req: Request, res: Response) => {
 
   req.session.userId = user.id;
 
-  const continueURL = new URL(req.body.continue);
+  if (req.body.continue) {
+    const continueURL = new URL(req.body.continue);
 
-  return res.redirect(continueURL.toString());
+    return res.redirect(continueURL.toString());
+  }
+
+  return res.status(200).end();
 });
 
 export const renderSignup = asyncCatch((req: Request, res: Response) => {
