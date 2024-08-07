@@ -215,69 +215,106 @@ describe('Authentication', () => {
   });
 
   describe('Login', () => {
-    test('Response_Login_Page_With_200', (done) => {
-      request(server)
-        .get('/auth/login')
-        .query({ continue: 'http://example.com' })
-        .expect(200)
-        .end(done);
+    describe('GET', () => {
+      // continue uri와 함께 login page를 요청하면 200을 응답받아야한다.
+      test('Response_Login_Page_With_200', (done) => {
+        request(server)
+          .get('/auth/login')
+          .query({ continue: 'http://example.com' })
+          .expect(200)
+          .end(done);
+      });
+
+      // invalid continue uri와 함께 login page를 요청하면 200을 응답받아야한다.
+      test('Response_400_Continue(?)', (done) => {
+        request(server)
+          .get('/auth/login')
+          .query({ continue: 'invalid continue' })
+          .expect(400)
+          .end(done);
+      });
+
+      // continue uri없이 login page를 요청하면 200을 응답받아야한다.
+      test('Response_Login_Page_With_200_Continue(x)', (done) => {
+        request(server).get('/auth/login').expect(200).end(done);
+      });
     });
 
-    test('Response_400_ContinueUri(x)', (done) => {
-      request(server)
-        .post('/auth/login')
-        .send({
-          email: testUserData.newUser.email,
-          password: testUserData.newUser.password,
-        })
-        .set({
-          'Content-Type': 'application/x-www-form-urlencoded',
-        })
-        .expect(400)
-        .end(done);
-    });
+    describe('POST', () => {
+      // continue uri와 함께 로그인하면 session id cookie가 set되고, 302를 응답받아야한다.
+      test('Redirect_To_Redirect_Uri_With_With_Sid_302', (done) => {
+        request(server)
+          .post('/auth/login')
+          .send({
+            email: testUserData.newUser.email,
+            password: testUserData.newUser.password,
+            continue: 'http://example.com',
+          })
+          .set({
+            'Content-Type': 'application/x-www-form-urlencoded',
+          })
+          // to redirect
+          .expect(302)
+          .expect((res) => {
+            // with sid
+            const cookieStrings = res.headers['set-cookie'];
+            let sidCookie = '';
 
-    test('Redirect_To_Redirect_Uri_With_With_Sid_302', (done) => {
-      request(server)
-        .post('/auth/login')
-        .send({
-          email: testUserData.newUser.email,
-          password: testUserData.newUser.password,
-          continue: 'http://example.com',
-        })
-        .set({
-          'Content-Type': 'application/x-www-form-urlencoded',
-        })
-        // to redirect
-        .expect(302)
-        .expect((res) => {
-          // with sid
-          const cookieStrings = res.headers['set-cookie'];
-          let sidCookie = '';
-
-          for (const cookieString of cookieStrings) {
-            if (
-              Object.keys(cookie.parse(cookieString)).includes(sessionIdName)
-            ) {
-              sidCookie = cookieString;
+            for (const cookieString of cookieStrings) {
+              if (
+                Object.keys(cookie.parse(cookieString)).includes(sessionIdName)
+              ) {
+                sidCookie = cookieString;
+              }
             }
-          }
 
-          expect(sidCookie).toBeDefined();
-        })
-        .end(done);
-    });
+            expect(sidCookie).toBeDefined();
+          })
+          .end(done);
+      });
 
-    test('Response_400_Credential_Does_Not_Exist', (done) => {
-      request(server)
-        .post('/auth/login')
-        .send({
-          // not registered credential
-          email: 'doesNotExist@example.com',
-          password: 'strongPassword12!',
-        })
-        .expect(400)
-        .end(done);
+      // continue uri 없이 로그인하면 session id cookie가 set되고, 200을 응답받아야한다.
+      test('Response_200_Continue(x)', (done) => {
+        request(server)
+          .post('/auth/login')
+          .send({
+            email: testUserData.newUser.email,
+            password: testUserData.newUser.password,
+          })
+          .set({
+            'Content-Type': 'application/x-www-form-urlencoded',
+          })
+          .expect(200)
+          .expect((res) => {
+            // with sid
+            const cookieStrings = res.headers['set-cookie'];
+            let sidCookie = '';
+
+            for (const cookieString of cookieStrings) {
+              if (
+                Object.keys(cookie.parse(cookieString)).includes(sessionIdName)
+              ) {
+                sidCookie = cookieString;
+              }
+            }
+
+            expect(sidCookie).toBeDefined();
+          })
+          .end(done);
+      });
+
+      // 존재하지 않는 credential로 로그인하면, 400을 응답받아야한다.
+      test('Response_400_Credential_Does_Not_Exist', (done) => {
+        request(server)
+          .post('/auth/login')
+          .send({
+            // not registered credential
+            email: 'doesNotExist@example.com',
+            password: 'strongPassword12!',
+          })
+          .expect(400)
+          .end(done);
+      });
     });
   });
 });
