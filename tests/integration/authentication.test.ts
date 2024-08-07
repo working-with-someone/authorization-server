@@ -165,52 +165,54 @@ describe('Authentication', () => {
       });
     });
 
-    test('Response_Verification_Success_Page_With_200_If_Verification_Success', async () => {
-      const user = await prismaClient.user.findFirst({
-        where: {
-          username: testUserData.newUser.username,
-          email: testUserData.newUser.email,
-        },
-        include: {
-          email_verification: true,
-        },
+    describe('GET', () => {
+      test('Response_Verification_Success_Page_With_200_If_Verification_Success', async () => {
+        const user = await prismaClient.user.findFirst({
+          where: {
+            username: testUserData.newUser.username,
+            email: testUserData.newUser.email,
+          },
+          include: {
+            email_verification: true,
+          },
+        });
+
+        const res = await request(server).get(
+          `/auth/signup/verify?user_id=${user?.id}&token=${user?.email_verification?.verify_token}`
+        );
+
+        expect(res.status).toEqual(200);
       });
 
-      const res = await request(server).get(
-        `/auth/signup/verify?user_id=${user?.id}&token=${user?.email_verification?.verify_token}`
-      );
+      test('Response_400_Token(expired)', async () => {
+        const user = await prismaClient.user.findFirst({
+          where: {
+            username: testUserData.expired_user.username,
+            email: testUserData.expired_user.email,
+          },
+          include: {
+            email_verification: true,
+          },
+        });
 
-      expect(res.status).toEqual(200);
-    });
+        const res = await request(server).get(
+          `/auth/signup/verify?user_id=${user?.id}&token=${user?.email_verification?.verify_token}`
+        );
 
-    test('Response_400_Token(expired)', async () => {
-      const user = await prismaClient.user.findFirst({
-        where: {
-          username: testUserData.expired_user.username,
-          email: testUserData.expired_user.email,
-        },
-        include: {
-          email_verification: true,
-        },
+        expect(res.status).toEqual(400);
+      });
+      test('Response_400_UserId(x)_Token(X)', (done) => {
+        request(server).get('/auth/signup/verify').expect(400).end(done);
       });
 
-      const res = await request(server).get(
-        `/auth/signup/verify?user_id=${user?.id}&token=${user?.email_verification?.verify_token}`
-      );
-
-      expect(res.status).toEqual(400);
-    });
-    test('Response_400_UserId(x)_Token(X)', (done) => {
-      request(server).get('/auth/signup/verify').expect(400).end(done);
-    });
-
-    test('Response_404_Token(?)', (done) => {
-      request(server)
-        .get(
-          `/auth/signup/verify?user_id=1234&token=${testUserData.verifyQuery.invalid.token}`
-        )
-        .expect(400)
-        .end(done);
+      test('Response_404_Token(?)', (done) => {
+        request(server)
+          .get(
+            `/auth/signup/verify?user_id=1234&token=${testUserData.verifyQuery.invalid.token}`
+          )
+          .expect(400)
+          .end(done);
+      });
     });
   });
 
