@@ -17,7 +17,7 @@ export const login = asyncCatch(async (req: Request, res: Response) => {
     return res.redirect(continueURL.toString());
   }
 
-  return res.status(200).end();
+  return res.render('login-success');
 });
 
 export const renderSignup = asyncCatch((req: Request, res: Response) => {
