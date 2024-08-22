@@ -4,7 +4,7 @@ import RedisStore from 'connect-redis';
 
 const cookieConfig: CookieOptions = {
   secure: false,
-  domain: process.env.DOMAIN,
+  domain: process.env.SITE,
   httpOnly: true,
 };
 

@@ -34,5 +34,7 @@ declare namespace NodeJS {
     FOR_DEVELOPER_ORIGIN: string;
 
     CORS_ALLOWED_ORIGIN: string;
+
+    SITE: string;
   }
 }
