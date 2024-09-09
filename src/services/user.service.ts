@@ -66,7 +66,9 @@ export const createUser = async (data: UserCreateInput) => {
   const createdUser = await prismaClient.user.create({
     data: {
       username: data.username,
-      pfp: '',
+      pfp: {
+        create: {},
+      },
       encrypted_password,
       email: data.email,
       email_verification: {

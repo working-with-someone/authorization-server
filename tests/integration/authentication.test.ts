@@ -15,7 +15,12 @@ describe('Authentication', () => {
   beforeAll(async () => {
     testUserData.users.forEach(async (user) => {
       await prismaClient.user.create({
-        data: user,
+        data: {
+          ...user,
+          pfp: {
+            create: {},
+          },
+        },
       });
     });
   });

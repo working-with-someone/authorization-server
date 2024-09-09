@@ -3,7 +3,6 @@
     {
       "id": 1,
       "username": "testUser1",
-      "pfp": "./pfp.png",
       "encrypted_password": "$2b$10$6ZbxBKRk1qdhySGQeN5Iw.CTA4XFCVGL9KHkZnabitdjSRegvBif2",
       "email": "testEmail1@test.com",
       "email_verification": {
@@ -17,7 +16,6 @@
     {
       "id": 2,
       "username": "testUser2",
-      "pfp": "./pfp.png",
       "encrypted_password": "$2b$10$6ZbxBKRk1qdhySGQeN5Iw.CTA4XFCVGL9KHkZnabitdjSRegvBif2",
       "email": "testEmail2@test.com",
       "email_verification": {
@@ -31,7 +29,6 @@
     {
       "id": 3,
       "username": "testUser3",
-      "pfp": "./pfp.png",
       "encrypted_password": "$2b$10$6ZbxBKRk1qdhySGQeN5Iw.CTA4XFCVGL9KHkZnabitdjSRegvBif2",
       "email": "testEmail3@test.com",
       "email_verification": {
@@ -57,7 +54,6 @@
   "expired_user": {
     "id": 200,
     "username": "expiredTestUser",
-    "pfp": "./pfp.png",
     "encrypted_password": "$2b$10$6ZbxBKRk1qdhySGQeN5Iw.CTA4XFCVGL9KHkZnabitdjSRegvBif2",
     "email": "testEmailExpired@test.com",
     "email_verification": {
