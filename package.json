@@ -4,16 +4,15 @@
   "main": "src/server.ts",
   "license": "MIT",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development nodemon",
-    "build": "tsc",
-    "db:migrate:prod": "dotenv -e ./.env -- prisma migrate deploy",
-    "db:migrate:dev": "dotenv -e ./.env -- prisma migrate dev",
-    "db:migrate:test": "dotenv -e ./.env.test -- prisma migrate dev",
-    "db:push:dev": "dotenv -e ./.env -- prisma db push",
-    "db:push:test": "dotenv -e ./.env.test -- prisma db push",
-    "test": "cross-env NODE_ENV=test jest --runInBand",
-    "test:unit": "jest tests/unit",
-    "test:integration": "jest tests/integration --runInBand"
+    "watch": "dotenvx run --env-file=.env.development -- nodemon",
+    "db:migrate:prod": "dotenvx run --env-file=.env -- prisma migrate deploy",
+    "db:migrate:dev": "dotenvx run --env-file=.env.development -- prisma migrate dev",
+    "db:migrate:test": "dotenvx run --env-file=.env.test -- prisma migrate dev",
+    "db:push:dev": "dotenvx run --env-file=.env.development -- prisma db push",
+    "db:push:test": "dotenvx run --env-file=.env.test -- prisma db push",
+    "test": "dotenvx run --env-file=.env.test -- jest --runInBand",
+    "test:unit": "dotenvx run --env-file=.env.test -- jest tests/unit",
+    "test:integration": "dotenvx run --env-file=.env.test -- jest tests/integration --runInBand"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
@@ -50,6 +49,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.637.0",
+    "@dotenvx/dotenvx": "^1.24.5",
     "@prisma/client": "^5.0.0",
     "axios": "^1.4.0",
     "bcrypt": "^5.1.1",
@@ -58,7 +58,6 @@
     "content-type": "^1.0.5",
     "cookie": "^0.6.0",
     "cors": "^2.8.5",
-    "dotenv": "^16.3.1",
     "ejs": "^3.1.9",
     "express": "^4.18.2",
     "express-session": "^1.18.0",
