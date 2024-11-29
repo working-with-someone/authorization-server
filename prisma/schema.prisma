@@ -20,6 +20,11 @@ model user {
   email_verification email_verification?
   oauth_client       oauth_client[]
   pfp                pfp?
+  followers_count    Int                 @default(0)
+  followings_count   Int                 @default(0)
+  followers          follow[]            @relation("following")
+  following          follow[]            @relation("follower")
+  session            session[]
 }
 
 model pfp {
@@ -56,4 +61,35 @@ model oauth_client {
   scope                      String
   user_id                    Int
   user                       user    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
+
+model follow {
+  follower          user @relation("follower", fields: [follower_user_id], references: [id], onDelete: Cascade)
+  follower_user_id  Int
+  following         user @relation("following", fields: [following_user_id], references: [id], onDelete: Cascade)
+  following_user_id Int
+
+  @@id([follower_user_id, following_user_id])
+}
+
+model category {
+  id      Int       @id
+  label   String
+  session session[]
+}
+
+model session {
+  id          String   @id @db.VarChar(36)
+  title       String   @db.VarChar(100)
+  description String   @db.Text
+  thumbnail   String
+  video_uri   String
+  created_at  DateTime @default(now())
+  duration    Int
+  is_private  Boolean  @default(false)
+
+  user_id     Int
+  user        user     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  category_id Int
+  category    category @relation(fields: [category_id], references: [id], onDelete: Cascade)
 }
