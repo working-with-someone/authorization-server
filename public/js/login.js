@@ -4,10 +4,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const form = document.getElementById('login-form');
 
-  const hiddenField = document.createElement('input');
-  hiddenField.type = 'hidden';
-  hiddenField.name = 'continue';
-  hiddenField.value = continueURL;
+  const action = new URL(form.action);
+  action.searchParams.set('continue_uri', continueURL);
 
-  form.appendChild(hiddenField);
+  form.action = action;
 });

@@ -11,10 +11,10 @@ export const login = asyncCatch(async (req: Request, res: Response) => {
 
   req.session.userId = user.id;
 
-  if (req.body.continue) {
-    const continueURL = new URL(req.body.continue);
+  const { continue_uri } = req.query;
 
-    return res.redirect(continueURL.toString());
+  if (continue_uri) {
+    return res.redirect(continue_uri.toString());
   }
 
   return res.render('login-success');
