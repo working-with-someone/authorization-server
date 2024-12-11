@@ -25,15 +25,20 @@ export const renderSignup = asyncCatch((req: Request, res: Response) => {
 });
 
 export const signup = asyncCatch(async (req: Request, res: Response) => {
-  await userService.createUser(req.body);
+  const { continue_uri } = req.query;
+
+  await userService.createUser({
+    ...req.body,
+    continue_uri,
+  });
 
   return res.render('signup-success');
 });
 
 export const verify = asyncCatch(async (req: Request, res: Response) => {
-  const { user_id, token } = req.query;
+  const { user_id, token, continue_uri } = req.query;
 
   await userService.verifyUser(parseInt(user_id as string), token as string);
 
-  return res.render('verification-success');
+  return res.render('verification-success', { continue_uri });
 });

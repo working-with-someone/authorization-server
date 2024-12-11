@@ -12,6 +12,7 @@ interface UserCreateInput {
   username: string;
   email: string;
   password: string;
+  continue_uri?: string;
 }
 
 interface UserLoginInput {
@@ -81,8 +82,19 @@ export const createUser = async (data: UserCreateInput) => {
     },
   });
 
+  const verificationLink = new URL(
+    `${process.env.SERVER_URL}/auth/signup/verify`
+  );
+
+  verificationLink.searchParams.set('user_id', createdUser.id.toString());
+  verificationLink.searchParams.set('token', verify_token);
+  verificationLink.searchParams.set(
+    'continue_uri',
+    data.continue_uri || process.env.SERVER_URL
+  );
+
   await mailer.sendVerificationMail({
-    verificationLink: `${process.env.SERVER_URL}/auth/signup/verify?user_id=${createdUser?.id}&token=${verify_token}`,
+    verificationLink: verificationLink.toString(),
     dst: data.email,
   });
 };
