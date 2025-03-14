@@ -63,7 +63,7 @@ section.login>* {
     display: flex;
     align-items: end;
     color: var(--sig);
-    font-size: 6px;
+    font-size: 12px;
     font-weight: 100;
     font-family: sans-serif;
 }
