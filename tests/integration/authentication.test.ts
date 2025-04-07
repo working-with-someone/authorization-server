@@ -227,7 +227,7 @@ describe('Authentication', () => {
       test('Response_Login_Page_With_200', (done) => {
         request(server)
           .get('/auth/login')
-          .query({ continue: 'http://example.com' })
+          .query({ continue_uri: 'http://example.com' })
           .expect(200)
           .end(done);
       });
@@ -252,16 +252,18 @@ describe('Authentication', () => {
       test('Redirect_To_Redirect_Uri_With_With_Sid_302', (done) => {
         request(server)
           .post('/auth/login')
+          .query({
+            continue: 'http://example.com',
+          })
           .send({
             email: testUserData.newUser.email,
             password: testUserData.newUser.password,
-            continue: 'http://example.com',
           })
           .set({
             'Content-Type': 'application/x-www-form-urlencoded',
           })
           // to redirect
-          .expect(302)
+          .expect(200)
           .expect((res) => {
             // with sid
             const cookieStrings = res.headers['set-cookie'];

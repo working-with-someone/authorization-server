@@ -26,13 +26,15 @@ describe('Client API', () => {
 
     const res = await request(server)
       .post('/auth/login')
+      .query({
+        continue_uri: 'http://example.com',
+      })
       .set({
         'Content-Type': 'application/x-www-form-urlencoded',
       })
       .send({
         email: currentUser.email,
         password: currentUser.password,
-        continue: 'http://example.com',
       });
 
     expect(res.statusCode).toEqual(302);
