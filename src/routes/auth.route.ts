@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Request, Response, Router } from 'express';
 import {
   renderLogin,
   login,
@@ -18,4 +18,9 @@ router.get('/signup', renderSignup);
 router.post('/signup', validate(userValidation.createUser), signup);
 router.get('/signup/verify', validate(userValidation.verifyUser), verify);
 
+router.post('/publish', (req: Request, res: Response) => {
+  console.log(req.body);
+
+  return res.status(200).end();
+});
 export default router;
