@@ -22,9 +22,14 @@ model user {
   pfp                pfp?
   followers_count    Int                 @default(0)
   followings_count   Int                 @default(0)
-  followers          follow[]            @relation("following")
-  following          follow[]            @relation("follower")
-  session            session[]
+
+  followers follow[] @relation("following")
+  following follow[] @relation("follower")
+
+  live_session             live_session[]
+  video_session            video_session[]
+  live_session_allow_list  live_session_allow[]
+  video_session_allow_list video_session_allow[]
 }
 
 model pfp {
@@ -72,24 +77,94 @@ model follow {
   @@id([follower_user_id, following_user_id])
 }
 
-model category {
-  id      Int       @id
-  label   String
-  session session[]
+model live_session {
+  id            String              @id
+  title         String              @db.VarChar(100)
+  description   String?             @db.Text
+  thumbnail_uri String
+  category      String
+  status        live_session_status
+  stream_key    String
+  // 1 : public 2 : followersOnly 3 : private
+  access_level  Int                 @default(1)
+
+  created_at DateTime  @default(now())
+  updated_at DateTime  @default(now())
+  started_at DateTime?
+
+  organizer_id                Int
+  organizer                   user                          @relation(fields: [organizer_id], references: [id], onDelete: Cascade)
+  allow                       live_session_allow[]
+  break_time                  live_session_break_time?
+  live_session_transition_log live_session_transition_log[]
 }
 
-model session {
-  id          String   @id @db.VarChar(36)
-  title       String   @db.VarChar(100)
-  description String   @db.Text
-  thumbnail   String
-  video_uri   String
-  created_at  DateTime @default(now())
-  duration    Int
-  is_private  Boolean  @default(false)
+enum live_session_status {
+  READY
+  OPENED
+  BREAKED
+  CLOSED
+}
 
-  user_id     Int
-  user        user     @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  category_id Int
-  category    category @relation(fields: [category_id], references: [id], onDelete: Cascade)
+model live_session_transition_log {
+  id              Int                 @id @default(autoincrement())
+  live_session    live_session        @relation(fields: [live_session_id], references: [id], onDelete: Cascade)
+  live_session_id String
+  from_state      live_session_status
+  to_state        live_session_status
+  transitioned_at DateTime            @default(now())
+}
+
+model live_session_break_time {
+  session_id String @id
+  interval   Int
+  duration   Int
+
+  live_session live_session? @relation(fields: [session_id], references: [id], onDelete: Cascade)
+}
+
+model live_session_allow {
+  user            user         @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id         Int
+  live_session    live_session @relation(fields: [live_session_id], references: [id], onDelete: Cascade)
+  live_session_id String
+
+  @@id([live_session_id, user_id])
+}
+
+model video_session {
+  id            String  @id
+  title         String  @db.VarChar(100)
+  description   String? @db.Text
+  thumbnail_uri String
+  category      String
+  duration      BigInt
+  // 1 : public 2 : followersOnly 3 : private
+  access_level  Int     @default(1)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
+
+  organizer_id Int
+  organizer    user                  @relation(fields: [organizer_id], references: [id], onDelete: Cascade)
+  allow        video_session_allow[]
+
+  break_time video_session_break_time?
+}
+
+model video_session_allow {
+  user             user          @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id          Int
+  video_session    video_session @relation(fields: [video_session_id], references: [id], onDelete: Cascade)
+  video_session_id String
+
+  @@id([video_session_id, user_id])
+}
+
+model video_session_break_time {
+  session_id String @id
+  interval   Int
+  duration   Int
+
+  video_session video_session? @relation(fields: [session_id], references: [id], onDelete: Cascade)
 }
